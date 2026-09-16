@@ -1,0 +1,317 @@
+/*
+ * goognet/ui — tokens e estilos dos componentes.
+ *
+ * Importe depois do Tailwind. Os tokens são padrões: redefina qualquer um no @theme do
+ * site, depois deste import, e todos os componentes acompanham.
+ */
+
+@source '../views';
+
+@theme {
+    --color-primary-50: var(--color-lime-50);
+    --color-primary-100: var(--color-lime-100);
+    --color-primary-200: var(--color-lime-200);
+    --color-primary-300: var(--color-lime-300);
+    --color-primary-400: var(--color-lime-400);
+    --color-primary-500: var(--color-lime-500);
+    --color-primary-600: var(--color-lime-600);
+    --color-primary-700: var(--color-lime-700);
+    --color-primary-800: var(--color-lime-800);
+    --color-primary-900: var(--color-lime-900);
+    --color-primary-950: var(--color-lime-950);
+    /* Derived from the scale: repainting `--color-primary-500` moves every token that uses it. */
+    --color-primary: var(--color-primary-500);
+    --color-primary-dark: var(--color-primary-600);
+    --color-primary-light: var(--color-primary-300);
+
+    /* Readable ink: lightness forced to 0.45, hue kept. Brand colours as text fail 4.5:1; ink passes. */
+    --color-primary-ink: oklch(from var(--color-primary) 0.45 c h);
+
+    --color-secondary-50: var(--color-purple-50);
+    --color-secondary-100: var(--color-purple-100);
+    --color-secondary-200: var(--color-purple-200);
+    --color-secondary-300: var(--color-purple-300);
+    --color-secondary-400: var(--color-purple-400);
+    --color-secondary-500: var(--color-purple-500);
+    --color-secondary-600: var(--color-purple-600);
+    --color-secondary-700: var(--color-purple-700);
+    --color-secondary-800: var(--color-purple-800);
+    --color-secondary-900: var(--color-purple-900);
+    --color-secondary-950: var(--color-purple-950);
+    /* Derived from the scale: repainting `--color-secondary-500` moves every token that uses it. */
+    --color-secondary: var(--color-secondary-500);
+    --color-secondary-dark: var(--color-secondary-600);
+    --color-secondary-light: var(--color-secondary-300);
+
+    /* Readable ink: lightness forced to 0.45, hue kept. Brand colours as text fail 4.5:1; ink passes. */
+    --color-secondary-ink: oklch(from var(--color-secondary) 0.45 c h);
+
+    --color-neutral-50: var(--color-gray-50);
+    --color-neutral-100: var(--color-gray-100);
+    --color-neutral-200: var(--color-gray-200);
+    --color-neutral-300: var(--color-gray-300);
+    --color-neutral-400: var(--color-gray-400);
+    --color-neutral-500: var(--color-gray-500);
+    --color-neutral-600: var(--color-gray-600);
+    --color-neutral-700: var(--color-gray-700);
+    --color-neutral-800: var(--color-gray-800);
+    --color-neutral-900: var(--color-gray-900);
+    --color-neutral-950: var(--color-gray-950);
+
+    /* One easing for the library; three speeds: colour, movement, reflow. */
+    --ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration-fast: 150ms;
+    --duration-base: 240ms;
+    --duration-slow: 360ms;
+
+    /* Two elevations only, tinted with the neutral's blue rather than black. */
+    --shadow-soft: 0 1px 2px rgb(16 24 40 / 0.04), 0 4px 12px rgb(16 24 40 / 0.06);
+    --shadow-lifted: 0 2px 4px rgb(16 24 40 / 0.04), 0 12px 28px rgb(16 24 40 / 0.1);
+}
+
+/*
+ * One focus treatment for the whole library. Browsers differ on where they put the default
+ * ring, and every component was repeating the same three utilities; here it is once, only
+ * for keyboard users, and it survives on a dark background because it is the brand colour
+ * with a white gap around it.
+ */
+@layer base {
+    :focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+}
+
+/*
+ * Swiper themed through its own custom properties, so nothing here needs to
+ * out-specify the library's stylesheet with `!important`.
+ */
+[data-carousel] {
+    --swiper-pagination-color: var(--color-primary);
+    --swiper-pagination-bullet-inactive-color: var(--color-primary);
+    --swiper-pagination-bullet-inactive-opacity: 0.3;
+    --swiper-pagination-bullet-opacity: 1;
+    --swiper-pagination-bullet-border-radius: 0.5rem;
+
+    /*
+     * The bullet is the hit target, so it is a 1.5rem square — the WCAG 2.2 minimum —
+     * and the dot people see is drawn inside it by the rule below. Sizing the bullet
+     * itself down to the dot is what Swiper does by default, and it left a 4px target.
+     * The gap goes with it: the square already carries the spacing as padding.
+     */
+    --swiper-pagination-bullet-size: 1.5rem;
+    --swiper-pagination-bullet-horizontal-gap: 0;
+
+    /* The strip has its own box in the component; no offset from the slides. */
+    --swiper-pagination-bottom: 0;
+
+    --swiper-navigation-color: var(--color-neutral-800);
+    --swiper-navigation-size: 1.25rem;
+    --swiper-navigation-sides-offset: 1rem;
+}
+
+/*
+ * The visible dot. Painting it on a pseudo-element keeps the target square while the
+ * dot stays 0.75rem, and it makes the active state a size change rather than only an
+ * opacity one — a filled pill reads as "you are here" from across the page.
+ */
+[data-carousel] .swiper-pagination-bullet {
+    display: inline-grid;
+    place-items: center;
+    background: transparent;
+    opacity: 1;
+}
+
+[data-carousel] .swiper-pagination-bullet::before {
+    content: '';
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: var(--swiper-pagination-bullet-border-radius);
+    background: var(--color-primary);
+    opacity: var(--swiper-pagination-bullet-inactive-opacity);
+    transition:
+        width var(--duration-base) var(--ease-fluid),
+        opacity var(--duration-base) var(--ease-fluid);
+}
+
+[data-carousel] .swiper-pagination-bullet:hover::before {
+    opacity: 0.6;
+}
+
+[data-carousel] .swiper-pagination-bullet-active::before {
+    width: 1.25rem;
+    opacity: 1;
+}
+
+/*
+ * Dynamic bullets, without paying for them in target size.
+ *
+ * Swiper draws the effect by scaling `.swiper-pagination-bullet` — which here is the 24px
+ * hit target, not the dot. Its 0.33 would leave an 8px target, under the 24px WCAG 2.2
+ * asks of a standalone control, and it is why this was switched off before the option
+ * existed. The transform is cancelled and the same scale applied to the dot instead: the
+ * strip looks the way Swiper intends and every bullet stays a 24px square.
+ *
+ * Geometry is safe to leave alone. Swiper measures the strip with `elementOuterSize`, a
+ * layout width, and `transform` never touched layout — so the track keeps the width the
+ * library computed.
+ */
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet {
+    transform: none;
+}
+
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet::before {
+    scale: 0.33;
+    transition:
+        width var(--duration-base) var(--ease-fluid),
+        opacity var(--duration-base) var(--ease-fluid),
+        scale var(--duration-base) var(--ease-fluid);
+}
+
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active::before,
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-main::before {
+    scale: 1;
+}
+
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-prev::before,
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-next::before {
+    scale: 0.66;
+}
+
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-prev-prev::before,
+[data-carousel] .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-next-next::before {
+    scale: 0.33;
+}
+
+/*
+ * `autoHeight` makes Swiper transition the wrapper's height, and a box that grows and
+ * shrinks under the text is exactly the motion WCAG 2.3.3 asks to drop. The carousel still
+ * resizes — it just lands on the new height instead of travelling to it, the same trade the
+ * autoplay switch already makes in carousel.js.
+ */
+@media (prefers-reduced-motion: reduce) {
+    [data-carousel] .swiper-autoheight .swiper-wrapper {
+        transition-property: transform;
+    }
+}
+
+/*
+ * Swiper ships its arrows as bare glyphs floating over the slides, which leaves them
+ * unreadable on a busy image and with no hover or focus state at all. They get a
+ * surface here so they behave like every other control in the library.
+ */
+/*
+ * `.swiper` is in the selector to outweigh Swiper's own `.swiper-horizontal .swiper-button-next`,
+ * which matches with the same specificity and is injected by the bundle after this file —
+ * without it the library's negative margin wins and the arrow hangs above centre.
+ */
+[data-carousel] .swiper .swiper-button-prev,
+[data-carousel] .swiper .swiper-button-next {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+
+    /*
+     * Swiper centres its arrows with a negative margin derived from the glyph size, so
+     * a button taller than the glyph hangs below the middle. Centring on the element's
+     * own height instead keeps it true whatever the icon measures.
+     */
+    margin-top: 0;
+    translate: 0 -50%;
+    background: color-mix(in oklab, var(--color-white) 90%, transparent);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(4px);
+    transition:
+        background-color var(--duration-fast) var(--ease-fluid),
+        box-shadow var(--duration-base) var(--ease-fluid),
+        opacity var(--duration-base) var(--ease-fluid),
+        scale var(--duration-base) var(--ease-fluid);
+}
+
+[data-carousel] .swiper .swiper-button-prev:hover,
+[data-carousel] .swiper .swiper-button-next:hover {
+    background: var(--color-white);
+    box-shadow: var(--shadow-lifted);
+    scale: 1.05;
+}
+
+[data-carousel] .swiper .swiper-button-prev:active,
+[data-carousel] .swiper .swiper-button-next:active {
+    scale: 1;
+}
+
+/* Swiper only fades the disabled arrow; at 0.35 it still looks pressable. */
+[data-carousel] .swiper .swiper-button-disabled {
+    box-shadow: none;
+    opacity: 0.25;
+}
+
+/*
+ * The interactive rating, whose whole behaviour is cascade order. It lives here rather
+ * than in utility classes because the three states have to be written in a fixed order:
+ * a hover preview must beat the current selection, and utilities are emitted in the
+ * framework's order, not the order they are written on the element.
+ *
+ * The stars are in the markup from `max` down to 1 and flipped with `flex-row-reverse`,
+ * because a checked input can only reach its later siblings.
+ */
+/*
+ * The solid icon is stacked over the outline one and only its opacity moves, because CSS
+ * cannot exchange one `<svg>` for another. Order still decides everything below.
+ */
+[data-rating] .rating-on {
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-fluid);
+}
+
+[data-rating] input:checked ~ label .rating-on {
+    opacity: 1;
+}
+
+[data-rating]:not(:disabled):has(label:hover) label .rating-on {
+    opacity: 0;
+}
+
+/*
+ * The two hover rules repeat the `:has()` of the reset above them on purpose. Without it
+ * they score (0,3,1) against the reset's (0,3,2) and the hovered star stays empty, while
+ * the ones after it fill in — the preview ends up one star short.
+ */
+[data-rating]:not(:disabled):has(label:hover) label:hover .rating-on,
+[data-rating]:not(:disabled):has(label:hover) label:hover ~ label .rating-on {
+    opacity: 1;
+}
+
+/* Keyboard users move through the group with the arrow keys; the ring has to follow. */
+/*
+ * The ring goes on the label immediately after the focused input, because that is the
+ * star the input stands for. `~ label:first-of-type` matched the first label in the
+ * fieldset instead, which only follows the top star's input — so focusing any other
+ * star selected nothing at all and the keyboard position was invisible.
+ */
+[data-rating] input:focus-visible + label {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/*
+ * A background video is decoration, so it answers to the reduced-motion setting. CSS can
+ * hide it but cannot stop the download, which is why `preload="metadata"` is on the tag:
+ * the bytes that do arrive are the header, not the film.
+ */
+@media (prefers-reduced-motion: reduce) {
+    [data-video-background] video {
+        display: none;
+    }
+}
+
+/*
+ * While the cookie notice holds the bottom edge on narrow screens, the floating button
+ * rests on top of it rather than over it. The offset follows the notice's real height,
+ * published by cookie-consent.js, and falls back to nothing once the notice is gone.
+ */
+@media (width < 40rem) {
+    body:has([data-cookie-consent]) [data-floating] {
+        bottom: calc(var(--cookie-consent-height, 0px) + 0.75rem);
+    }
+}

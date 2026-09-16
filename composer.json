@@ -1,0 +1,73 @@
+{
+    "name": "goognet/ui",
+    "description": "Biblioteca de componentes Blade da Goognet para Laravel e Tailwind CSS.",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "blade",
+        "components",
+        "tailwindcss",
+        "ui"
+    ],
+    "homepage": "https://github.com/Goognet/ui",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Goognet Solução Digital",
+            "homepage": "https://www.goognet.com.br"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Goognet/ui/issues",
+        "source": "https://github.com/Goognet/ui",
+        "security": "https://github.com/Goognet/ui/security/policy"
+    },
+    "require": {
+        "php": "^8.4",
+        "andreiio/blade-remix-icon": "^3.9",
+        "blade-ui-kit/blade-heroicons": "^2.7",
+        "blade-ui-kit/blade-icons": "^1.10",
+        "illuminate/support": "^13.0",
+        "illuminate/view": "^13.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.12",
+        "laravel/pint": "^1.32",
+        "orchestra/testbench": "^11.2",
+        "pestphp/pest": "^5.2",
+        "pestphp/pest-plugin-laravel": "^5.0",
+        "pestphp/pest-plugin-rector": "^5.0",
+        "rector/rector": "^2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Goognet\\Ui\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Goognet\\Ui\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Goognet\\Ui\\UiServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "format": "pint",
+        "refactor": "rector process",
+        "analyse": "phpstan analyse --no-progress",
+        "test": "pest"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
