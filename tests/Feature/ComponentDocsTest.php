@@ -217,3 +217,11 @@ it('inlines a logo with no active content, since it is printed unescaped', funct
     expect($svg)->toStartWith('<svg')
         ->and(preg_match('/<script|<foreignObject|\son[a-z]+\s*=|javascript:|<iframe|<embed|<object/i', $svg))->toBe(0);
 });
+
+it('keeps the mark scalable, with a viewBox', function (): void {
+    /**
+     * The header draws it at `h-6`, and a `<svg>` with width and height but no viewBox is not
+     * scaled by that: it keeps its own coordinates and is cut off at the box.
+     */
+    expect(Catalogue::logo())->toContain('viewBox=');
+});

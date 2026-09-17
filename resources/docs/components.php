@@ -134,6 +134,121 @@ return [
         ],
     ],
     [
+        'name'        => 'input',
+        'title'       => 'Input',
+        'description' => 'Campo de texto com rótulo, dica e erro. Lê sozinho a mensagem que a validação deixou e devolve o que foi digitado no envio anterior.',
+        'sources'     => ['input'],
+        'examples'    => [
+            [
+                'title' => 'Rótulo, dica e obrigatório',
+                'code'  => <<<'BLADE'
+                    <x-ui.input name="nome" label="Nome" placeholder="Como podemos te chamar?" required />
+                    <x-ui.input name="email" type="email" label="E-mail" hint="Usamos só para responder." />
+                    <x-ui.input name="telefone" type="tel" label="Telefone" icon="heroicon-m-phone" />
+                    BLADE,
+            ],
+            [
+                'title' => 'Erro',
+                'code'  => <<<'BLADE'
+                    <x-ui.input name="cnpj" id="cnpj-do-cliente" label="CNPJ" error="Informe um CNPJ válido." value="00.000.000/0000-00" control-class="font-mono" />
+                    BLADE,
+            ],
+            [
+                'title'  => 'Tamanhos',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.input name="a" size="sm" placeholder="sm" />
+                    <x-ui.input name="b" size="base" placeholder="base" />
+                    <x-ui.input name="c" size="lg" placeholder="lg" />
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'Sem <code>error</code>, a mensagem vem do <code>$errors</code> da própria requisição — <code>name="items[0][qty]"</code> é procurado como <code>items.0.qty</code>, que é como o validator guarda. Uma mensagem passada na chamada vence a do validator.',
+            'O erro nunca é só a borda vermelha: entra <code>aria-invalid</code>, a mensagem ganha <code>role="alert"</code> e o campo aponta para ela por <code>aria-describedby</code>.',
+            'O campo volta preenchido com o envio anterior, exceto quando é <code>type="password"</code> — repopular devolveria a senha digitada para dentro do HTML.',
+            '<code>type</code> aceita só os tipos de campo de texto. <code>file</code>, <code>submit</code>, <code>image</code> ou <code>checkbox</code> virariam outro controle dentro de um rótulo que promete texto, então voltam para <code>text</code>.',
+            '<code>class</code> veste o bloco inteiro (rótulo, campo e mensagem); <code>control-class</code> veste só o campo.',
+        ],
+    ],
+    [
+        'name'        => 'textarea',
+        'title'       => 'Textarea',
+        'description' => 'Campo de texto longo. Mesmo rótulo, dica e erro do input, e cresce com o que é digitado.',
+        'sources'     => ['textarea'],
+        'examples'    => [
+            [
+                'title' => 'Mensagem',
+                'code'  => <<<'BLADE'
+                    <x-ui.textarea name="mensagem" label="Mensagem" rows="5" placeholder="Conte o que você precisa" />
+                    <x-ui.textarea name="obs" id="observacoes" label="Observações" hint="Opcional." error="Passou de 500 caracteres." />
+                    <x-ui.textarea name="resumo" label="Resumo" size="sm" required control-class="font-mono" />
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            '<code>field-sizing-content</code> faz a caixa acompanhar o texto; <code>rows</code> continua valendo como altura inicial.',
+            'O conteúdo sai do slot; sem slot, volta o que foi enviado da última vez.',
+        ],
+    ],
+    [
+        'name'        => 'select',
+        'title'       => 'Select',
+        'description' => 'Lista de opções. Aceita <code>options</code> como mapa, como lista ou como linhas vindas do banco.',
+        'sources'     => ['select'],
+        'examples'    => [
+            [
+                'title' => 'Opções e placeholder',
+                'code'  => <<<'BLADE'
+                    <x-ui.select
+                        name="assunto"
+                        label="Assunto"
+                        placeholder="Escolha um assunto"
+                        :options="['orcamento' => 'Orçamento', 'suporte' => 'Suporte', 'outro' => 'Outro']"
+                        selected="suporte"
+                        hint="Responde quem cuida do assunto."
+                        required
+                    />
+
+                    <x-ui.select
+                        name="uf"
+                        id="estado"
+                        label="Estado"
+                        size="sm"
+                        control-class="font-mono"
+                        error="Escolha um estado."
+                        :options="['sp' => 'São Paulo', 'rj' => 'Rio de Janeiro']"
+                    />
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            '<code>:options="[\'sp\' => \'São Paulo\']"</code>, <code>:options="[\'São Paulo\']"</code> e linhas com <code>value</code>/<code>label</code> (ou <code>id</code>/<code>name</code>) chegam todos na mesma forma, então uma coleção do banco entra sem mapear antes.',
+            '<code>placeholder</code> vira uma opção de valor vazio no topo, marcada enquanto nada foi escolhido — com <code>required</code>, é ela que faz o navegador cobrar a escolha.',
+            'A seta é um SVG por cima com <code>pointer-events-none</code>: o clique continua abrindo a lista nativa.',
+        ],
+    ],
+    [
+        'name'        => 'field',
+        'title'       => 'Field',
+        'description' => 'O invólucro que o input, o textarea e o select usam por dentro: rótulo, dica e mensagem de erro amarrados ao controle.',
+        'sources'     => ['field'],
+        'examples'    => [
+            [
+                'title' => 'Em volta de um controle próprio',
+                'code'  => <<<'BLADE'
+                    <x-ui.field id="arquivo" label="Currículo" hint="PDF de até 5 MB." required error="Envie o arquivo em PDF.">
+                        <input id="arquivo" type="file" name="curriculo" class="text-sm text-neutral-700" />
+                    </x-ui.field>
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'Serve para o controle que a lib não cobre — um <code>file</code>, um campo de terceiro — sem perder o rótulo, a dica e o erro no mesmo desenho dos demais.',
+            'O <code>id</code> é quem amarra tudo: <code>for</code> no rótulo, <code>-hint</code> e <code>-error</code> no <code>aria-describedby</code> do controle.',
+        ],
+    ],
+    [
         'name'        => 'footer',
         'title'       => 'Footer',
         'description' => 'Rodapé do site: faixa de chamada, colunas de navegação e contato, e a linha legal. Tudo alimentado pelo <code>config/goognet-ui.php</code>.',

@@ -54,6 +54,10 @@ dataset('customisable', [
     'megamenu-panel'   => ['megamenu-panel', '<x-ui.megamenu-panel :groups="[]" %s />', 'rounded-surface', 'rounded-none'],
     'cookie-consent'   => ['cookie-consent', '<x-ui.cookie-consent %s />', 'p-5', 'p-8'],
     'video'            => ['video', '<x-ui.video url="dQw4w9WgXcQ" %s />', 'aspect-video', 'aspect-square'],
+    'field'            => ['field', '<x-ui.field label="N" %s>x</x-ui.field>', 'gap-1.5', 'gap-4'],
+    'input'            => ['input', '<x-ui.input name="n" label="N" %s />', 'gap-1.5', 'gap-4'],
+    'textarea'         => ['textarea', '<x-ui.textarea name="n" label="N" %s />', 'gap-1.5', 'gap-4'],
+    'select'           => ['select', '<x-ui.select name="n" label="N" :options="[\'a\' => \'A\']" %s />', 'gap-1.5', 'gap-4'],
     'video-background' => ['video-background', '<x-ui.video-background src="https://cdn.example.com/a.mp4" %s>x</x-ui.video-background>', 'h-svh', 'h-dvh'],
 ]);
 
