@@ -38,9 +38,11 @@ As cores da marca se trocam no `@theme` do site, depois do import:
 
 O prefixo `ui.` é configurável em `config/goognet-ui.php` (`'gn-'` → `<x-gn-button>`).
 
-## Catálogo
+## Documentação
 
-Fora de produção, `/dev/components` lista todos os componentes com exemplos renderizados e props lidas do código.
+**https://goognet.github.io/ui** — todos os componentes, com exemplos funcionando e as props lidas do código. É publicada a cada versão.
+
+Para ver uma mudança antes de publicar: `composer docs` gera a página e `composer docs:serve` abre em `http://localhost:8080`. Dentro de um site, a mesma página abre em `/dev/components` com `GOOGNET_UI_CATALOGUE=true`.
 
 ## Configuração
 

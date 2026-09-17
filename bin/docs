@@ -1,0 +1,60 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types = 1);
+
+/*
+ * Renders the component catalogue to build/docs/index.html for GitHub Pages.
+ *
+ * Run `npm run build:docs` first: the page links the assets that build writes, through the same
+ * `@vite` a site uses, so what gets published is what a site renders.
+ */
+
+use AndreiIonita\BladeRemixIcon\BladeRemixIconServiceProvider;
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
+use Goognet\Ui\UiServiceProvider;
+use Illuminate\Support\Facades\Vite;
+use Orchestra\Testbench\Foundation\Application;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$root = dirname(__DIR__);
+$output = $root . '/build/docs';
+
+if (! is_file($output . '/build/manifest.json')) {
+    fwrite(STDERR, "Missing build/docs/build/manifest.json — run `npm run build:docs` first.\n");
+
+    exit(1);
+}
+
+$app = Application::create(options: ['extra' => ['providers' => [
+    BladeIconsServiceProvider::class,
+    BladeHeroiconsServiceProvider::class,
+    BladeRemixIconServiceProvider::class,
+    UiServiceProvider::class,
+]]]);
+
+$app->usePublicPath($output);
+
+$app['config']->set([
+    'app.name'                     => 'goognet/ui',
+    'app.url'                      => getenv('DOCS_URL') ?: 'https://goognet.github.io/ui',
+    'app.key'                      => 'base64:' . base64_encode(random_bytes(32)),
+    'goognet-ui.catalogue.enabled' => true,
+    'goognet-ui.catalogue.public'  => true,
+    'goognet-ui.catalogue.version' => getenv('DOCS_VERSION') ?: trim((string) shell_exec('git -C ' . escapeshellarg($root) . ' describe --tags --abbrev=0 2>/dev/null')),
+    'goognet-ui.catalogue.vite'    => ['docs/app.css', 'docs/app.js'],
+]);
+
+/* Relative, so the page works under /ui/ on github.io and on a custom domain alike. */
+Vite::createAssetPathsUsing(fn (string $path): string => $path);
+
+$html = view('goognet-ui::catalogue')->render();
+
+file_put_contents($output . '/index.html', $html);
+
+/* GitHub Pages runs Jekyll by default, which drops files and folders starting with an underscore. */
+touch($output . '/.nojekyll');
+
+fwrite(STDOUT, sprintf("build/docs/index.html — %d kB\n", intdiv(strlen($html), 1024)));

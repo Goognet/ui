@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import '../resources/css/ui.css';
+
+/* The examples live in the catalogue data, not in a view, so Tailwind has to be told to read them. */
+@source '../resources/docs';

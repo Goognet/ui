@@ -48,10 +48,12 @@ final class Catalogue
         return (string) file_get_contents(dirname(__DIR__, 2) . '/resources/docs/goognet.svg');
     }
 
+    /**
+     * Off unless switched on. The documentation lives on GitHub Pages; a site only opens the local
+     * copy on purpose, to try a change before it is published.
+     */
     public static function enabled(): bool
     {
-        $enabled = config('goognet-ui.catalogue.enabled');
-
-        return $enabled === null ? ! app()->isProduction() : (bool) $enabled;
+        return (bool) config('goognet-ui.catalogue.enabled');
     }
 }

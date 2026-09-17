@@ -8,6 +8,11 @@
     $components = Catalogue::entries();
 
     $tagOf = fn (string $source): string => Catalogue::tag($source);
+
+    /** Set by bin/docs when the page is rendered for GitHub Pages instead of served inside a site. */
+    $isPublic = (bool) config('goognet-ui.catalogue.public');
+
+    $version = (string) config('goognet-ui.catalogue.version');
 @endphp
 
 <!DOCTYPE html>
@@ -15,8 +20,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Componentes · {{ config('app.name') }}</title>
+    @if ($isPublic)
+        <meta
+            name="description"
+            content="Componentes Blade para Laravel e Tailwind CSS 4, acessíveis e com filtro de URL em todo href e src."
+        />
+        <title>goognet/ui · Componentes Blade para Laravel</title>
+        <link
+            rel="icon"
+            href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23bef264'/%3E%3Cpath d='M9 16h14M16 9v14' stroke='%23191c17' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"
+        />
+    @else
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Componentes · {{ config('app.name') }}</title>
+    @endif
 
     @vite((array) config('goognet-ui.catalogue.vite'))
 
@@ -54,9 +71,20 @@
                 {{ count($components) }} componentes
             </span>
 
-            <span class="rounded-full bg-[var(--doc-accent)] px-2.5 py-1 text-[11px] font-semibold tracking-wide text-[var(--doc-ink)] uppercase">
-                apenas em dev
-            </span>
+            @if ($isPublic)
+                @if (filled($version))
+                    <span class="rounded-full bg-[var(--doc-accent)] px-2.5 py-1 font-mono text-[11px] font-semibold text-[var(--doc-ink)]">{{ $version }}</span>
+                @endif
+
+                <a
+                    href="https://github.com/Goognet/ui"
+                    class="text-sm font-medium text-[var(--doc-muted)] hover:text-[var(--doc-ink)]"
+                >GitHub</a>
+            @else
+                <span class="rounded-full bg-[var(--doc-accent)] px-2.5 py-1 text-[11px] font-semibold tracking-wide text-[var(--doc-ink)] uppercase">
+                    apenas em dev
+                </span>
+            @endif
         </div>
     </header>
 
@@ -67,7 +95,7 @@
             <nav
                 data-sidebar
                 aria-label="Componentes"
-                class="mt-4 flex min-h-0 flex-col gap-0.5 overflow-y-auto overscroll-contain [scrollbar-gutter:stable]"
+                class="mt-4 flex min-h-0 [scrollbar-gutter:stable] flex-col gap-0.5 overflow-y-auto overscroll-contain"
             >
                 @foreach ($components as $doc)
                     <a
@@ -86,6 +114,20 @@
                     Cada exemplo abaixo é renderizado de verdade, com o mesmo CSS e o mesmo JavaScript do site. As
                     tabelas de props são lidas do código na hora, então não envelhecem.
                 </p>
+
+                @if ($isPublic)
+                    <div class="mt-6 max-w-2xl overflow-hidden rounded-xl border border-[var(--doc-line)] bg-[var(--doc-surface)]">
+                        <p class="border-b border-[var(--doc-line)] px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] text-[var(--doc-faint)] uppercase">
+                            instalação
+                        </p>
+
+                        <pre
+                            class="overflow-x-auto px-4 py-3 font-mono text-xs leading-relaxed text-[var(--doc-ink-2)]"
+                        ><code>composer require goognet/ui
+php artisan goognet-ui:install
+npm install swiper fslightbox</code></pre>
+                    </div>
+                @endif
             </header>
 
             @foreach ($components as $doc)

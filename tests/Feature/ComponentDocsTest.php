@@ -8,6 +8,8 @@ use Goognet\Ui\Support\ComponentProps;
 /** The page loads the site's own `@vite` entries, and a package has no build of them. */
 beforeEach(function (): void {
     $this->withoutVite();
+
+    config()->set('goognet-ui.catalogue.enabled', true);
 });
 
 it('serves the component gallery outside production', function (): void {
@@ -17,10 +19,22 @@ it('serves the component gallery outside production', function (): void {
         ->assertSee('noindex, nofollow', false);
 });
 
-it('hides the gallery in production', function (): void {
-    $this->app->detectEnvironment(fn (): string => 'production');
+it('stays closed in any environment until it is switched on', function (): void {
+    config()->set('goognet-ui.catalogue.enabled');
 
     $this->get(route('goognet-ui.catalogue'))->assertNotFound();
+});
+
+it('renders the public page for github pages, indexable and with the install steps', function (): void {
+    config()->set('goognet-ui.catalogue.public', true);
+    config()->set('goognet-ui.catalogue.version', 'v9.9.9');
+
+    $this->get(route('goognet-ui.catalogue'))
+        ->assertOk()
+        ->assertDontSee('noindex', false)
+        ->assertSee('composer require goognet/ui')
+        ->assertSee('v9.9.9')
+        ->assertDontSee('apenas em dev');
 });
 
 it('renders a section for every catalogued component', function (): void {

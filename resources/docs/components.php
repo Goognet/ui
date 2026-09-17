@@ -972,6 +972,18 @@ return [
                                 Vídeo 2
                             </div>
                         </x-ui.carousel-slide>
+
+                        <x-ui.carousel-slide source="https://youtu.be/exemplo-3" type="youtube">
+                            <div class="flex h-32 items-center justify-center rounded-lg bg-neutral-100 text-sm text-neutral-600">
+                                Vídeo 3
+                            </div>
+                        </x-ui.carousel-slide>
+
+                        <x-ui.carousel-slide source="https://youtu.be/exemplo-4" type="youtube">
+                            <div class="flex h-32 items-center justify-center rounded-lg bg-neutral-100 text-sm text-neutral-600">
+                                Vídeo 4
+                            </div>
+                        </x-ui.carousel-slide>
                     </x-ui.carousel>
                     BLADE,
             ],

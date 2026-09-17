@@ -60,7 +60,15 @@
         "format": "pint",
         "refactor": "rector process",
         "analyse": "phpstan analyse --no-progress",
-        "test": "pest"
+        "test": "pest",
+        "docs": [
+            "npm run build:docs",
+            "@php bin/docs"
+        ],
+        "docs:serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php -S localhost:8080 -t build/docs"
+        ]
     },
     "config": {
         "sort-packages": true,

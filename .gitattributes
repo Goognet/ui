@@ -12,3 +12,6 @@
 /package.json export-ignore
 /package-lock.json export-ignore
 /.prettierrc export-ignore
+/docs export-ignore
+/bin export-ignore
+/vite.config.js export-ignore

@@ -144,9 +144,9 @@ return [
     | Catálogo
     |--------------------------------------------------------------------------
     |
-    | Página com todos os componentes, exemplos e props. `enabled` null liga fora
-    | de produção e desliga em produção. `vite` são as entradas do site que a
-    | página carrega, para mostrar os componentes com o CSS e o JS reais.
+    | A documentação pública fica em https://goognet.github.io/ui. Esta é a cópia
+    | local, desligada por padrão: ligue com GOOGNET_UI_CATALOGUE=true para testar
+    | uma mudança no próprio site. `vite` são as entradas que a página carrega.
     |
     */
 

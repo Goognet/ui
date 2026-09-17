@@ -1,0 +1,62 @@
+name: Docs
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+# The build reads code and the deploy writes to Pages; nothing else is granted.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Two tags pushed together must not publish in the wrong order.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The version shown on the page comes from the latest tag.
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Build the documentation
+        run: composer docs
+        env:
+          DOCS_VERSION: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
