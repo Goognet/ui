@@ -68,11 +68,18 @@
         $tag === 'a' && ! ClassList::setsColor($incoming, 'bg') ? ClassList::colorUnlessSet($incoming, 'bg', $palette['hover'], 'hover') : '',
     ];
 
-    $opensInNewTab = $external || $attributes->get('target') === '_blank';
+    $safeHref = SafeUrl::href($href);
+
+    /** `target` and `rel` are invalid on an `<a>` with no `href`, which is what a refused URL leaves. */
+    $opensInNewTab = filled($safeHref) && ($external || $attributes->get('target') === '_blank');
+
+    if (blank($safeHref)) {
+        $attributes = $attributes->except('target');
+    }
 
     $tagAttributes = $tag === 'a'
         ? [
-            'href'   => SafeUrl::href($href),
+            'href'   => $safeHref,
             'target' => $opensInNewTab ? '_blank' : null,
             'rel'    => $opensInNewTab ? 'noopener noreferrer' : null,
         ]

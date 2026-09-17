@@ -38,7 +38,14 @@
     /** Beside a spelled-out name the mark is decoration; an alt would make a screen reader say it twice. */
     $alt ??= $hasName ? '' : config('goognet-ui.company.name');
 
-    $opensInNewTab = $external || $attributes->get('target') === '_blank';
+    $safeHref = SafeUrl::href($href);
+
+    /** `target` and `rel` are invalid on an `<a>` with no `href`, which is what a refused URL leaves. */
+    $opensInNewTab = filled($safeHref) && ($external || $attributes->get('target') === '_blank');
+
+    if (blank($safeHref)) {
+        $attributes = $attributes->except('target');
+    }
 
     $needsWrapper = $hasName || $isMarkup;
 
@@ -50,7 +57,7 @@
     $wrapperAttributes = $rendersImage ? new ComponentAttributeBag() : $attributes;
 
     $anchorAttributes = $wrapperAttributes->merge([
-        'href'   => SafeUrl::href($href),
+        'href'   => $safeHref,
         'target' => $opensInNewTab ? '_blank' : null,
         'rel'    => $opensInNewTab ? 'noopener noreferrer' : null,
     ])->class($wrapperClasses);

@@ -73,11 +73,18 @@
         'pointer-events-none opacity-50' => $isInert && $tag === 'a',
     ];
 
-    $opensInNewTab = $external || $attributes->get('target') === '_blank';
+    $linkHref = $disabled ? null : $safeHref;
+
+    /** `target` and `rel` are invalid on an `<a>` with no `href`, which is what a refused URL leaves. */
+    $opensInNewTab = filled($linkHref) && ($external || $attributes->get('target') === '_blank');
+
+    if (blank($linkHref)) {
+        $attributes = $attributes->except('target');
+    }
 
     $tagAttributes = $tag === 'a'
         ? [
-            'href'     => $disabled ? null : $safeHref,
+            'href'     => $linkHref,
             'tabindex' => $isInert ? '-1' : null,
             'target'   => $opensInNewTab ? '_blank' : null,
             'rel'      => $opensInNewTab ? 'noopener noreferrer' : null,

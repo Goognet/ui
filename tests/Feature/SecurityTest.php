@@ -209,3 +209,32 @@ it('never lets a cookie name carry attributes of its own', function (string $nam
 it('keeps a plain cookie name as it came', function (): void {
     expect(ConsentCookie::name('aviso_lgpd-2'))->toBe('aviso_lgpd-2');
 });
+
+it('drops target and rel along with a refused url, which html forbids without an href', function (string $template): void {
+    $html = (string) $this->blade($template);
+
+    expect(preg_match('/<a\b(?![^>]*\bhref=)[^>]*\b(target|rel)=/', $html))->toBe(0);
+})->with([
+    'link'             => ['<x-ui.link href="htts://exemplo.com" external>x</x-ui.link>'],
+    'link target attr' => ['<x-ui.link href="javascript:alert(1)" target="_blank">x</x-ui.link>'],
+    'button'           => ['<x-ui.button href="htts://exemplo.com" external>x</x-ui.button>'],
+    'button disabled'  => ['<x-ui.button href="https://exemplo.com" external disabled>x</x-ui.button>'],
+    'badge'            => ['<x-ui.badge href="htts://exemplo.com" external>x</x-ui.badge>'],
+    'brand'            => ['<x-ui.brand href="htts://exemplo.com" external name="Acme" />'],
+]);
+
+it('keeps target and rel on a link that has an href', function (): void {
+    expect((string) $this->blade('<x-ui.link href="https://exemplo.com" external>x</x-ui.link>'))
+        ->toContain('target="_blank"')
+        ->toContain('rel="noopener noreferrer"');
+});
+
+it('leaves a social network out of the footer when its address is refused', function (): void {
+    /** Found on a real site: a typo, `htts://`, left an icon with no destination. */
+    config()->set('goognet-ui.social', ['linkedin' => 'htts://linkedin.com/empresa', 'instagram' => 'https://instagram.com/empresa']);
+
+    $html = (string) $this->blade('<x-ui.footer />');
+
+    expect($html)->toContain('https://instagram.com/empresa')
+        ->not->toContain('Linkedin');
+});

@@ -35,7 +35,8 @@
         'tiktok'    => 'ri-tiktok-line',
     ])
         ->map(fn (string $icon, string $network): array => ['icon' => $icon, 'url' => config('goognet-ui.social.' . $network)])
-        ->filter(fn (array $network): bool => filled($network['url']));
+        /** A refused address drops the network instead of leaving an icon that goes nowhere. */
+        ->filter(fn (array $network): bool => filled(SafeUrl::href($network['url'])));
 
     $contacts = collect([
         ['label' => $company['mail'] ?? null, 'url' => filled($company['mail'] ?? null) ? 'mailto:' . $company['mail'] : null],
