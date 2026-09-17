@@ -49,6 +49,9 @@
 
     $privacyUrl = Navigation::privacyUrl();
 
+    /** The slot wins over the config, so a credit that is a logo or a sentence needs no fork. */
+    $hasCredit = isset($credit) ? $credit->isNotEmpty() : filled($agency['name'] ?? null);
+
     /** Dropped when the menu already lists it: the same link twice in one footer. */
     $legal = collect([filled($privacyUrl) ? ['label' => 'Política de privacidade', 'url' => $privacyUrl] : null])
         ->filter()
@@ -143,6 +146,11 @@
                 </div>
             @endif
 
+            @if ($slot->isNotEmpty())
+                {{-- A column like the others; anything wider says so with `sm:col-span-2`. --}}
+                <div class="{{ $ui->classes('extra', '') }}">{{ $slot }}</div>
+            @endif
+
             @if ($legal->isNotEmpty())
                 <div>
                     <p class="{{ $columnTitle }}">Institucional</p>
@@ -171,7 +179,7 @@
                 Voltar ao topo</x-goognet-ui::link>
         </div>
 
-        @if ($validator || filled($agency['name'] ?? null))
+        @if ($validator || $hasCredit)
             {{-- `pb-24` is room for the floating WhatsApp button, below the text rather than beside it. --}}
             <div class="flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 py-5 pb-24 text-sm text-neutral-500">
                 @if ($validator)
@@ -188,17 +196,23 @@
                     </x-goognet-ui::link>
                 @endif
 
-                @if (filled($agency['name'] ?? null))
-                    <p>
-                        Desenvolvido por
-                        <x-goognet-ui::link
-                            :href="$agency['url'] ?? null"
-                            external
-                            underline="hover"
-                            class="text-neutral-600"
-                        >
-                            {{ $agency['name'] }}</x-goognet-ui::link>
-                    </p>
+                @if ($hasCredit)
+                    <div class="{{ $ui->classes('credit', '') }}">
+                        @isset($credit)
+                            {{ $credit }}
+                        @else
+                            <p>
+                                Desenvolvido por
+                                <x-goognet-ui::link
+                                    :href="$agency['url'] ?? null"
+                                    external
+                                    underline="hover"
+                                    class="text-neutral-600"
+                                >
+                                    {{ $agency['name'] }}</x-goognet-ui::link>
+                            </p>
+                        @endisset
+                    </div>
                 @endif
             </div>
         @endif

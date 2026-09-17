@@ -144,3 +144,49 @@ it('offers a way back to the top of the page', function (): void {
     expect($rendered)->toContain('Voltar ao topo')
         ->toMatch('/<a\b[^>]*href="#"/');
 });
+
+it('renders the credit from the config when no slot is given', function (): void {
+    config()->set('goognet-ui.agency', ['name' => 'Goognet', 'url' => 'https://goognet.com.br']);
+
+    expect((string) $this->blade('<x-ui.footer />'))
+        ->toContain('Desenvolvido por')
+        ->toContain('Goognet');
+});
+
+it('lets a credit slot replace what the config renders', function (): void {
+    config()->set('goognet-ui.agency', ['name' => 'Goognet', 'url' => 'https://goognet.com.br']);
+
+    $blade = <<<'BLADE'
+        <x-ui.footer>
+            <x-slot:credit>
+                <p>Feito em casa</p>
+            </x-slot:credit>
+        </x-ui.footer>
+        BLADE;
+
+    expect((string) $this->blade($blade))->toContain('Feito em casa')
+        ->not->toContain('Desenvolvido por');
+});
+
+it('drops the credit line when neither the config nor the slot has one', function (): void {
+    config()->set('goognet-ui.agency', ['name' => null, 'url' => null]);
+
+    expect((string) $this->blade('<x-ui.footer :validator="false" />'))->not->toContain('Desenvolvido por');
+});
+
+it('keeps the validator line when the credit is empty', function (): void {
+    config()->set('goognet-ui.agency', ['name' => null, 'url' => null]);
+
+    expect((string) $this->blade('<x-ui.footer />'))->toContain('W3C Validator');
+});
+
+it('takes a column of its own from the default slot', function (): void {
+    $blade = <<<'BLADE'
+        <x-ui.footer>
+            <div class="sm:col-span-2">Selo de segurança</div>
+        </x-ui.footer>
+        BLADE;
+
+    expect((string) $this->blade($blade))->toContain('Selo de segurança')
+        ->toContain('sm:col-span-2');
+});

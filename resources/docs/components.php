@@ -431,6 +431,25 @@ return [
                     BLADE,
             ],
             [
+                'title' => 'Assinatura própria e uma coluna a mais',
+                'code'  => <<<'BLADE'
+                    <x-ui.footer :callout="false">
+                        <div class="sm:col-span-2 lg:col-span-1">
+                            <x-ui.text size="sm" class="text-neutral-500">
+                                CNPJ 00.000.000/0001-00 — Av. Paulista, 1000, São Paulo/SP
+                            </x-ui.text>
+                        </div>
+
+                        <x-slot:credit>
+                            <x-ui.text size="sm">
+                                Feito por
+                                <x-ui.link href="https://goognet.com.br" external underline="hover">Goognet</x-ui.link>
+                            </x-ui.text>
+                        </x-slot:credit>
+                    </x-ui.footer>
+                    BLADE,
+            ],
+            [
                 'title' => 'Chamada com outro texto e sem selo',
                 'code'  => <<<'BLADE'
                     <x-ui.footer
@@ -457,6 +476,8 @@ return [
         'notes' => [
             'A faixa de chamada vem antes dos links: quem chegou ao fim está perguntando o que fazer agora. Os textos são props (<code>callout-title</code>, <code>callout-text</code>, <code>callout-action</code>) e <code>:callout="false"</code> tira a faixa — numa política de privacidade, por exemplo. <code>:validator="false"</code> tira o selo do W3C.',
             'Nada é escrito à mão: navegação de <code>goognet-ui.menu</code>, redes de <code>goognet-ui.social</code>, contatos e nome de <code>goognet-ui.company</code>, assinatura de <code>goognet-ui.agency</code>. Coluna sem dado não é renderizada, em vez de sair vazia.',
+            'A assinatura sai de <code>goognet-ui.agency</code>, e o slot <code>credit</code> a substitui quando o crédito é um logo, outra frase ou nada disso. Sem nome na config e sem slot, a linha inteira não é renderizada.',
+            'O slot padrão vira mais uma coluna na grade — CNPJ, endereço, selo. Conteúdo mais largo se resolve no próprio bloco, com <code>sm:col-span-2</code>.',
             'A marca ocupa uma faixa própria, acima de três colunas de largura igual. Como primeira coluna ela ficava com 473px para 280px de conteúdo — 233px de vão morto ao lado, porque foi dimensionada supondo uma descrição que o boilerplate não traz preenchida.',
             'O link da política aparece em <strong>Institucional</strong>, e é descartado dali se o <code>goognet-ui.menu</code> já o listar: um site que o punha na navegação principal mostrava o mesmo link duas vezes no rodapé.',
             'O botão da faixa é uma <code>&lt;a&gt;</code> vestida de botão, não um <code>&lt;button&gt;</code> dentro de <code>&lt;a&gt;</code> — conteúdo interativo aninhado é HTML inválido, e o validador do W3C acusa.',
