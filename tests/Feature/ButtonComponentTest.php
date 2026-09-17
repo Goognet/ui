@@ -30,8 +30,8 @@ it('applies variant classes', function (string $variant, string $expected): void
 ]);
 
 it('applies size and square classes', function (): void {
-    $this->blade('<x-ui.button size="sm">Ok</x-ui.button>')->assertSee('h-9 px-3', false);
-    $this->blade('<x-ui.button size="sm" square>Ok</x-ui.button>')->assertSee('size-9', false);
+    $this->blade('<x-ui.button size="sm">Ok</x-ui.button>')->assertSee('h-control-sm px-3', false);
+    $this->blade('<x-ui.button size="sm" square>Ok</x-ui.button>')->assertSee('size-control-sm', false);
 });
 
 it('merges extra attributes and classes', function (): void {
@@ -108,8 +108,8 @@ it('keeps a custom rel and never targets a plain button', function (): void {
 });
 
 it('is rounded by default', function (): void {
-    /** A square-cornered 40px control reads as a box; every variant now starts at `lg`. */
-    $this->blade('<x-ui.button>Ok</x-ui.button>')->assertSee('rounded-lg', false);
+    /** The radius is a token, `--radius-control`, so a site reshapes every control from its @theme. */
+    $this->blade('<x-ui.button>Ok</x-ui.button>')->assertSee('rounded-control', false);
 });
 
 it('renders a pill when rounded is passed as a boolean', function (): void {
@@ -121,7 +121,8 @@ it('maps the rounded prop to a radius scale', function (string $rounded, string 
 })->with([
     ['sm', 'rounded-md'],
     ['md', 'rounded-lg'],
-    ['base', 'rounded-lg'],
+    ['base', 'rounded-control'],
+    ['none', 'rounded-none'],
     ['lg', 'rounded-xl'],
     ['xl', 'rounded-2xl'],
     ['full', 'rounded-full'],
@@ -158,6 +159,6 @@ it('moves on the library curve, not the browser default', function (): void {
 it('falls back to the default radius instead of emitting a class that styles nothing', function (): void {
     $rendered = (string) $this->blade('<x-ui.button rounded="redondo">Ok</x-ui.button>');
 
-    expect($rendered)->toContain('rounded-lg')
+    expect($rendered)->toContain('rounded-control')
         ->not->toContain(' redondo');
 });

@@ -67,6 +67,9 @@ return [
             ],
         ],
         'notes' => [
+            'Altura, arredondamento, peso da fonte e sombra vêm de tokens (<code>--spacing-control</code>, <code>--radius-control</code>, <code>--font-weight-control</code>, <code>--shadow-control</code>). Redefina no <code>@theme</code> do site e todos os botões acompanham — veja a seção <strong>Personalização</strong>, no topo.',
+            'Uma classe na chamada substitui a do componente para a mesma propriedade: <code>class="rounded-full h-14"</code> tira o <code>rounded-control</code> e o <code>h-control</code> em vez de somar a eles.',
+            '<code>Ui::button()</code> define padrões (<code>defaults</code>), variantes e tamanhos novos, e classes por parte: <code>base</code>, <code>content</code>, <code>icon</code> e <code>spinner</code>. Um tamanho novo vale para o botão comum; o <code>square</code> segue a escala de tokens.',
             'As variantes <code>primary</code> e <code>secondary</code> usam <code>--color-primary</code> e <code>--color-secondary</code> — a cor da marca, sem tom numerado. A tinta por cima é escura: branco sobre o roxo mede 4,12:1 e reprova, <code>neutral-950</code> mede 4,89:1 e passa, então o preenchimento continua sendo a cor que o site escolheu.',
             'Para <em>texto</em> sobre fundo claro existe <code>text-primary-ink</code>: a mesma cor numa luminosidade legível, derivada com <code>oklch(from var(--color-primary) 0.45 c h)</code>. A cor da marca como texto mede 1,95:1 — passar o mouse num link deixava ele menos legível do que estava.',
             'O <code>ink</code> é derivado, não escolhido: ele acompanha qualquer cor que o site defina. Medido em seis marcas bem diferentes, incluindo amarelo (1,57 → 7,43) e ciano (1,81 → 6,33).',

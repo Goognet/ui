@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Goognet\Ui;
 
 use Goognet\Ui\Console\InstallCommand;
+use Goognet\Ui\Customization\Customizations;
 use Goognet\Ui\Support\Catalogue;
 use Goognet\Ui\Support\ConsentCookie;
 use Illuminate\Contracts\View\Factory;
@@ -22,6 +23,8 @@ final class UiServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/goognet-ui.php', self::NAMESPACE);
+
+        $this->app->singleton(Customizations::class);
     }
 
     public function boot(): void

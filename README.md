@@ -38,6 +38,37 @@ As cores da marca se trocam no `@theme` do site, depois do import:
 
 O prefixo `ui.` é configurável em `config/goognet-ui.php` (`'gn-'` → `<x-gn-button>`).
 
+## Personalização
+
+Três camadas, nenhuma copia arquivo do pacote — atualizar não apaga nada.
+
+**Tokens** no `@theme` do site mudam a identidade inteira:
+
+```css
+@theme {
+    --radius-control: 0;
+    --font-weight-control: 700;
+    --spacing-control: 3rem;
+}
+```
+
+**Classe na chamada** substitui a do componente para a mesma propriedade:
+
+```blade
+<x-ui.button class="rounded-full uppercase">Enviar</x-ui.button>
+```
+
+**Por projeto**, no `AppServiceProvider`:
+
+```php
+use Goognet\Ui\Ui;
+
+Ui::button()
+    ->defaults(['variant' => 'primary'])
+    ->variant('outline', 'border-2 border-primary bg-transparent text-primary-ink')
+    ->part('base', 'uppercase tracking-wide');
+```
+
 ## Documentação
 
 **https://goognet.github.io/ui** — todos os componentes, com exemplos funcionando e as props lidas do código. É publicada a cada versão.

@@ -97,6 +97,11 @@
                 aria-label="Componentes"
                 class="mt-4 flex min-h-0 [scrollbar-gutter:stable] flex-col gap-0.5 overflow-y-auto overscroll-contain"
             >
+                <a
+                    href="#personalizacao"
+                    class="rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--doc-ink)] transition-colors duration-(--duration-fast) ease-(--ease-fluid) hover:bg-[var(--doc-surface)] data-[current]:bg-[var(--doc-surface)]"
+                >Personalização</a>
+
                 @foreach ($components as $doc)
                     <a
                         href="#{{ $doc['name'] }}"
@@ -129,6 +134,83 @@ npm install swiper fslightbox</code></pre>
                     </div>
                 @endif
             </header>
+
+            <section
+                id="personalizacao"
+                class="scroll-mt-20 border-b border-[var(--doc-line)] py-12"
+                aria-labelledby="personalizacao-titulo"
+            >
+                <header>
+                    <h2 id="personalizacao-titulo" class="text-2xl font-semibold tracking-tight">Personalização</h2>
+
+                    <p class="mt-3 max-w-2xl text-[15px] leading-relaxed text-pretty text-[var(--doc-muted)]">
+                        Cada site muda a aparência sem copiar componente nenhum, em três camadas. Nada disso se perde ao
+                        atualizar o pacote.
+                    </p>
+                </header>
+
+                @php
+                    $layers = [
+                        [
+                            'title' => '1. Tokens — a identidade inteira em poucas linhas',
+                            'text'  => 'No <code>@theme</code> do site, depois do import do pacote. Todo controle acompanha.',
+                            'lang'  => 'css',
+                            'code'  => "@theme {\n    --color-primary-500: var(--color-blue-500);\n    --radius-control: 0;\n    --font-weight-control: 700;\n    --spacing-control: 3rem;\n}",
+                        ],
+                        [
+                            'title' => '2. Classe na chamada — sempre vence',
+                            'text'  => 'Uma classe passada substitui a do componente para a mesma propriedade, em vez de brigar com ela.',
+                            'lang'  => 'blade',
+                            'code'  => '<x-ui.button class="rounded-full uppercase">Enviar</x-ui.button>',
+                        ],
+                        [
+                            'title' => '3. Por projeto, em PHP — variantes, tamanhos e partes',
+                            'text'  => 'No <code>AppServiceProvider</code> do site. A chamada ainda tem a última palavra sobre isto.',
+                            'lang'  => 'php',
+                            'code'  => "use Goognet\\Ui\\Ui;\n\nUi::button()\n    ->defaults(['variant' => 'primary', 'rounded' => 'full'])\n    ->variant('outline', 'border-2 border-primary bg-transparent text-primary-ink')\n    ->size('xl', 'h-14 px-8 text-lg')\n    ->part('base', 'uppercase tracking-wide');",
+                        ],
+                    ];
+                @endphp
+
+                @foreach ($layers as $layer)
+                    <article
+                        class="mt-8 overflow-hidden rounded-xl border border-[var(--doc-line)] bg-[var(--doc-surface)]"
+                        aria-labelledby="personalizacao-{{ $loop->index }}"
+                    >
+                        <header class="border-b border-[var(--doc-line)] px-4 py-3">
+                            <h3 id="personalizacao-{{ $loop->index }}" class="text-sm font-semibold">
+                                {{ $layer['title'] }}
+                            </h3>
+
+                            <p class="mt-1 text-sm text-[var(--doc-muted)]">{!! $layer['text'] !!}</p>
+                        </header>
+
+                        @if ($loop->first)
+                            <div class="flex flex-wrap items-center gap-6 p-6">
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <x-goognet-ui::button variant="primary">Padrão</x-goognet-ui::button>
+                                    <x-goognet-ui::button>Padrão</x-goognet-ui::button>
+                                </div>
+
+                                <div
+                                    class="flex flex-wrap items-center gap-3"
+                                    style="--radius-control: 0; --font-weight-control: 700; --spacing-control: 3rem"
+                                >
+                                    <x-goognet-ui::button variant="primary">Com tokens</x-goognet-ui::button>
+                                    <x-goognet-ui::button>Com tokens</x-goognet-ui::button>
+                                </div>
+                            </div>
+                        @endif
+
+                        <pre class="overflow-x-auto bg-[var(--doc-sunken)] px-4 py-3 font-mono text-xs leading-relaxed text-[var(--doc-ink-2)]"><code>{{ $layer['code'] }}</code></pre>
+                    </article>
+                @endforeach
+
+                <p class="mt-6 max-w-2xl text-sm leading-relaxed text-[var(--doc-muted)]">
+                    Último recurso: <code>php artisan vendor:publish --tag=goognet-ui-views</code> copia as views para o
+                    site. A partir daí elas deixam de receber as atualizações do pacote.
+                </p>
+            </section>
 
             @foreach ($components as $doc)
                 <section

@@ -25,7 +25,7 @@ it('renders the band action as one anchor, styled by the button component', func
      */
     $rendered = (string) $this->blade('<x-ui.footer />');
 
-    expect($rendered)->toMatch('/<a[^>]*wa\.me[^>]*class="[^"]*bg-primary/')
+    expect($rendered)->toMatch('/<a(?=[^>]*wa\.me)(?=[^>]*class="[^"]*bg-primary)[^>]*>/')
         ->and($rendered)->not->toMatch('/<a\b[^>]*>(?:(?!<\/a>).)*<button/s');
 });
 
