@@ -31,6 +31,11 @@ final class FormControl
         'lg'   => 'px-4 text-base',
     ];
 
+    /** A checkbox and a radio differ by their radius alone; `accent-*` paints the native control. */
+    public const string CHOICE = 'size-4 shrink-0 cursor-pointer border-neutral-300 accent-primary disabled:cursor-not-allowed disabled:opacity-50';
+
+    public const string CHOICE_LABEL = 'flex cursor-pointer items-center gap-2';
+
     /**
      * The types a text field may carry. Anything else is a typo or an attempt to turn the
      * field into something it is not — a submit button, a file picker — so it reads as text.

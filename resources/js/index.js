@@ -1,3 +1,4 @@
+import { initAlerts } from './alert';
 import { initCarousels } from './carousel';
 import { initCookieConsent } from './cookie-consent';
 import { loadLightbox } from './lightbox';
@@ -9,6 +10,7 @@ import { initSmoothAnchors } from './smooth-anchors';
 import { initVideos } from './video';
 
 export {
+    initAlerts,
     initCarousels,
     initCookieConsent,
     initMenus,
@@ -28,6 +30,7 @@ export function initUi() {
     /** Before the carousels: fsLightbox keeps the anchor order it saw, and `loop` moves slides. */
     loadLightbox();
 
+    initAlerts();
     initCarousels();
     initCookieConsent();
     initMenus();

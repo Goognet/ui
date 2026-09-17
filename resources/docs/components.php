@@ -134,6 +134,176 @@ return [
         ],
     ],
     [
+        'name'        => 'card',
+        'title'       => 'Card',
+        'description' => 'Bloco de conteúdo sobre uma superfície. Vira <code>&lt;a&gt;</code> sozinho quando recebe <code>href</code>, e só então ganha o movimento de hover.',
+        'sources'     => ['card'],
+        'examples'    => [
+            [
+                'title'  => 'Variantes',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.card class="max-w-xs">Padrão, com borda.</x-ui.card>
+                    <x-ui.card variant="elevated" class="max-w-xs">Elevated, com sombra.</x-ui.card>
+                    <x-ui.card variant="filled" class="max-w-xs">Filled, sem borda.</x-ui.card>
+                    <x-ui.card variant="ghost" class="max-w-xs">Ghost, só o espaçamento.</x-ui.card>
+                    BLADE,
+            ],
+            [
+                'title' => 'Cabeçalho, rodapé e mídia',
+                'code'  => <<<'BLADE'
+                    <x-ui.card href="/servicos/consultoria" padding="base" class="max-w-sm">
+                        <x-slot:media>
+                            <x-ui.image src="https://picsum.photos/seed/card/800/450" alt="" class="aspect-video w-full object-cover" />
+                        </x-slot:media>
+
+                        <x-slot:header>
+                            <x-ui.heading :level="3" size="sm">Consultoria tributária</x-ui.heading>
+                        </x-slot:header>
+
+                        <x-ui.text size="sm">Revisão de regime e recuperação de créditos.</x-ui.text>
+
+                        <x-slot:footer>
+                            <x-ui.text size="sm" class="text-neutral-500">Saiba mais</x-ui.text>
+                        </x-slot:footer>
+                    </x-ui.card>
+                    BLADE,
+            ],
+            [
+                'title'  => 'Espaçamento',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.card padding="none" class="max-w-[10rem]">none</x-ui.card>
+                    <x-ui.card padding="sm" class="max-w-[10rem]">sm</x-ui.card>
+                    <x-ui.card padding="lg" class="max-w-[10rem]">lg</x-ui.card>
+                    <x-ui.card href="https://goognet.com.br" external class="max-w-[10rem]">external</x-ui.card>
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'O movimento de hover só existe quando o card leva a algum lugar: movimento promete clique.',
+            'A mídia é puxada para fora do espaçamento com margem negativa do tamanho do <code>padding</code>, então a imagem encosta na borda e acompanha o raio do topo.',
+            'Um <code>href</code> recusado pelo filtro de URL deixa o card como <code>&lt;div&gt;</code> — sem <code>target</code> nem <code>rel</code> sobrando, que seriam erro de validação.',
+        ],
+    ],
+    [
+        'name'        => 'alert',
+        'title'       => 'Alert',
+        'description' => 'Recado na página: confirmação, erro de formulário, aviso de manutenção. Neutro por padrão, colorido no ponto de uso.',
+        'sources'     => ['alert'],
+        'examples'    => [
+            [
+                'title' => 'Cor no ponto de uso',
+                'code'  => <<<'BLADE'
+                    <x-ui.alert icon="heroicon-m-check-circle" title="Mensagem enviada" live class="border-green-200 bg-green-50 text-green-800">
+                        Respondemos no mesmo dia útil.
+                    </x-ui.alert>
+
+                    <x-ui.alert icon="heroicon-m-exclamation-triangle" class="border-amber-200 bg-amber-50 text-amber-900">
+                        Revise os campos marcados antes de enviar.
+                    </x-ui.alert>
+
+                    <x-ui.alert icon="heroicon-m-information-circle" variant="filled" dismissible>
+                        Atendimento em horário reduzido nesta sexta.
+                    </x-ui.alert>
+                    BLADE,
+            ],
+            [
+                'title' => 'Variantes',
+                'code'  => <<<'BLADE'
+                    <x-ui.alert>Padrão, com borda.</x-ui.alert>
+                    <x-ui.alert variant="ghost">Ghost, sem fundo.</x-ui.alert>
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'Não existe variante <code>success</code>/<code>danger</code> aqui pelo mesmo motivo do badge: a cor semântica vem da paleta do Tailwind no ponto de uso, e a classe passada substitui a do variant em vez de somar.',
+            '<code>live</code> é o que acrescenta <code>role="alert"</code>. Um aviso que já estava na página quando ela abriu não deve interromper a leitura; um que aparece depois do envio, sim.',
+            '<code>dismissible</code> marca o bloco com <code>data-alert</code>, e o <code>initUi()</code> cuida do resto — sem ele, nenhum listener é registrado.',
+        ],
+    ],
+    [
+        'name'        => 'checkbox',
+        'title'       => 'Checkbox',
+        'description' => 'Caixa de marcação com rótulo, dica e erro, no mesmo desenho dos demais campos.',
+        'sources'     => ['checkbox'],
+        'examples'    => [
+            [
+                'title' => 'Aceite e opções',
+                'code'  => <<<'BLADE'
+                    <x-ui.checkbox name="aceite" label="Li e aceito a política de privacidade" required />
+                    <x-ui.checkbox name="novidades" value="sim" label="Quero receber novidades" hint="No máximo um e-mail por mês." checked />
+                    <x-ui.checkbox name="termos" id="termos-2024" label="Contrato de 2024" error="É preciso aceitar para continuar." />
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'O id sai de <code>name</code> + <code>value</code>, então várias caixas do mesmo campo convivem sem uma roubar o clique da outra.',
+            'A cor vem de <code>accent-primary</code>, no controle nativo: sem SVG substituto, o estado marcado continua sendo o do sistema.',
+        ],
+    ],
+    [
+        'name'        => 'radio',
+        'title'       => 'Radio',
+        'description' => 'Escolha única. Mesmo desenho do checkbox, com o <code>value</code> obrigatório — é ele que diz o que a opção envia.',
+        'sources'     => ['radio'],
+        'examples'    => [
+            [
+                'title' => 'Um grupo',
+                'code'  => <<<'BLADE'
+                    <x-ui.radio name="plano" value="lite" label="Lite" checked />
+                    <x-ui.radio name="plano" value="pro" label="Pro" hint="Inclui suporte prioritário." />
+                    <x-ui.radio name="plano" id="plano-custom" value="sob-medida" label="Sob medida" error="Escolha um plano." required />
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'Um radio sem <code>value</code> enviaria <code>on</code> em qualquer opção do grupo, então o componente exige o valor em vez de escolher um por você.',
+            'Depois de um envio recusado, volta marcada a opção que tinha sido escolhida.',
+        ],
+    ],
+    [
+        'name'        => 'dropdown',
+        'title'       => 'Dropdown',
+        'description' => 'Menu de ações preso a um gatilho. Usa o mesmo script do <code>menu</code>, então não traz JavaScript próprio.',
+        'sources'     => ['dropdown'],
+        'examples'    => [
+            [
+                'title'  => 'Ações',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.dropdown label="Ações" icon="heroicon-m-ellipsis-horizontal" variant="default" size="base">
+                        <x-ui.link href="/editar" underline="none" class="block rounded-control px-3 py-2 text-sm hover:bg-neutral-50">Editar</x-ui.link>
+                        <x-ui.link href="/duplicar" underline="none" class="block rounded-control px-3 py-2 text-sm hover:bg-neutral-50">Duplicar</x-ui.link>
+                    </x-ui.dropdown>
+
+                    <x-ui.dropdown label="Alinhado à direita" align="end" width="min-w-64">
+                        <x-ui.link href="/relatorio" underline="none" class="block rounded-control px-3 py-2 text-sm hover:bg-neutral-50">Relatório mensal</x-ui.link>
+                    </x-ui.dropdown>
+                    BLADE,
+            ],
+            [
+                'title' => 'Gatilho próprio',
+                'code'  => <<<'BLADE'
+                    <x-ui.dropdown>
+                        <x-slot:trigger>
+                            <x-ui.button variant="ghost" data-menu-dropdown data-state="closed" aria-controls="painel-conta" aria-expanded="false">
+                                Minha conta
+                            </x-ui.button>
+                        </x-slot:trigger>
+
+                        <div id="painel-conta" class="px-3 py-2 text-sm text-neutral-600">Sessão iniciada</div>
+                    </x-ui.dropdown>
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'O painel é irmão do gatilho dentro de um <code>[data-menu]</code>, que é o que o script do menu observa: abrir, fechar no clique fora, no <code>Esc</code> e andar com as setas já vêm de lá.',
+            'Cada dropdown gera o próprio id, então vários na mesma página não se confundem.',
+            'Com <code>x-slot:trigger</code>, o gatilho é seu — mantenha <code>data-menu-dropdown</code>, <code>data-state</code>, <code>aria-controls</code> e <code>aria-expanded</code>, que é o contrato que o script lê.',
+        ],
+    ],
+    [
         'name'        => 'input',
         'title'       => 'Input',
         'description' => 'Campo de texto com rótulo, dica e erro. Lê sozinho a mensagem que a validação deixou e devolve o que foi digitado no envio anterior.',
