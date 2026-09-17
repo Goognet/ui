@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Goognet\Ui;
 
+use Goognet\Ui\Console\InstallCommand;
 use Goognet\Ui\Support\Catalogue;
 use Goognet\Ui\Support\ConsentCookie;
 use Illuminate\Contracts\View\Factory;
@@ -39,6 +40,8 @@ final class UiServiceProvider extends ServiceProvider
         });
 
         if ($this->app->runningInConsole()) {
+            $this->commands([InstallCommand::class]);
+
             $this->publishes([
                 __DIR__ . '/../config/goognet-ui.php' => config_path('goognet-ui.php'),
             ], 'goognet-ui-config');

@@ -12,28 +12,18 @@ Componentes Blade para Laravel e Tailwind CSS v4: navegação, avaliação, carr
 
 ```bash
 composer require goognet/ui
+php artisan goognet-ui:install
 npm install swiper fslightbox
-php artisan vendor:publish --tag=goognet-ui-config
 ```
 
-**CSS** — `resources/css/app.css`:
+O `goognet-ui:install` publica `config/goognet-ui.php`, acrescenta o import do CSS depois do `@import 'tailwindcss'` em `resources/css/app.css` e o `initUi()` em `resources/js/app.js`. Pode rodar de novo sem duplicar nada; `--force` sobrescreve o config, `--css` e `--js` apontam outros arquivos.
+
+As cores da marca se trocam no `@theme` do site, depois do import:
 
 ```css
-@import 'tailwindcss';
-@import '../../vendor/goognet/ui/resources/css/ui.css';
-
 @theme {
-    /* cores da marca: todos os componentes acompanham */
     --color-primary-500: var(--color-blue-500);
 }
-```
-
-**JavaScript** — `resources/js/app.js`:
-
-```js
-import { initUi } from '../../vendor/goognet/ui/resources/js';
-
-initUi();
 ```
 
 ## Uso

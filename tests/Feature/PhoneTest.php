@@ -2,8 +2,10 @@
 
 declare(strict_types = 1);
 
+use Goognet\Ui\Support\Phone;
+
 it('reduces a written number to digits', function (?string $written, string $expected): void {
-    expect(Goognet\Ui\Support\Phone::digits($written))->toBe($expected);
+    expect(Phone::digits($written))->toBe($expected);
 })->with([
     'formato da agência' => ['(011) 91234-5678', '011912345678'],
     'sem o zero'         => ['(11) 91234-5678', '11912345678'],
@@ -22,7 +24,7 @@ it('leaves a tel: href with nothing but digits after the colon', function (): vo
      * The reason the helper exists. Four call sites carried their own `preg_replace`, and a
      * `tel:` that keeps parentheses or spaces is a link some dialers refuse to open.
      */
-    $href = 'tel:' . Goognet\Ui\Support\Phone::digits('(011) 91234-5678');
+    $href = 'tel:' . Phone::digits('(011) 91234-5678');
 
     expect($href)
         ->toBe('tel:011912345678')
