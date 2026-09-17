@@ -7,12 +7,16 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
     use Illuminate\Support\Facades\Vite;
     use Illuminate\View\ComponentAttributeBag;
     use Illuminate\View\ComponentSlot;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('brand');
 
     $logo ??= config('goognet-ui.company.logo') ?: null;
 
@@ -49,18 +53,26 @@
 
     $needsWrapper = $hasName || $isMarkup;
 
-    $wrapperClasses = $hasName ? 'inline-flex items-center gap-2.5' : 'inline-flex';
+    $wrapperClasses = $ui->classes('base', $hasName ? 'inline-flex items-center gap-2.5' : 'inline-flex');
 
     /** Attributes follow what is drawn: onto the `<img>` when there is one, onto the wrapper when not. */
     $rendersImage = ! $isMarkup && filled($source);
 
     $wrapperAttributes = $rendersImage ? new ComponentAttributeBag() : $attributes;
 
-    $anchorAttributes = $wrapperAttributes->merge([
+    $wrapperClass = ClassList::merge($wrapperClasses, (string) $wrapperAttributes->get('class'));
+
+    $anchorAttributes = $wrapperAttributes->except('class')->merge([
         'href'   => $safeHref,
         'target' => $opensInNewTab ? '_blank' : null,
         'rel'    => $opensInNewTab ? 'noopener noreferrer' : null,
-    ])->class($wrapperClasses);
+        'class'  => $wrapperClass,
+    ]);
+
+    /** The mark is the root when nothing wraps it, so that is where a laid-over base class belongs. */
+    $imageAttributes = $needsWrapper
+        ? $attributes
+        : $attributes->except('class')->merge(['class' => ClassList::merge($ui->classes('base', ''), (string) $attributes->get('class'))]);
 
     $webpPath = $isLocal && preg_match('/\.(jpe?g|png)$/i', (string) $path) === 1
         ? preg_replace('/\.(jpe?g|png)$/i', '.webp', (string) $path)
@@ -70,22 +82,22 @@
 @if (filled($href))
     <a {{ $anchorAttributes }}>
 @elseif ($needsWrapper)
-    <span {{ $wrapperAttributes->class($wrapperClasses) }}>
+    <span class="{{ $wrapperClass }}" {{ $wrapperAttributes->except('class') }}>
 @endif
 
 @if ($isMarkup)
-    <span {{ $logo->attributes->class(['inline-flex shrink-0 items-center justify-center']) }}>{{ $logo }}</span>
+    <span {{ $logo->attributes->class([$ui->classes('mark', 'inline-flex shrink-0 items-center justify-center')]) }}>{{ $logo }}</span>
 @elseif (filled($webpPath))
     <picture>
         <source srcset="{{ Vite::asset($webpPath) }}" type="image/webp" />
-        <img src="{{ $source }}" alt="{{ $alt }}" {{ $attributes }} />
+        <img src="{{ $source }}" alt="{{ $alt }}" {{ $imageAttributes }} />
     </picture>
 @elseif (filled($source))
-    <img src="{{ $source }}" alt="{{ $alt }}" {{ $attributes }} />
+    <img src="{{ $source }}" alt="{{ $alt }}" {{ $imageAttributes }} />
 @endif
 
 @if ($hasName)
-    <span class="font-semibold tracking-tight whitespace-nowrap">{{ $name }}</span>
+    <span class="{{ $ui->classes('name', 'font-semibold tracking-tight whitespace-nowrap') }}">{{ $name }}</span>
 @endif
 
 @if (filled($href))

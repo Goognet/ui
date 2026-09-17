@@ -7,9 +7,13 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('tab');
 
     if (blank($name)) {
         throw new InvalidArgumentException('A tab must sit inside a tabs component, whose name groups the radios.');
@@ -35,7 +39,7 @@
     ];
 @endphp
 
-<label id="{{ $triggerId }}" @class($triggerClasses)>
+<label id="{{ $triggerId }}" class="{{ $ui->classes('trigger', implode(' ', $triggerClasses)) }}">
     <input type="radio" name="{{ $name }}" class="sr-only" aria-controls="{{ $panelId }}" @checked($checked) />
 
     @if (filled($icon))
@@ -45,6 +49,12 @@
     {{ $label }}
 </label>
 
-<div id="{{ $panelId }}" role="region" aria-labelledby="{{ $triggerId }}" {{ $attributes->class($panelClasses) }}>
+<div
+    id="{{ $panelId }}"
+    role="region"
+    aria-labelledby="{{ $triggerId }}"
+    class="{{ ClassList::merge($ui->classes('panel', implode(' ', $panelClasses)), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
+>
     {{ $slot }}
 </div>

@@ -4,11 +4,15 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\ConsentCookie;
     use Goognet\Ui\Support\Navigation;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('cookie-consent');
 
     /** Named by the config, which is also what exempts the cookie from encryption. */
     $name = ConsentCookie::name($name);
@@ -21,20 +25,24 @@
         data-cookie-consent="{{ $name }}"
         role="dialog"
         aria-labelledby="{{ $name }}-title"
-        {{
-            $attributes->class([
+        class="{{
+            ClassList::merge($ui->classes('base', implode(' ', [
                 'fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-5',
                 'sm:inset-x-auto sm:bottom-5 sm:left-5 sm:w-full sm:max-w-md sm:rounded-2xl',
-                'shadow-[0_-4px_24px_rgb(16_24_40_/_0.12)] sm:shadow-lifted',
+                'shadow-[0_-4px_24px_rgb(16_24_40_/_0.12)] sm:shadow-surface',
                 'transition-[translate,opacity] duration-(--duration-slow) ease-(--ease-fluid)',
                 'starting:translate-y-4 starting:opacity-0 motion-reduce:transition-none',
-            ])
-        }}
+            ])), (string) $attributes->get('class'))
+        }}"
+        {{ $attributes->except('class') }}
     >
         <div class="flex items-start gap-3">
             <x-ri-cookie-line class="size-6 shrink-0 text-neutral-400" aria-hidden="true" />
 
-            <p id="{{ $name }}-title" class="text-sm leading-relaxed text-pretty text-neutral-700">
+            <p
+                id="{{ $name }}-title"
+                class="{{ $ui->classes('text', 'text-sm leading-relaxed text-pretty text-neutral-700') }}"
+            >
                 @if ($slot->isEmpty())
                     Usamos apenas
                     <b class="font-semibold">cookies essenciais</b>
@@ -46,7 +54,7 @@
             </p>
         </div>
 
-        <div class="mt-4 flex flex-wrap items-center gap-2">
+        <div class="{{ $ui->classes('actions', 'mt-4 flex flex-wrap items-center gap-2') }}">
             @if (filled($policy))
                 <x-goognet-ui::button :href="$policy" size="sm">Saber mais</x-goognet-ui::button>
             @endif

@@ -1,32 +1,38 @@
 @props([
     'name'     => null,
     'title'    => null,
-    'size'     => 'base',
+    'size'     => null,
     'closable' => true,
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('modal');
 
     if (blank($name)) {
         throw new InvalidArgumentException('The modal component requires a name, which is what a trigger points at: name="orcamento".');
     }
 
+    $size ??= $ui->default('size', 'base');
+
     $titleId = $name . '-title';
 
-    $sizes = [
+    $sizes = $ui->sizes([
         'sm'   => 'max-w-sm',
         'base' => 'max-w-lg',
         'lg'   => 'max-w-2xl',
         'xl'   => 'max-w-4xl',
         'full' => 'max-w-[calc(100vw-2rem)]',
-    ];
+    ]);
 
     /** A closed dialog is `display: none`; `allow-discrete` and `starting:` are what let it fade. */
     $classes = [
-        'm-auto w-full p-0 rounded-xl bg-white shadow-lifted scale-95 opacity-0 transition-all duration-(--duration-base) ease-(--ease-fluid) [transition-behavior:allow-discrete]',
+        'm-auto w-full p-0 rounded-surface bg-white shadow-surface scale-95 opacity-0 transition-all duration-(--duration-base) ease-(--ease-fluid) [transition-behavior:allow-discrete]',
         'open:scale-100 open:opacity-100 starting:open:scale-95 starting:open:opacity-0',
         'backdrop:bg-neutral-950/50 backdrop:opacity-0 backdrop:transition-opacity backdrop:duration-(--duration-base) ease-(--ease-fluid) open:backdrop:opacity-100 starting:open:backdrop:opacity-0',
         $sizes[$size] ?? $sizes['base'],
@@ -38,7 +44,8 @@
     data-modal
     @if (! $closable) data-modal-static @endif
     @if (filled($title)) aria-labelledby="{{ $titleId }}" @endif
-    {{ $attributes->class($classes) }}
+    class="{{ ClassList::merge($ui->classes('base', implode(' ', $classes)), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
 >
     {{-- Padding lives inside, so a click on the dialog element itself is a click on the backdrop. --}}
     <div class="flex max-h-[85vh] flex-col">

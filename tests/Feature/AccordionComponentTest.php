@@ -111,7 +111,8 @@ it('eases the panel on the pseudo-element that animates', function (): void {
      * variant. An unprefixed `ease-*` lands on the `<details>` box instead, which animates
      * nothing — the panel kept opening on the browser's default curve.
      */
-    $rendered = (string) $this->blade('<x-ui.accordion-item label="Um">Dois</x-ui.accordion-item>');
+    /** Decoded: the class is printed escaped, so `&` reaches the attribute as `&amp;`. */
+    $rendered = html_entity_decode((string) $this->blade('<x-ui.accordion-item label="Um">Dois</x-ui.accordion-item>'), ENT_QUOTES);
 
     expect($rendered)
         ->toContain('[&::details-content]:ease-(--ease-fluid)')

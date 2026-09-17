@@ -7,10 +7,14 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
     use Illuminate\Support\Facades\Vite;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('image');
 
     $safeSrc = SafeUrl::media($src);
 
@@ -45,7 +49,8 @@
         ->push(Vite::asset($withSuffix('.' . $extension)) . ' ' . ($dimensions[0] ?? 0) . 'w')
         ->implode(', ');
 
-    $imageAttributes = $attributes->merge([
+    $imageAttributes = $attributes->except('class')->merge([
+        'class'         => ClassList::merge($ui->classes('base', ''), (string) $attributes->get('class')),
         'alt'           => $alt,
         'width'         => $dimensions[0] ?? null,
         'height'        => $dimensions[1] ?? null,

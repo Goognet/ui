@@ -46,7 +46,7 @@ it('turns an overlay solid once scrolled', function (): void {
     $this->blade('<x-ui.navbar position="overlay">x</x-ui.navbar>')
         ->assertSee('data-[scrolled=false]:bg-transparent', false)
         ->assertSee('data-[scrolled=false]:border-transparent', false)
-        ->assertSee('data-[scrolled=true]:shadow-soft', false);
+        ->assertSee('data-[scrolled=true]:shadow-control', false);
 });
 
 it('renders the cta slot beside the content', function (): void {
@@ -222,7 +222,7 @@ it('drops the border entirely when asked', function (string $position): void {
 it('keeps the overlay background swap when the border is off', function (): void {
     $this->blade('<x-ui.navbar position="overlay" :border="false">x</x-ui.navbar>')
         ->assertSee('data-[scrolled=false]:bg-transparent', false)
-        ->assertSee('data-[scrolled=true]:shadow-soft', false);
+        ->assertSee('data-[scrolled=true]:shadow-control', false);
 });
 
 it('lets a passed border colour replace the default', function (): void {
@@ -293,7 +293,8 @@ it('keeps the info strip inside the container gutters', function (): void {
 
     $rendered = (string) $this->blade($template);
 
-    expect(substr_count($rendered, 'max-w-7xl'))->toBe(2);
+    /** The width is a token now: `--container-page`. */
+    expect(substr_count($rendered, 'max-w-page'))->toBe(2);
 });
 
 it('keeps the info strip off small screens', function (): void {

@@ -142,5 +142,5 @@ it('offers a way back to the top of the page', function (): void {
     /** The empty fragment scrolls to the top of the document, and `scroll-smooth` on the
      *  html element animates it. No script involved. */
     expect($rendered)->toContain('Voltar ao topo')
-        ->toMatch('/<a href="#"[^>]*>/');
+        ->toMatch('/<a\b[^>]*href="#"/');
 });

@@ -4,10 +4,14 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\Navigation;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('menu');
 
     $resolveUrls = function (array $items) use (&$resolveUrls): array {
         return collect($items)
@@ -80,21 +84,21 @@
             : ['label' => (string) $badge, 'variant' => 'filled'];
     };
 
-    $itemClass = implode(' ', [
+    $itemClass = $ui->classes('item', implode(' ', [
         'relative inline-flex items-center gap-1 py-1.5 text-neutral-600',
         'transition-colors duration-(--duration-fast) ease-(--ease-fluid) hover:text-neutral-900',
         'after:bg-primary after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full',
         'after:transition-transform after:duration-(--duration-base) after:ease-(--ease-fluid) hover:after:scale-x-100',
-    ]);
+    ]));
 
-    $currentClass = 'text-neutral-900 after:scale-x-100';
+    $currentClass = $ui->classes('current', 'text-neutral-900 after:scale-x-100');
 
-    $triggerClass = $itemClass . ' cursor-pointer';
+    $triggerClass = $ui->classes('trigger', $itemClass . ' cursor-pointer');
 
-    $chevronClass = 'size-4 text-neutral-400 transition-transform duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:rotate-180';
+    $chevronClass = $ui->classes('chevron', 'size-4 text-neutral-400 transition-transform duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:rotate-180');
 
     /** Drawer rows are the primary target on a phone: 44px tall, not 36px. */
-    $drawerLinkClass = 'flex items-center rounded-lg px-3 py-2.5 text-neutral-700 transition-colors duration-(--duration-fast) ease-(--ease-fluid) hover:bg-neutral-100';
+    $drawerLinkClass = $ui->classes('drawer-link', 'flex items-center rounded-control px-3 py-2.5 text-neutral-700 transition-colors duration-(--duration-fast) ease-(--ease-fluid) hover:bg-neutral-100');
 
     /** An item is a megamenu when it carries groups, a dropdown when it carries children. */
     $groupsOf = fn (array $item) => collect($item['groups'] ?? []);
@@ -102,8 +106,13 @@
     $childrenOf = fn (array $item) => collect($item['children'] ?? []);
 @endphp
 
-<nav aria-label="{{ $label }}" {{ $attributes->class(['flex items-center']) }} data-menu>
-    <ul class="hidden items-center gap-6 lg:flex">
+<nav
+    aria-label="{{ $label }}"
+    class="{{ ClassList::merge($ui->classes('base', 'flex items-center'), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
+    data-menu
+>
+    <ul class="{{ $ui->classes('list', 'hidden items-center gap-6 lg:flex') }}">
         @foreach ($menu as $index => $item)
             @php
                 $groups     = $groupsOf($item);
@@ -138,7 +147,7 @@
 
                     <div
                         id="{{ $dropdownId }}"
-                        class="invisible absolute inset-x-0 top-full z-30 mx-auto max-w-7xl translate-y-1 px-5 opacity-0 transition-all duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:translate-y-0 data-[state=open]:opacity-100"
+                        class="{{ $ui->classes('megamenu', 'invisible absolute inset-x-0 top-full z-30 mx-auto max-w-page translate-y-1 px-5 opacity-0 transition-all duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:translate-y-0 data-[state=open]:opacity-100') }}"
                         data-menu-dropdown-panel
                         data-state="closed"
                     >
@@ -167,7 +176,7 @@
 
                     <ul
                         id="{{ $dropdownId }}"
-                        class="shadow-lifted invisible absolute top-full left-0 z-30 mt-3 min-w-64 origin-top translate-y-1 scale-98 rounded-xl border border-neutral-200/80 bg-white p-1.5 opacity-0 transition-all duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:translate-y-0 data-[state=open]:scale-100 data-[state=open]:opacity-100"
+                        class="{{ $ui->classes('dropdown', 'shadow-surface invisible absolute top-full left-0 z-30 mt-3 min-w-64 origin-top translate-y-1 scale-98 rounded-surface border border-neutral-200/80 bg-white p-1.5 opacity-0 transition-all duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:translate-y-0 data-[state=open]:scale-100 data-[state=open]:opacity-100') }}"
                         data-menu-dropdown-panel
                         data-state="closed"
                     >
@@ -214,7 +223,7 @@
 
     <button
         type="button"
-        class="inline-flex size-10 cursor-pointer items-center justify-center lg:hidden"
+        class="{{ $ui->classes('toggle', 'inline-flex size-10 cursor-pointer items-center justify-center lg:hidden') }}"
         data-menu-toggle
         aria-controls="{{ $panelId }}"
         aria-expanded="false"
@@ -224,14 +233,14 @@
     </button>
 
     <div
-        class="invisible fixed inset-0 z-40 bg-neutral-950/50 opacity-0 transition-opacity duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:opacity-100 lg:hidden"
+        class="{{ $ui->classes('overlay', 'invisible fixed inset-0 z-40 bg-neutral-950/50 opacity-0 transition-opacity duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:opacity-100 lg:hidden') }}"
         data-menu-overlay
         data-state="closed"
     ></div>
 
     <div
         id="{{ $panelId }}"
-        class="invisible fixed inset-y-0 right-0 z-50 flex w-80 max-w-[85vw] translate-x-full flex-col gap-6 overflow-y-auto bg-white p-6 transition-transform duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:translate-x-0 lg:hidden"
+        class="{{ $ui->classes('drawer', 'invisible fixed inset-y-0 right-0 z-50 flex w-80 max-w-[85vw] translate-x-full flex-col gap-6 overflow-y-auto bg-white p-6 transition-transform duration-(--duration-base) ease-(--ease-fluid) data-[state=open]:visible data-[state=open]:translate-x-0 lg:hidden') }}"
         data-menu-panel
         data-state="closed"
         role="dialog"

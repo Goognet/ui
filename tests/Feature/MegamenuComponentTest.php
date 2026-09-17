@@ -129,7 +129,7 @@ it('stacks on mobile and floats over the page from the large breakpoint', functi
 
     expect($rendered)->toContain('hidden data-[state=open]:block')
         ->toContain('lg:absolute')
-        ->toContain('lg:max-w-7xl');
+        ->toContain('lg:max-w-page');
 });
 
 it('renders a footer slot only when given one', function (): void {

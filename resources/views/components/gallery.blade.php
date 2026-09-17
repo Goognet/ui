@@ -6,9 +6,13 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('gallery');
 
     /** Written out in full so Tailwind's scanner sees them; an interpolated class never ships. */
     $columnClasses = [
@@ -37,7 +41,8 @@
 @endphp
 
 <ul
-    {{ $attributes->class(['grid', ...$grid, $gapClasses[(int) $gap] ?? $gapClasses[4]]) }}
+    class="{{ ClassList::merge($ui->classes('base', implode(' ', ['grid', ...$grid, $gapClasses[(int) $gap] ?? $gapClasses[4]])), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
     @if (filled($label)) aria-label="{{ $label }}" @endif
 >
     {{ $slot }}

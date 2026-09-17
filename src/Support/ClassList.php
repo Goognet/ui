@@ -203,11 +203,11 @@ final class ClassList
             return 'text-decoration-line';
         }
 
-        if (preg_match('/^rounded(-(none|xs|sm|md|lg|xl|2xl|3xl|4xl|full|control(-[a-z0-9]+)?|\[.+\]|\(.+\)))?$/', $utility) === 1) {
+        if (preg_match('/^rounded(-(none|xs|sm|md|lg|xl|2xl|3xl|4xl|full|control(-[a-z0-9]+)?|surface|media|\[.+\]|\(.+\)))?$/', $utility) === 1) {
             return 'rounded';
         }
 
-        if (preg_match('/^(size|h|w|min-h|min-w|max-h|max-w|gap-x|gap-y|gap|px|py|pt|pr|pb|pl|ps|pe|p|mx|my|mt|mr|mb|ml|ms|me|m|opacity|leading|tracking|duration|ease|cursor|whitespace|justify|items|self|z|order|inset|top|right|bottom|left)-.+$/', $utility, $match) === 1) {
+        if (preg_match('/^(size|h|w|min-h|min-w|max-h|max-w|aspect|gap-x|gap-y|gap|px|py|pt|pr|pb|pl|ps|pe|p|mx|my|mt|mr|mb|ml|ms|me|m|opacity|leading|tracking|duration|ease|cursor|whitespace|justify|items|self|z|order|inset|top|right|bottom|left)-.+$/', $utility, $match) === 1) {
             return $match[1];
         }
 

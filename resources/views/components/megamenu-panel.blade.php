@@ -4,9 +4,13 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('megamenu-panel');
 
     $panelGroups = collect($groups)->values();
 
@@ -22,8 +26,11 @@
     $columnClass = $columnClasses[$columnCount] ?? $columnClasses[1];
 @endphp
 
-<div {{ $attributes->class(['mt-2 rounded-xl border border-neutral-200 bg-white p-6 shadow-lifted lg:p-8']) }}>
-    <div class="grid gap-x-8 gap-y-6 {{ $columnClass }}">
+<div
+    class="{{ ClassList::merge($ui->classes('base', 'mt-2 rounded-surface border border-neutral-200 bg-white p-6 shadow-surface lg:p-8'), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
+>
+    <div class="{{ $ui->classes('grid', 'grid gap-x-8 gap-y-6 ' . $columnClass) }}">
         @foreach ($panelGroups as $group)
             <div>
                 @if (filled($group['label'] ?? null))
@@ -38,10 +45,10 @@
                             <x-goognet-ui::link
                                 :href="$child['url']"
                                 underline="none"
-                                class="flex items-start gap-3 rounded-lg p-3 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:bg-neutral-50"
+                                :class="$ui->classes('link', 'flex items-start gap-3 rounded-control p-3 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:bg-neutral-50')"
                             >
                                 @if (filled($child['icon'] ?? null))
-                                    <span class="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-700">
+                                    <span class="{{ $ui->classes('icon', 'mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-control bg-neutral-100 text-neutral-700') }}">
                                         {{ svg($child['icon'], 'size-5') }}
                                     </span>
                                 @endif

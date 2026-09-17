@@ -10,11 +10,15 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\Lightbox;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
     use Illuminate\Support\Facades\Vite;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('gallery-item');
 
     $safeSrc = SafeUrl::media($src);
 
@@ -32,13 +36,16 @@
     $opensLightbox = $lightbox !== false && filled($href);
 @endphp
 
-<li {{ $attributes->class(['min-w-0']) }}>
+<li
+    class="{{ ClassList::merge($ui->classes('base', 'min-w-0'), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
+>
     @if ($opensLightbox)
         <a
             href="{{ $href }}"
             data-fslightbox="{{ Lightbox::group($lightbox, 'gallery') }}"
             @if (filled(Lightbox::type($type))) data-type="{{ Lightbox::type($type) }}" @endif
-            class="shadow-soft hover:shadow-lifted block cursor-zoom-in overflow-hidden rounded-lg transition-[translate,box-shadow] duration-(--duration-base) ease-(--ease-fluid) hover:-translate-y-0.5"
+            class="{{ $ui->classes('link', 'shadow-control hover:shadow-control-hover block cursor-zoom-in overflow-hidden rounded-media transition-[translate,box-shadow] duration-(--duration-base) ease-(--ease-fluid) hover:-translate-y-0.5') }}"
         >
             @if ($slot->isNotEmpty())
                 {{ $slot }}
@@ -48,7 +55,7 @@
                     :alt="$alt"
                     :eager="$eager"
                     :sizes="$sizes"
-                    class="h-full w-full object-cover"
+                    :class="$ui->classes('image', 'h-full w-full object-cover')"
                 />
             @endif
         </a>
@@ -60,7 +67,7 @@
             :alt="$alt"
             :eager="$eager"
             :sizes="$sizes"
-            class="shadow-soft h-full w-full rounded-lg object-cover"
+            :class="$ui->classes('image', 'shadow-control h-full w-full rounded-media object-cover')"
         />
     @endif
 </li>

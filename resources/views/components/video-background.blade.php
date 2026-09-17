@@ -7,10 +7,14 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
     use Illuminate\Support\Facades\Vite;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('video-background');
 
     $path = str_contains($src, '/') ? ltrim($src, '/') : 'resources/videos/' . $src;
 
@@ -23,9 +27,13 @@
 @endphp
 
 {{-- `isolate` keeps the negative z-index inside this section instead of behind an ancestor's background. --}}
-<div data-video-background {{ $attributes->class(['relative isolate w-full overflow-clip', $height]) }}>
+<div
+    data-video-background
+    class="{{ ClassList::merge($ui->classes('base', 'relative isolate w-full overflow-clip ' . $height), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
+>
     <video
-        class="absolute inset-0 -z-20 size-full object-cover object-center"
+        class="{{ $ui->classes('video', 'absolute inset-0 -z-20 size-full object-cover object-center') }}"
         @if (filled($posterUrl)) poster="{{ $posterUrl }}" @endif
         autoplay
         muted
@@ -49,7 +57,7 @@
     @endif
 
     @if ($overlay !== false && filled($overlay))
-        <div class="{{ $overlay }} absolute inset-0 -z-10" aria-hidden="true"></div>
+        <div class="{{ $ui->classes('overlay', $overlay . ' absolute inset-0 -z-10') }}" aria-hidden="true"></div>
     @endif
 
     {{ $slot }}

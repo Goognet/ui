@@ -12,9 +12,13 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('carousel');
 
     /** Tailwind's own breakpoints, so the carousel changes shape where the rest of the page does. */
     $breakpoints = [
@@ -74,9 +78,10 @@
     role="region"
     aria-roledescription="carousel"
     aria-label="{{ $label }}"
-    {{ $attributes }}
+    class="{{ ClassList::merge($ui->classes('base', ''), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
 >
-    <div class="swiper">
+    <div class="{{ $ui->classes('viewport', 'swiper') }}">
         <div class="swiper-wrapper">{{ $slot }}</div>
 
         @if ($navigation)
@@ -86,7 +91,7 @@
     </div>
 
     @if ($config['pagination'])
-        <div class="relative mt-4 h-6">
+        <div class="{{ $ui->classes('pagination', 'relative mt-4 h-6') }}">
             <div class="swiper-pagination"></div>
         </div>
     @endif

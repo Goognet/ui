@@ -8,13 +8,17 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\Navigation;
     use Goognet\Ui\Support\Phone;
     use Goognet\Ui\Support\SafeUrl;
     use Goognet\Ui\Support\Whatsapp;
+    use Goognet\Ui\Ui;
     use Illuminate\Support\Str;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('footer');
 
     $company = (array) config('goognet-ui.company', []);
 
@@ -52,21 +56,28 @@
         ->values();
 
     /** neutral-500, not 400: at 12px the lighter grey measures 2.6:1 against the 4.5:1 AA asks. */
-    $columnTitle = 'text-xs font-semibold tracking-[0.08em] text-neutral-500 uppercase';
+    $columnTitle = $ui->classes('column-title', 'text-xs font-semibold tracking-[0.08em] text-neutral-500 uppercase');
 
     /** `py-1` lifts the target from 20px to 28px; WCAG 2.2 asks 24px. */
-    $columnLink = 'block py-1 text-sm text-neutral-600 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:text-neutral-900';
+    $columnLink = $ui->classes('column-link', 'block py-1 text-sm text-neutral-600 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:text-neutral-900');
 @endphp
 
-<footer {{ $attributes->class('border-t border-neutral-200 bg-white') }}>
+<footer
+    class="{{ ClassList::merge($ui->classes('base', 'border-t border-neutral-200 bg-white'), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
+>
     @if ($callout)
-        <div class="bg-primary-50 border-b border-neutral-200">
+        <div class="{{ $ui->classes('callout', 'bg-primary-50 border-b border-neutral-200') }}">
             <x-goognet-ui::container class="flex flex-col items-start justify-between gap-5 py-8 sm:flex-row sm:items-center">
                 <div>
-                    <p class="text-xl font-semibold tracking-tight text-neutral-950">{{ $calloutTitle }}</p>
+                    <p class="{{ $ui->classes('callout-title', 'text-xl font-semibold tracking-tight text-neutral-950') }}">
+                        {{ $calloutTitle }}
+                    </p>
 
                     @if (filled($calloutText))
-                        <p class="mt-1.5 text-sm text-neutral-600">{{ $calloutText }}</p>
+                        <p class="{{ $ui->classes('callout-text', 'mt-1.5 text-sm text-neutral-600') }}">
+                            {{ $calloutText }}
+                        </p>
                     @endif
                 </div>
 
@@ -80,10 +91,10 @@
     <x-goognet-ui::container class="py-12">
         <div class="flex flex-col justify-between gap-6 border-b border-neutral-100 pb-8 sm:flex-row sm:items-center">
             <div>
-                <x-goognet-ui::brand class="h-7 w-auto" />
+                <x-goognet-ui::brand :class="$ui->classes('brand', 'h-7 w-auto')" />
 
                 @if (filled($description ?? $company['description'] ?? null))
-                    <p class="mt-3 max-w-md text-sm leading-relaxed text-pretty text-neutral-500">
+                    <p class="{{ $ui->classes('description', 'mt-3 max-w-md text-sm leading-relaxed text-pretty text-neutral-500') }}">
                         {{ $description ?? $company['description'] }}
                     </p>
                 @endif
@@ -98,7 +109,7 @@
                             underline="none"
                             :label="Str::headline($network)"
                             :icon="$social['icon']"
-                            class="flex size-11 items-center justify-center rounded-lg border border-neutral-200 text-neutral-500 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:border-neutral-300 hover:text-neutral-900 sm:size-10"
+                            :class="$ui->classes('social', 'flex size-11 items-center justify-center rounded-control border border-neutral-200 text-neutral-500 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:border-neutral-300 hover:text-neutral-900 sm:size-10')"
                         />
                     @endforeach
                 </div>
@@ -148,7 +159,7 @@
     </x-goognet-ui::container>
 
     <x-goognet-ui::container>
-        <div class="flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 py-5 text-sm text-neutral-500">
+        <div class="{{ $ui->classes('bottom', 'flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 py-5 text-sm text-neutral-500') }}">
             <p>&copy; {{ now()->year }} {{ $company['name'] ?? '' }}. Todos os direitos reservados.</p>
 
             <x-goognet-ui::link
@@ -169,7 +180,7 @@
                         external
                         rel="nofollow noreferrer noopener"
                         underline="none"
-                        class="inline-flex h-9 items-center gap-2 rounded-full border border-neutral-200 px-3.5 text-[13px] font-medium text-neutral-700 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:border-neutral-300 hover:text-neutral-900"
+                        :class="$ui->classes('validator', 'inline-flex h-9 items-center gap-2 rounded-full border border-neutral-200 px-3.5 text-[13px] font-medium text-neutral-700 transition-colors duration-(--duration-base) ease-(--ease-fluid) hover:border-neutral-300 hover:text-neutral-900')"
                     >
                         <x-ri-html5-fill class="text-primary size-4 shrink-0" />
 

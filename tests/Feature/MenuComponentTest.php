@@ -31,7 +31,7 @@ function renderMenu(string $attributes = '', ?array $items = null): string
 }
 
 it('renders a labelled nav marked for the script', function (): void {
-    expect(renderMenu())->toContain('<nav aria-label="Menu principal"')
+    expect(renderMenu())->toContain('aria-label="Menu principal"')
         ->toContain('data-menu');
 });
 
@@ -183,7 +183,7 @@ it('keeps groups and children as different desktop shapes', function (): void {
     $rendered = renderMenu(items: menuWithMegamenu());
 
     expect(substr_count($rendered, 'data-menu-dropdown-panel'))->toBe(4)
-        ->and(substr_count($rendered, 'max-w-7xl'))->toBe(1)
+        ->and(substr_count($rendered, 'max-w-page'))->toBe(1)
         ->and(substr_count($rendered, 'min-w-64'))->toBe(1);
 });
 

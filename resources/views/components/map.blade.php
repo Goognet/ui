@@ -6,9 +6,13 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('map');
 
     /** An empty `src` loads the current page inside itself, so a refused or missing address emits nothing. */
     $frameSrc = SafeUrl::frame($src ?? config('goognet-ui.location.map'));
@@ -34,6 +38,7 @@
         referrerpolicy="no-referrer-when-downgrade"
         allowfullscreen
         {{-- No `allow-top-navigation`: a click inside the frame cannot send the whole page elsewhere. --}}
-        {{ $attributes->class(['w-full border-0', $ratioClass])->merge(['sandbox' => 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox']) }}
+        class="{{ ClassList::merge($ui->classes('base', 'w-full border-0 ' . $ratioClass), (string) $attributes->get('class')) }}"
+        {{ $attributes->except('class')->merge(['sandbox' => 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox']) }}
     ></iframe>
 @endif

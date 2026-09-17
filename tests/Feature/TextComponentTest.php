@@ -54,7 +54,8 @@ it('has no colour prop, only tone', function (): void {
      * semantic colour where its meaning is.
      */
     expect(componentSource('text'))
-        ->toContain("'variant' => 'default'")
+        ->toContain("'variant' => null")
+        ->toContain("'default' => 'text-neutral-700'")
         ->not->toContain("'color'")
         ->and((string) $this->blade('<x-ui.text class="text-red-700">t</x-ui.text>'))
         ->toContain('text-red-700');

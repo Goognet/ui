@@ -5,9 +5,13 @@
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('accordion');
 
     $questions = collect($faq)->mapWithKeys(fn (mixed $answer, mixed $question): array => [(string) $question => (string) $answer]);
 
@@ -28,7 +32,8 @@
 
 <div
     @if (filled($label)) role="group" aria-label="{{ $label }}" @endif
-    {{ $attributes->class(['divide-y divide-neutral-200 border-y border-neutral-200']) }}
+    class="{{ ClassList::merge($ui->classes('base', 'divide-y divide-neutral-200 border-y border-neutral-200'), (string) $attributes->get('class')) }}"
+    {{ $attributes->except('class') }}
 >
     @if ($questions->isNotEmpty())
         @foreach ($questions as $question => $answer)

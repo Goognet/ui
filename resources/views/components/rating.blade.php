@@ -2,31 +2,39 @@
     'name'      => null,
     'value'     => null,
     'max'       => 5,
-    'size'      => 'base',
-    'shape'     => 'star',
+    'size'      => null,
+    'shape'     => null,
     'label'     => null,
     'clearable' => false,
     'disabled'  => false,
 ])
 
 @php
+    use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
     use Illuminate\Support\Str;
 
     $attributes = SafeUrl::attributes($attributes);
+
+    $ui = Ui::component('rating');
+
+    $size ??= $ui->default('size', 'base');
+
+    $shape ??= $ui->default('shape', 'star');
 
     $isInput = filled($name);
 
     /** Capped: every point is rendered, and an unbounded `max` is an unbounded page on the server. */
     $max = min(10, max(1, (int) $max));
 
-    $sizes = [
+    $sizes = $ui->sizes([
         'xs'   => 'size-4',
         'sm'   => 'size-5',
         'base' => 'size-6',
         'lg'   => 'size-7',
         'xl'   => 'size-9',
-    ];
+    ]);
 
     /** Outline for empty, solid for full: colour alone measures 1.57:1, under the 3:1 a graphic owes. */
     $shapes = [
@@ -51,7 +59,8 @@
     {{-- Stars run from max down to 1 and are flipped back: a checked input only reaches later siblings. --}}
     <fieldset
         data-rating
-        {{ $attributes->class(['inline-flex flex-row-reverse items-center justify-end', 'opacity-50' => $disabled]) }}
+        class="{{ ClassList::merge($ui->classes('base', 'inline-flex flex-row-reverse items-center justify-end' . ($disabled ? ' opacity-50' : '')), (string) $attributes->get('class')) }}"
+        {{ $attributes->except('class') }}
         @disabled($disabled)
     >
         <legend class="sr-only">{{ $label ?? 'Nota de 1 a ' . $max }}</legend>
@@ -69,7 +78,7 @@
 
             <label
                 for="{{ $group . '-' . $star }}"
-                class="{{ $disabled ? '' : 'cursor-pointer' }} grid text-neutral-500 transition-colors duration-(--duration-fast) ease-(--ease-fluid)"
+                class="{{ $ui->classes('star', ($disabled ? '' : 'cursor-pointer ') . 'grid text-neutral-500 transition-colors duration-(--duration-fast) ease-(--ease-fluid)') }}"
                 title="{{ $star }}"
             >
                 <span class="sr-only">{{ $star }} de {{ $max }}</span>
@@ -101,7 +110,8 @@
     @endphp
 
     <span
-        {{ $attributes->class('relative inline-flex align-middle') }}
+        class="{{ ClassList::merge($ui->classes('base', 'relative inline-flex align-middle'), (string) $attributes->get('class')) }}"
+        {{ $attributes->except('class') }}
         role="img"
         aria-label="{{ $label ?? $number($rating) . ' de ' . $number((float) $max) }}"
     >

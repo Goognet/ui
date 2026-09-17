@@ -1,41 +1,61 @@
 @props([
-    'variant'      => 'default',
-    'size'         => 'base',
+    'variant'      => null,
+    'size'         => null,
     'icon'         => null,
     'iconTrailing' => null,
     'href'         => null,
     'external'     => false,
     'dot'          => false,
-    'rounded'      => 'full',
+    'rounded'      => null,
 ])
 
 @php
     use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
+
+    $ui = Ui::component('badge');
 
     $attributes = SafeUrl::attributes($attributes);
 
-    $tag = filled($href) ? 'a' : 'span';
+    $variant ??= $ui->default('variant', 'default');
+
+    $size ??= $ui->default('size', 'base');
+
+    $rounded ??= $ui->default('rounded', 'full');
 
     $incoming = (string) $attributes->get('class');
 
-    $sizes = [
+    $safeHref = SafeUrl::href($href);
+
+    $tag = filled($safeHref) ? 'a' : 'span';
+
+    $sizes = $ui->sizes([
         'xs'   => 'h-5 gap-1 px-1.5 text-[11px]',
         'sm'   => 'h-6 gap-1 px-2 text-xs',
         'base' => 'h-7 gap-1.5 px-2.5 text-xs',
         'lg'   => 'h-8 gap-1.5 px-3 text-sm',
-    ];
+    ]);
 
-    /** @var array<string, array{fill: string, ink: string, edge: string, hover: string}> */
-    $variants = [
-        'default'   => ['fill' => 'bg-white', 'ink' => 'text-neutral-800', 'edge' => 'border-neutral-200', 'hover' => 'hover:bg-neutral-50'],
-        'primary'   => ['fill' => 'bg-primary', 'ink' => 'text-neutral-950', 'edge' => '', 'hover' => 'hover:bg-primary-dark'],
-        'secondary' => ['fill' => 'bg-secondary', 'ink' => 'text-neutral-950', 'edge' => '', 'hover' => 'hover:bg-secondary-dark'],
-        'filled'    => ['fill' => 'bg-neutral-100', 'ink' => 'text-neutral-800', 'edge' => '', 'hover' => 'hover:bg-neutral-200'],
-        'ghost'     => ['fill' => 'bg-transparent', 'ink' => 'text-neutral-700', 'edge' => '', 'hover' => 'hover:bg-neutral-100'],
-    ];
+    /** Same variant names as the button, so one vocabulary covers both. */
+    $variants = $ui->variants([
+        'default'   => 'border border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-50',
+        'primary'   => 'bg-primary text-neutral-950 hover:bg-primary-dark',
+        'secondary' => 'bg-secondary text-neutral-950 hover:bg-secondary-dark',
+        'filled'    => 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200',
+        'ghost'     => 'bg-transparent text-neutral-700 hover:bg-neutral-100',
+    ]);
 
     $palette = $variants[$variant] ?? $variants['default'];
+
+    /**
+     * A badge that does not link answers nothing, and one whose fill was replaced at the call
+     * site would otherwise be repainted neutral the moment it is hovered — the hover belongs to
+     * the fill it came with.
+     */
+    if ($tag !== 'a' || ClassList::setsColor($incoming, 'bg')) {
+        $palette = (string) preg_replace('/\s*hover:bg-\S+/', '', $palette);
+    }
 
     $iconSizes = [
         'xs'   => 'size-3',
@@ -44,12 +64,11 @@
         'lg'   => 'size-4',
     ];
 
-    $iconClass = $iconSizes[$size] ?? $iconSizes['base'];
-
     $radii = [
+        'none' => 'rounded-none',
         'sm'   => 'rounded-sm',
         'md'   => 'rounded-md',
-        'base' => 'rounded-md',
+        'base' => 'rounded-control',
         'lg'   => 'rounded-lg',
         'xl'   => 'rounded-xl',
         'full' => 'rounded-full',
@@ -57,47 +76,45 @@
 
     $roundedClass = $radii[$rounded] ?? (str_starts_with((string) $rounded, 'rounded') ? $rounded : $radii['full']);
 
-    $classes = [
-        'inline-flex items-center justify-center align-middle font-medium whitespace-nowrap',
-        'transition-[background-color,border-color] duration-(--duration-fast) ease-(--ease-fluid)',
-        $sizes[$size] ?? $sizes['base'],
-        ClassList::colorUnlessSet($incoming, 'bg', $palette['fill']),
-        ClassList::colorUnlessSet($incoming, 'text', $palette['ink']),
-        filled($palette['edge']) ? 'border ' . ClassList::colorUnlessSet($incoming, 'border', $palette['edge']) : '',
-        $roundedClass,
-        $tag === 'a' && ! ClassList::setsColor($incoming, 'bg') ? ClassList::colorUnlessSet($incoming, 'bg', $palette['hover'], 'hover') : '',
-    ];
+    $classes = ClassList::merge(
+        $ui->classes('base', implode(' ', array_filter([
+            'inline-flex items-center justify-center align-middle font-control whitespace-nowrap',
+            'transition-[background-color,border-color] duration-(--duration-fast) ease-(--ease-fluid)',
+            $sizes[$size] ?? $sizes['base'],
+            $palette,
+            $roundedClass,
+        ]))),
+        $incoming,
+    );
 
-    $safeHref = SafeUrl::href($href);
-
-    /** `target` and `rel` are invalid on an `<a>` with no `href`, which is what a refused URL leaves. */
     $opensInNewTab = filled($safeHref) && ($external || $attributes->get('target') === '_blank');
 
-    if (blank($safeHref)) {
-        $attributes = $attributes->except('target');
-    }
+    $attributes = $attributes->except(blank($safeHref) ? ['class', 'target'] : ['class']);
 
-    $tagAttributes = $tag === 'a'
-        ? [
+    $iconClass = $ui->classes('icon', ($iconSizes[$size] ?? $iconSizes['base']) . ' shrink-0');
+@endphp
+
+<{{ $tag }}
+    class="{{ $classes }}"
+    {{
+        $attributes->merge($tag === 'a' ? [
             'href'   => $safeHref,
             'target' => $opensInNewTab ? '_blank' : null,
             'rel'    => $opensInNewTab ? 'noopener noreferrer' : null,
-        ]
-        : [];
-@endphp
-
-<{{ $tag }} {{ $attributes->class($classes)->merge($tagAttributes) }}>
+        ] : [])
+    }}
+>
     @if ($dot)
-        <span class="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span>
+        <span class="{{ $ui->classes('dot', 'size-1.5 shrink-0 rounded-full bg-current') }}" aria-hidden="true"></span>
     @endif
 
     @if (filled($icon))
-        {{ is_string($icon) ? svg($icon, $iconClass . ' shrink-0') : $icon }}
+        {{ is_string($icon) ? svg($icon, $iconClass) : $icon }}
     @endif
 
     {{ $slot }}
 
     @if (filled($iconTrailing))
-        {{ is_string($iconTrailing) ? svg($iconTrailing, $iconClass . ' shrink-0') : $iconTrailing }}
+        {{ is_string($iconTrailing) ? svg($iconTrailing, $iconClass) : $iconTrailing }}
     @endif
 </{{ $tag }}>

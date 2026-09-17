@@ -67,7 +67,7 @@ it('is an anchor, not an anchor wrapped in a block', function (): void {
      */
     $rendered = trim((string) $this->blade('<x-ui.whatsapp>Falar</x-ui.whatsapp>'));
 
-    expect($rendered)->toStartWith('<a ')
+    expect($rendered)->toStartWith('<a')
         ->and($rendered)->toEndWith('</a>');
 });
 

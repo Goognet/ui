@@ -44,7 +44,7 @@ it('renders nothing when the trail is empty', function (): void {
 it('links every item except the current page', function (): void {
     $rendered = (string) $this->blade('<x-ui.breadcrumb :items="$items" />', ['items' => trail()]);
 
-    expect(substr_count($rendered, '<a '))->toBe(2)
+    expect(preg_match_all('/<a\b/', $rendered))->toBe(2)
         ->and($rendered)->toContain('href="/"')
         ->toContain('href="/servicos"');
 });

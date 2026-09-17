@@ -1,37 +1,46 @@
 @props([
-    'size'    => 'base',
-    'variant' => 'default',
+    'size'    => null,
+    'variant' => null,
     'inline'  => false,
 ])
 
 @php
     use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\SafeUrl;
+    use Goognet\Ui\Ui;
+
+    $ui = Ui::component('text');
 
     $attributes = SafeUrl::attributes($attributes);
 
+    $size ??= $ui->default('size', 'base');
+
+    $variant ??= $ui->default('variant', 'default');
+
     $tag = $inline ? 'span' : 'p';
 
-    $sizes = [
+    $sizes = $ui->sizes([
         'sm'   => 'text-sm',
         'base' => 'text-base',
         'lg'   => 'text-lg',
         'xl'   => 'text-xl',
-    ];
+    ]);
 
     /** `subtle` is neutral-600, not lighter: neutral-400 measures 2.6:1 on white and fails body copy. */
-    $colors = [
+    $variants = $ui->variants([
         'default' => 'text-neutral-700',
-        'strong'  => 'text-neutral-950',
+        'strong'  => 'font-control text-neutral-950',
         'subtle'  => 'text-neutral-600',
-    ];
+    ]);
 
-    $classes = [
-        $sizes[$size] ?? $sizes['base'],
-        ClassList::colorUnlessSet((string) $attributes->get('class'), 'text', $colors[$variant] ?? $colors['default']),
-        'font-medium'                 => $variant === 'strong',
-        'leading-relaxed text-pretty' => ! $inline,
-    ];
+    $classes = ClassList::merge(
+        $ui->classes('base', implode(' ', array_filter([
+            $sizes[$size] ?? $sizes['base'],
+            $variants[$variant] ?? $variants['default'],
+            $inline ? null : 'leading-relaxed text-pretty',
+        ]))),
+        (string) $attributes->get('class'),
+    );
 @endphp
 
-<{{ $tag }} {{ $attributes->class($classes) }}>{{ $slot }}</{{ $tag }}>
+<{{ $tag }} class="{{ $classes }}" {{ $attributes->except('class') }}>{{ $slot }}</{{ $tag }}>

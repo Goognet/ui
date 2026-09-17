@@ -103,3 +103,7 @@ it('stacks more than two layers, the last one winning', function (): void {
 it('keeps each class once', function (): void {
     expect(ClassList::merge('inline-flex font-medium', 'inline-flex'))->toBe('font-medium inline-flex');
 });
+
+it('replaces an aspect ratio with another', function (): void {
+    expect(ClassList::merge('w-full aspect-video', 'aspect-square'))->toBe('w-full aspect-square');
+});
