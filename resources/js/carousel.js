@@ -35,8 +35,17 @@ function widestView(config) {
     );
 }
 
-function shouldLoop(config, slideCount) {
-    return config.loop === null ? slideCount > widestView(config) : config.loop === true;
+/**
+ * Swiper needs at least `slidesPerView + slidesPerGroup` slides to loop (swiper-core,
+ * `loopFix`); below that it logs a warning and runs without the loop anyway. So the count is
+ * checked even when `loop` is forced: `true` means loop whenever it can work, `false` never.
+ */
+export function shouldLoop(config, slideCount) {
+    if (config.loop === false) {
+        return false;
+    }
+
+    return slideCount >= widestView(config) + 1;
 }
 
 function options(root, config, slideCount) {

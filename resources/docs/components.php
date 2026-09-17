@@ -990,7 +990,7 @@ return [
         ],
         'notes' => [
             '<code>perView</code> e <code>gap</code> aceitam valor único ou mapa por breakpoint do Tailwind (<code>base</code>, <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code>).',
-            'Sem <code>loop</code> explícito o script decide: só ativa quando há mais slides do que o maior <code>perView</code>, senão o Swiper não tem o que duplicar e a trilha salta.',
+            'O loop só liga quando há ao menos <code>per-view + 1</code> slides no maior breakpoint — a mesma conta que o Swiper faz. Abaixo disso ele não funciona e o Swiper avisa no console, então o pacote desliga em silêncio, <strong>inclusive com <code>:loop="true"</code></strong>. <code>:loop="false"</code> desliga sempre. Testado contra o Swiper em 48 combinações de slides e <code>per-view</code>: nenhum aviso e nenhum loop desligado sem necessidade.',
             'O Swiper 12 não tem mais a opção <code>lazy</code>. Imagem preguiçosa é <code>loading="lazy"</code> no próprio <code>&lt;img&gt;</code>.',
             'Autoplay pausa no hover pelo <code>pauseOnMouseEnter</code> do Swiper, e não liga quando o sistema pede <code>prefers-reduced-motion: reduce</code>.',
             '<code>auto-height</code> faz a caixa acompanhar a altura do slide em exibição, em vez de todos dividirem a altura do mais alto. Vale para conteúdo de tamanho desigual — depoimento de duas linhas ao lado de um de dez. Numa grade de cartões deixe desligado: ali a altura uniforme é o que alinha a fileira.',
