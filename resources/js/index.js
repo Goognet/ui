@@ -1,7 +1,9 @@
 import { initAlerts } from './alert';
 import { initCarousels } from './carousel';
 import { initCookieConsent } from './cookie-consent';
+import { initCounters } from './counter';
 import { loadLightbox } from './lightbox';
+import { initMasks } from './mask';
 import { initMenus } from './menu';
 import { initModals } from './modal';
 import { initNavbars } from './navbar';
@@ -13,6 +15,8 @@ export {
     initAlerts,
     initCarousels,
     initCookieConsent,
+    initCounters,
+    initMasks,
     initMenus,
     initModals,
     initNavbars,
@@ -33,6 +37,8 @@ export function initUi() {
     initAlerts();
     initCarousels();
     initCookieConsent();
+    initCounters();
+    initMasks();
     initMenus();
     initNavbars();
     initModals();

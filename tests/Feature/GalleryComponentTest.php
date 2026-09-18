@@ -110,3 +110,44 @@ it('prefers the slot over the generated image', function (): void {
 it('keeps the caller classes on the list', function (): void {
     expect((string) $this->blade('<x-ui.gallery class="mt-10" />'))->toContain('mt-10');
 });
+
+it('lays the pictures out in columns when asked for masonry', function (): void {
+    $blade = <<<'BLADE'
+        <x-ui.gallery masonry :columns="['base' => 2, 'md' => 3]">
+            <x-ui.gallery-item src="https://cdn.example.com/a.jpg" />
+        </x-ui.gallery>
+        BLADE;
+
+    $html = (string) $this->blade($blade);
+
+    expect($html)->toContain('columns-2')
+        ->toContain('md:columns-3')
+        ->not->toContain('grid-cols-')
+        ->and($html)->not->toMatch('/class="[^"]*\bgrid\b/');
+});
+
+it('keeps each masonry picture at its own height, spaced by its own margin', function (): void {
+    $blade = <<<'BLADE'
+        <x-ui.gallery masonry :gap="6">
+            <x-ui.gallery-item src="https://cdn.example.com/a.jpg" />
+        </x-ui.gallery>
+        BLADE;
+
+    expect((string) $this->blade($blade))
+        ->toContain('break-inside-avoid')
+        ->toContain('mb-6')
+        ->not->toContain('object-cover');
+});
+
+it('stays a grid by default, cropping to the row', function (): void {
+    $blade = <<<'BLADE'
+        <x-ui.gallery>
+            <x-ui.gallery-item src="https://cdn.example.com/a.jpg" />
+        </x-ui.gallery>
+        BLADE;
+
+    expect((string) $this->blade($blade))
+        ->toContain('grid-cols-2')
+        ->toContain('object-cover')
+        ->not->toContain('break-inside-avoid');
+});

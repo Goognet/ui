@@ -28,7 +28,7 @@
     $separatorClass = $ui->classes('separator', 'opacity-50');
 
     /** `py-1` clears the 24px WCAG 2.2 asks of a standalone control; the trail is 20px of text otherwise. */
-    $linkClass = $ui->classes('link', 'inline-flex py-1 opacity-70 hover:opacity-100');
+    $linkClass = $ui->classes('link', 'inline-flex items-center py-1 opacity-70 hover:opacity-100');
 
     $currentClass = $ui->classes('current', 'font-medium');
 

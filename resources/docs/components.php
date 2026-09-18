@@ -234,6 +234,48 @@ return [
         ],
     ],
     [
+        'name'        => 'counter',
+        'title'       => 'Counter',
+        'description' => 'Número que conta até o valor quando entra na tela. O valor final é escrito pelo servidor, então a página sem JavaScript mostra o número certo.',
+        'sources'     => ['counter'],
+        'examples'    => [
+            [
+                'title'  => 'Indicadores',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <div class="text-center">
+                        <x-ui.counter :value="1250" suffix="+" />
+                        <x-ui.text size="sm" class="mt-1 text-neutral-500">projetos entregues</x-ui.text>
+                    </div>
+
+                    <div class="text-center">
+                        <x-ui.counter :value="98.5" :decimals="1" suffix="%" size="lg" />
+                        <x-ui.text size="sm" class="mt-1 text-neutral-500">satisfação</x-ui.text>
+                    </div>
+
+                    <div class="text-center">
+                        <x-ui.counter :value="12" :start="0" :duration="3" size="sm" />
+                        <x-ui.text size="sm" class="mt-1 text-neutral-500">anos de casa</x-ui.text>
+                    </div>
+                    BLADE,
+            ],
+            [
+                'title'  => 'Moeda e separadores',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.counter :value="1234567.89" :decimals="2" prefix="R$ " separator="." decimal="," size="xl" />
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'O número final é renderizado no servidor e o script conta a partir dele — sem JavaScript, e para um rastreador, a página mostra a figura real em vez de um zero esperando um script que nunca roda.',
+            'A animação começa quando o elemento entra na tela, uma vez só: contador que reinicia a cada rolagem lê como defeito.',
+            'Quem pede menos movimento no sistema (<code>prefers-reduced-motion</code>) recebe o número, sem contagem.',
+            'A biblioteca (<code>countup.js</code>) é importada só quando existe contador na página. Instale com <code>npm install countup.js</code> — o <code>goognet-ui:install</code> avisa quando falta.',
+            '<code>decimals</code> é limitado a 4: mais casas viram ruído, e o servidor e o script precisam concordar na formatação.',
+        ],
+    ],
+    [
         'name'        => 'card',
         'title'       => 'Card',
         'description' => 'Bloco de conteúdo sobre uma superfície. Vira <code>&lt;a&gt;</code> sozinho quando recebe <code>href</code>, e só então ganha o movimento de hover.',
@@ -385,14 +427,14 @@ return [
             [
                 'title' => 'Gatilho próprio',
                 'code'  => <<<'BLADE'
-                    <x-ui.dropdown>
+                    <x-ui.dropdown id="painel-conta">
                         <x-slot:trigger>
                             <x-ui.button variant="ghost" data-menu-dropdown data-state="closed" aria-controls="painel-conta" aria-expanded="false">
                                 Minha conta
                             </x-ui.button>
                         </x-slot:trigger>
 
-                        <div id="painel-conta" class="px-3 py-2 text-sm text-neutral-600">Sessão iniciada</div>
+                        <x-ui.text size="sm" class="px-3 py-2 text-neutral-600">Sessão iniciada</x-ui.text>
                     </x-ui.dropdown>
                     BLADE,
             ],
@@ -400,7 +442,7 @@ return [
         'notes' => [
             'O painel é irmão do gatilho dentro de um <code>[data-menu]</code>, que é o que o script do menu observa: abrir, fechar no clique fora, no <code>Esc</code> e andar com as setas já vêm de lá.',
             'Cada dropdown gera o próprio id, então vários na mesma página não se confundem.',
-            'Com <code>x-slot:trigger</code>, o gatilho é seu — mantenha <code>data-menu-dropdown</code>, <code>data-state</code>, <code>aria-controls</code> e <code>aria-expanded</code>, que é o contrato que o script lê.',
+            'Com <code>x-slot:trigger</code>, o gatilho é seu — passe <code>id</code> no dropdown e repita esse mesmo valor no <code>aria-controls</code> do gatilho: é por ele que o script encontra o painel. Mantenha também <code>data-menu-dropdown</code>, <code>data-state</code> e <code>aria-expanded</code>, que completam o contrato.',
         ],
     ],
     [
@@ -424,6 +466,15 @@ return [
                     BLADE,
             ],
             [
+                'title' => 'Máscara',
+                'code'  => <<<'BLADE'
+                    <x-ui.input name="telefone" label="Telefone" mask="phone" placeholder="(11) 90000-0000" />
+                    <x-ui.input name="documento" label="CPF ou CNPJ" mask="cpf-cnpj" />
+                    <x-ui.input name="valor" label="Valor" mask="money" placeholder="0,00" />
+                    <x-ui.input name="placa" label="Placa" mask="AAA-0A00" />
+                    BLADE,
+            ],
+            [
                 'title'  => 'Tamanhos',
                 'layout' => 'row',
                 'code'   => <<<'BLADE'
@@ -439,6 +490,11 @@ return [
             'O campo volta preenchido com o envio anterior, exceto quando é <code>type="password"</code> — repopular devolveria a senha digitada para dentro do HTML.',
             '<code>type</code> aceita só os tipos de campo de texto. <code>file</code>, <code>submit</code>, <code>image</code> ou <code>checkbox</code> virariam outro controle dentro de um rótulo que promete texto, então voltam para <code>text</code>.',
             '<code>class</code> veste o bloco inteiro (rótulo, campo e mensagem); <code>control-class</code> veste só o campo.',
+            '<code>mask</code> aceita um nome pronto — <code>phone</code>, <code>cpf</code>, <code>cnpj</code>, <code>cpf-cnpj</code>, <code>cep</code>, <code>date</code>, <code>time</code>, <code>money</code>, <code>percent</code>, <code>card</code> — ou um padrão escrito, onde <code>0</code> é dígito e <code>a</code> é letra.',
+            'Junto da máscara vai o <code>inputmode</code>: no celular, campo de dígitos abre o teclado numérico em vez do alfabético.',
+            'O padrão passado é filtrado antes de virar atributo, então um valor vindo do banco ou da query string não consegue injetar markup ali.',
+            '<code>phone</code> e <code>cpf-cnpj</code> aceitam os dois comprimentos: a máscara acompanha o que está sendo digitado.',
+            'A biblioteca (<code>imask</code>) é importada só quando existe campo com máscara na página. Instale com <code>npm install imask</code>.',
         ],
     ],
     [
@@ -1423,6 +1479,17 @@ return [
         'description' => 'Grade de imagens com lightbox opcional. Mesma gramática do carousel — <code>lightbox</code> no pai, <code>source</code> no item — mas sem trilho: tudo aparece de uma vez.',
         'sources'     => ['gallery', 'gallery-item'],
         'examples'    => [
+
+            [
+                'title' => 'Mansonry, cada imagem na sua altura',
+                'code'  => <<<'BLADE'
+                    <x-ui.gallery masonry lightbox :columns="['base' => 2, 'md' => 3]" :gap="4" label="Obras entregues">
+                        @foreach ([500, 800, 620, 900, 540, 720] as $height)
+                            <x-ui.gallery-item :src="'https://picsum.photos/seed/m' . $height . '/600/' . $height" alt="" />
+                        @endforeach
+                    </x-ui.gallery>
+                    BLADE,
+            ],
             [
                 'title' => 'Grade simples',
                 'code'  => <<<'BLADE'
@@ -1494,6 +1561,8 @@ return [
         ],
         'notes' => [
             '<code>type</code> só aceita <code>image</code>, <code>video</code> ou <code>youtube</code>. Qualquer outro valor é descartado.',
+            '<code>masonry</code> troca a grade por colunas CSS: cada imagem fica com a altura que tem, em vez de ser recortada na altura da linha. O preço é a ordem de leitura — coluna desce antes de virar, então o segundo item fica embaixo do primeiro, não ao lado.',
+            'Na mansonry o espaço entre imagens empilhadas é a margem do próprio item (o <code>gap</code> de coluna não separa linhas), e <code>break-inside-avoid</code> impede que uma imagem seja cortada no pé da coluna.',
             'A galeria é <code>&lt;ul&gt;</code> e o item é <code>&lt;li&gt;</code>: leitor de tela anuncia quantas imagens são. O <code>label</code> vira <code>aria-label</code> e é opcional.',
             '<code>columns</code> aceita número ou mapa por breakpoint do Tailwind, de 1 a 6. <code>gap</code> aceita 2, 3, 4, 5, 6, 8, 10 ou 12 — os valores estão escritos por extenso no componente porque o scanner do Tailwind não enxerga classe montada por interpolação.',
             'Sem <code>source</code>, o próprio <code>src</code> abre no lightbox. Informe <code>source</code> quando existir uma versão maior — é o caso normal: o thumb não precisa ter 1600px.',

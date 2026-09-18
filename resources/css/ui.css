@@ -241,9 +241,14 @@
      */
     margin-top: 0;
     translate: 0 -50%;
-    background: color-mix(in oklab, var(--color-white) 90%, transparent);
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(4px);
+    /*
+     * Translucent at rest and solid on hover: over a photo the arrow used to read as a white
+     * block sitting on the picture. At 55% the slide shows through and the blur keeps the
+     * glyph legible over whatever passes under it.
+     */
+    background: color-mix(in oklab, var(--color-white) 55%, transparent);
+    box-shadow: var(--shadow-control);
+    backdrop-filter: blur(8px);
     transition:
         background-color var(--duration-fast) var(--ease-fluid),
         box-shadow var(--duration-base) var(--ease-fluid),
@@ -253,8 +258,8 @@
 
 [data-carousel] .swiper .swiper-button-prev:hover,
 [data-carousel] .swiper .swiper-button-next:hover {
-    background: var(--color-white);
-    box-shadow: var(--shadow-lifted);
+    background: color-mix(in oklab, var(--color-white) 96%, transparent);
+    box-shadow: var(--shadow-control-hover);
     scale: 1.05;
 }
 

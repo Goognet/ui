@@ -47,3 +47,21 @@ it('takes a trigger of its own', function (): void {
     expect((string) $this->blade($blade))->toContain('Abrir')
         ->not->toContain('heroicon-m-chevron-down');
 });
+
+it('takes an id so a trigger of your own can name the panel', function (): void {
+    $blade = <<<'BLADE'
+        <x-ui.dropdown id="painel-conta">
+            <x-slot:trigger>
+                <button type="button" data-menu-dropdown data-state="closed" aria-controls="painel-conta" aria-expanded="false">Abrir</button>
+            </x-slot:trigger>
+
+            itens
+        </x-ui.dropdown>
+        BLADE;
+
+    $html = (string) $this->blade($blade);
+
+    expect($html)->toContain('id="painel-conta"')
+        ->toContain('aria-controls="painel-conta"')
+        ->and(substr_count($html, 'id="painel-conta"'))->toBe(1);
+});

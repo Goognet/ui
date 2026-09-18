@@ -4,7 +4,9 @@
     "type": "module",
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
+        "countup.js": "^2.10.1",
         "fslightbox": "^3.7.5",
+        "imask": "^7.6.1",
         "prettier": "^3.9.6",
         "prettier-plugin-blade": "^3.2.2",
         "prettier-plugin-tailwindcss": "^0.8.1",

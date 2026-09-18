@@ -273,3 +273,14 @@ it('keeps icons out of the structured data', function (): void {
     expect($schema['itemListElement'][0])->not->toHaveKey('icon')
         ->and($schema['itemListElement'][0]['name'])->toBe('Início');
 });
+
+it('centres an item icon against its label', function (): void {
+    /**
+     * The trail hands the link `inline-flex`, which turns the icon into a flex item: the
+     * `align-[-0.125em]` the link uses for baseline alignment stops applying, and the icon
+     * rides above the text unless the row centres it.
+     */
+    $html = (string) $this->blade('<x-ui.breadcrumb :items="[[\'label\' => \'Início\', \'url\' => \'/\', \'icon\' => \'heroicon-m-home\'], [\'label\' => \'Artigo\']]" />');
+
+    expect($html)->toContain('inline-flex items-center py-1');
+});

@@ -43,7 +43,12 @@
 
     $classes = ClassList::merge(
         $ui->classes('base', implode(' ', array_filter([
-            'rounded-surface',
+            /** `block` because a card with `href` is an `<a>`, and an inline box ignores the
+                width, the padding and the clipping the card is made of. */
+            'block rounded-surface',
+            /** Only with media: the negative margin that pulls it to the edge has to be clipped
+                by the card's own radius, and a card without media must not clip a tooltip. */
+            isset($media) ? 'overflow-hidden' : null,
             $variants[$variant] ?? $variants['default'],
             $paddings[$padding] ?? $paddings['base'],
             $interactive,
@@ -69,7 +74,7 @@
     @isset($media)
         {{-- The media sits outside the padding, so an image can reach the card's edge. --}}
         <div @class([
-            $ui->classes('media', 'overflow-hidden rounded-t-surface'),
+            $ui->classes('media', ''),
             '-m-4 mb-4' => $padding === 'sm',
             '-m-5 mb-5' => $padding === 'base',
             '-m-8 mb-8' => $padding === 'lg',

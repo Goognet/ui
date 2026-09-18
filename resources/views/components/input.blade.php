@@ -7,6 +7,7 @@
     'error'        => null,
     'icon'         => null,
     'value'        => null,
+    'mask'         => null,
     'size'         => null,
     'required'     => false,
     'controlClass' => null,
@@ -16,6 +17,7 @@
     use Goognet\Ui\Support\ClassList;
     use Goognet\Ui\Support\Field;
     use Goognet\Ui\Support\FormControl;
+    use Goognet\Ui\Support\Mask;
     use Goognet\Ui\Support\SafeUrl;
     use Goognet\Ui\Ui;
 
@@ -29,6 +31,8 @@
 
     /** A repopulated password field would put the typed secret back into the HTML. */
     $value ??= $inputType === 'password' ? null : Field::old($name);
+
+    $maskConfig = Mask::resolve($mask);
 
     $fieldId = Field::id($id, $name);
 
@@ -73,6 +77,10 @@
             @if (filled($name)) name="{{ $name }}" @endif
             @if ($required) required @endif
             class="{{ $classes }}"
+            @if (filled($maskConfig))
+                data-mask="{{ json_encode($maskConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE) }}"
+                @if (filled($inputMode = Mask::inputMode($maskConfig))) inputmode="{{ $inputMode }}" @endif
+            @endif
             @if (filled($message)) aria-invalid="true" @endif
             @if (filled($described = Field::describedBy([$fieldId . '-hint' => filled($hint), $fieldId . '-error' => filled($message)]))) aria-describedby="{{ $described }}" @endif
             {{ $attributes->except('class') }}

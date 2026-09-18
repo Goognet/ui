@@ -1,4 +1,4 @@
-@aware(['lightbox' => false])
+@aware(['lightbox' => false, 'masonry' => false, 'gap' => 4])
 
 @props([
     'src'    => null,
@@ -34,10 +34,24 @@
     $href = SafeUrl::href($source);
 
     $opensLightbox = $lightbox !== false && filled($href);
+
+    $spacing = [2 => 'mb-2', 3 => 'mb-3', 4 => 'mb-4', 5 => 'mb-5', 6 => 'mb-6', 8 => 'mb-8', 10 => 'mb-10', 12 => 'mb-12'];
+
+    /**
+     * In a column layout the gap only separates the columns, so the space between stacked
+     * pictures is the item's own margin — and `break-inside-avoid` keeps one from being cut
+     * in half at the foot of a column.
+     */
+    $layout = $masonry
+        ? 'break-inside-avoid ' . ($spacing[(int) $gap] ?? $spacing[4])
+        : 'min-w-0';
+
+    /** A masonry picture keeps its own height; a grid one is cropped to the row's. */
+    $fit = $masonry ? 'w-full' : 'h-full w-full object-cover';
 @endphp
 
 <li
-    class="{{ ClassList::merge($ui->classes('base', 'min-w-0'), (string) $attributes->get('class')) }}"
+    class="{{ ClassList::merge($ui->classes('base', $layout), (string) $attributes->get('class')) }}"
     {{ $attributes->except('class') }}
 >
     @if ($opensLightbox)
@@ -55,7 +69,7 @@
                     :alt="$alt"
                     :eager="$eager"
                     :sizes="$sizes"
-                    :class="$ui->classes('image', 'h-full w-full object-cover')"
+                    :class="$ui->classes('image', $fit)"
                 />
             @endif
         </a>
@@ -67,7 +81,7 @@
             :alt="$alt"
             :eager="$eager"
             :sizes="$sizes"
-            :class="$ui->classes('image', 'shadow-control h-full w-full rounded-media object-cover')"
+            :class="$ui->classes('image', 'shadow-control rounded-media ' . $fit)"
         />
     @endif
 </li>

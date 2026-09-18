@@ -61,6 +61,7 @@ dataset('customisable', [
     'dropdown'         => ['dropdown', '<x-ui.dropdown label="A" %s>x</x-ui.dropdown>', 'inline-block', 'block'],
     'table'            => ['table', '<x-ui.table :headers="[\'a\']" :rows="[[\'b\']]" %s />', 'rounded-surface', 'rounded-none'],
     'tooltip'          => ['tooltip', '<x-ui.tooltip text="t" %s>x</x-ui.tooltip>', 'inline-flex', 'block'],
+    'counter'          => ['counter', '<x-ui.counter :value="10" %s />', 'text-4xl', 'text-xs'],
     'field'            => ['field', '<x-ui.field label="N" %s>x</x-ui.field>', 'gap-1.5', 'gap-4'],
     'input'            => ['input', '<x-ui.input name="n" label="N" %s />', 'gap-1.5', 'gap-4'],
     'textarea'         => ['textarea', '<x-ui.textarea name="n" label="N" %s />', 'gap-1.5', 'gap-4'],

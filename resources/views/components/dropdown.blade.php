@@ -1,4 +1,5 @@
 @props([
+    'id'      => null,
     'label'   => null,
     'icon'    => null,
     'align'   => null,
@@ -20,8 +21,13 @@
 
     $width ??= $ui->default('width', 'min-w-56');
 
-    /** `data-menu` is what the menu script watches, so the dropdown needs no script of its own. */
-    $panelId = uniqid('dropdown-');
+    /**
+     * `data-menu` is what the menu script watches, so the dropdown needs no script of its own.
+     *
+     * The id is a prop because a trigger of your own has to name the panel it opens in its
+     * `aria-controls`, and a generated id is not knowable at the call site.
+     */
+    $panelId = filled($id) ? (string) $id : uniqid('dropdown-');
 
     $alignments = ['start' => 'start-0 origin-top-left', 'end' => 'end-0 origin-top-right'];
 

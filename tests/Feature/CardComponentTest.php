@@ -52,3 +52,23 @@ it('renders the header and the footer only when they are given', function (): vo
         ->toContain('border-t border-neutral-100')
         ->and((string) $this->blade('<x-ui.card>Corpo</x-ui.card>'))->not->toContain('border-t border-neutral-100');
 });
+
+it('is a block box even as a link, so it can clip and be bounded', function (): void {
+    /**
+     * An `<a>` is inline by default: `max-w-sm`, the padding and the `overflow-hidden` that
+     * holds the media were all being ignored, and the image spilled out of the card.
+     */
+    expect((string) $this->blade('<x-ui.card href="/x">t</x-ui.card>'))->toContain('block');
+});
+
+it('clips only when it carries media', function (): void {
+    $withMedia = <<<'BLADE'
+        <x-ui.card>
+            <x-slot:media>imagem</x-slot:media>
+            corpo
+        </x-ui.card>
+        BLADE;
+
+    expect((string) $this->blade($withMedia))->toContain('overflow-hidden')
+        ->and((string) $this->blade('<x-ui.card>corpo</x-ui.card>'))->not->toContain('overflow-hidden');
+});
