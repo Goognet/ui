@@ -16,7 +16,7 @@ final class InstallCommand extends Command
     public const string JS_IMPORT = "import { initUi } from '../../vendor/goognet/ui/resources/js';";
 
     /** @var list<string> */
-    private const array NPM_PACKAGES = ['swiper', 'fslightbox', 'countup.js', 'imask'];
+    private const array NPM_PACKAGES = ['swiper', 'fslightbox', 'countup.js', 'imask', 'sweetalert2'];
 
     protected $signature = 'goognet-ui:install
         {--force : Overwrite config/goognet-ui.php if it already exists}

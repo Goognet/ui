@@ -9,9 +9,11 @@ import { initModals } from './modal';
 import { initNavbars } from './navbar';
 import { initSidebars } from './sidebar';
 import { initSmoothAnchors } from './smooth-anchors';
+import { confirm, initToasts, toast } from './toast';
 import { initVideos } from './video';
 
 export {
+    confirm,
     initAlerts,
     initCarousels,
     initCookieConsent,
@@ -22,8 +24,10 @@ export {
     initNavbars,
     initSidebars,
     initSmoothAnchors,
+    initToasts,
     initVideos,
     loadLightbox,
+    toast,
 };
 
 /**
@@ -44,5 +48,6 @@ export function initUi() {
     initModals();
     initSidebars();
     initSmoothAnchors();
+    initToasts();
     initVideos();
 }

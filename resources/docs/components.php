@@ -329,6 +329,53 @@ return [
         ],
     ],
     [
+        'name'        => 'toast',
+        'title'       => 'Toast',
+        'description' => 'Aviso curto que aparece depois de uma ação e some sozinho. Lê o que a requisição anterior deixou na sessão, então um formulário que deu certo não precisa de mais nada.',
+        'sources'     => ['toast'],
+        'examples'    => [
+            [
+                'title' => 'No layout, uma vez',
+                'code'  => <<<'BLADE'
+                    {{-- No <x-layouts.guest>, junto do rodapé: --}}
+                    <x-ui.toast />
+
+                    {{-- E no controller: --}}
+                    {{-- return back()->with('success', 'Mensagem enviada. Respondemos no mesmo dia útil.'); --}}
+                    BLADE,
+            ],
+            [
+                'title' => 'Direto, sem passar pela sessão',
+                'code'  => <<<'BLADE'
+                    <x-ui.toast message="Orçamento salvo." title="Pronto" type="success" position="top-end" :duration="4000" />
+                    <x-ui.toast message="Não foi possível enviar agora." type="error" session="meu-aviso" />
+                    BLADE,
+            ],
+            [
+                'title' => 'Confirmar antes de agir',
+                'code'  => <<<'BLADE'
+                    <x-ui.button
+                        variant="ghost"
+                        icon="heroicon-m-trash"
+                        data-confirm="Esta ação não pode ser desfeita."
+                        data-confirm-title="Excluir o orçamento?"
+                        data-confirm-action="Excluir"
+                    >
+                        Excluir
+                    </x-ui.button>
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'Sem mensagem nenhuma, o componente não rende nada — pode ficar no layout o tempo todo.',
+            'As chaves lidas da sessão, nesta ordem: <code>toast</code>, <code>success</code>, <code>status</code>, <code>error</code>, <code>warning</code>, <code>info</code>. Cada nome já traz o ícone que promete; <code>session="minha-chave"</code> lê só a sua, sem supor ícone.',
+            'O flash pode ser uma string ou um array com <code>message</code>, <code>title</code> e <code>type</code>.',
+            'A mensagem vai como texto para a caixa, nunca como HTML: um erro de validação ou um valor vindo do banco não vira markup na tela.',
+            '<code>data-confirm</code> em qualquer botão ou link pede confirmação antes de agir — o clique é segurado, a caixa responde, e só então a ação original acontece (formulário é enviado, o resto é clicado de novo).',
+            'A biblioteca (<code>sweetalert2</code>) é importada no primeiro uso: página sem toast e sem confirmação não paga por ela.',
+        ],
+    ],
+    [
         'name'        => 'alert',
         'title'       => 'Alert',
         'description' => 'Recado na página: confirmação, erro de formulário, aviso de manutenção. Neutro por padrão, colorido no ponto de uso.',
