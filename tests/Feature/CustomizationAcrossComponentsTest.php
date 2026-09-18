@@ -59,6 +59,8 @@ dataset('customisable', [
     'checkbox'         => ['checkbox', '<x-ui.checkbox name="n" label="N" %s />', 'gap-1.5', 'gap-4'],
     'radio'            => ['radio', '<x-ui.radio name="n" value="1" label="N" %s />', 'gap-1.5', 'gap-4'],
     'dropdown'         => ['dropdown', '<x-ui.dropdown label="A" %s>x</x-ui.dropdown>', 'inline-block', 'block'],
+    'table'            => ['table', '<x-ui.table :headers="[\'a\']" :rows="[[\'b\']]" %s />', 'rounded-surface', 'rounded-none'],
+    'tooltip'          => ['tooltip', '<x-ui.tooltip text="t" %s>x</x-ui.tooltip>', 'inline-flex', 'block'],
     'field'            => ['field', '<x-ui.field label="N" %s>x</x-ui.field>', 'gap-1.5', 'gap-4'],
     'input'            => ['input', '<x-ui.input name="n" label="N" %s />', 'gap-1.5', 'gap-4'],
     'textarea'         => ['textarea', '<x-ui.textarea name="n" label="N" %s />', 'gap-1.5', 'gap-4'],

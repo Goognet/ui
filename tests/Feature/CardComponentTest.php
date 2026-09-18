@@ -3,17 +3,14 @@
 declare(strict_types = 1);
 
 it('is a div until it is given somewhere to go', function (): void {
-    expect((string) $this->blade('<x-ui.card>Texto</x-ui.card>'))->toStartWith('<div');
-
-    expect((string) $this->blade('<x-ui.card href="/servicos">Texto</x-ui.card>'))
-        ->toStartWith('<a')
+    expect((string) $this->blade('<x-ui.card>Texto</x-ui.card>'))->toStartWith('<div')
+        ->and((string) $this->blade('<x-ui.card href="/servicos">Texto</x-ui.card>'))->toStartWith('<a')
         ->toContain('href="/servicos"');
 });
 
 it('lifts only when it leads somewhere', function (): void {
-    expect((string) $this->blade('<x-ui.card href="/x">t</x-ui.card>'))->toContain('hover:-translate-y-0.5');
-
-    expect((string) $this->blade('<x-ui.card>t</x-ui.card>'))->not->toContain('hover:-translate-y-0.5');
+    expect((string) $this->blade('<x-ui.card href="/x">t</x-ui.card>'))->toContain('hover:-translate-y-0.5')
+        ->and((string) $this->blade('<x-ui.card>t</x-ui.card>'))->not->toContain('hover:-translate-y-0.5');
 });
 
 it('refuses an address the library would not follow', function (): void {
@@ -52,7 +49,6 @@ it('renders the header and the footer only when they are given', function (): vo
 
     expect((string) $this->blade($blade))->toContain('Título')
         ->toContain('Rodapé')
-        ->toContain('border-t border-neutral-100');
-
-    expect((string) $this->blade('<x-ui.card>Corpo</x-ui.card>'))->not->toContain('border-t border-neutral-100');
+        ->toContain('border-t border-neutral-100')
+        ->and((string) $this->blade('<x-ui.card>Corpo</x-ui.card>'))->not->toContain('border-t border-neutral-100');
 });

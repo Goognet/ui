@@ -21,10 +21,10 @@ final class Field
     public static function id(?string $id, ?string $name): string
     {
         if (filled($id)) {
-            return self::slug((string) $id);
+            return self::slug($id);
         }
 
-        $slug = filled($name) ? self::slug((string) $name) : '';
+        $slug = filled($name) ? self::slug($name) : '';
 
         return $slug === '' ? uniqid('field-') : $slug;
     }
@@ -49,7 +49,7 @@ final class Field
             return null;
         }
 
-        return $bag->first(self::key((string) $name)) ?: null;
+        return $bag->first(self::key($name)) ?: null;
     }
 
     /**
@@ -63,7 +63,7 @@ final class Field
             return null;
         }
 
-        $key = self::key((string) $name);
+        $key = self::key($name);
 
         $value = request()->hasSession() ? request()->old($key) : session()->getOldInput($key);
 

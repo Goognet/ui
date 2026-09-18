@@ -134,6 +134,106 @@ return [
         ],
     ],
     [
+        'name'        => 'table',
+        'title'       => 'Table',
+        'description' => 'Tabela de dados. Rola sozinha quando não cabe, em vez de empurrar a página para o lado.',
+        'sources'     => ['table'],
+        'examples'    => [
+            [
+                'title' => 'Cabeçalhos, alinhamento e zebra',
+                'code'  => <<<'BLADE'
+                    <x-ui.table
+                        caption="Planos e preços"
+                        striped
+                        size="base"
+                        :headers="['Plano', 'Inclui', ['label' => 'Preço', 'align' => 'end']]"
+                        :rows="[
+                            ['Lite', 'Site institucional', 'R$ 90/mês'],
+                            ['Pro', 'Site + blog + suporte', 'R$ 190/mês'],
+                            ['Sob medida', 'Escopo fechado a cada projeto', 'sob consulta'],
+                        ]"
+                    />
+                    BLADE,
+            ],
+            [
+                'title' => 'Linhas vindas do banco, lidas por chave',
+                'code'  => <<<'BLADE'
+                    <x-ui.table
+                        size="sm"
+                        :headers="[
+                            ['key' => 'cidade', 'label' => 'Cidade'],
+                            ['key' => 'prazo', 'label' => 'Prazo', 'align' => 'end'],
+                        ]"
+                        :rows="[
+                            ['cidade' => 'São Paulo', 'prazo' => '2 dias'],
+                            ['cidade' => 'Campinas', 'prazo' => '3 dias'],
+                        ]"
+                    />
+                    BLADE,
+            ],
+            [
+                'title' => 'Escrita à mão',
+                'code'  => <<<'BLADE'
+                    <x-ui.table :headers="['Serviço', 'Situação']">
+                        <tr>
+                            <td class="px-4 py-3 text-sm">Consultoria</td>
+                            <td class="px-4 py-3 text-sm"><x-ui.badge>Ativo</x-ui.badge></td>
+                        </tr>
+                    </x-ui.table>
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'A rolagem horizontal fica no invólucro da tabela, não na página: é a única exceção à regra de nunca deixar o corpo rolar para o lado.',
+            '<code>headers</code> aceita <code>[\'Plano\']</code>, <code>[\'plano\' => \'Plano\']</code> ou linhas com <code>label</code>, <code>key</code> e <code>align</code>. Com <code>key</code>, cada linha é lida por chave — uma coleção do banco entra sem mapear antes; sem <code>key</code>, é lida por posição.',
+            'O alinhamento é declarado uma vez, no cabeçalho, e vale para as células daquela coluna. Preço alinhado à direita com o cabeçalho à esquerda é o erro que isso evita.',
+            'Sem <code>rows</code>, o slot é usado como corpo — para quando uma célula precisa de markup, um badge ou um link.',
+            '<code>caption</code> vira <code>&lt;caption&gt;</code> de verdade: é o que um leitor de tela anuncia antes de entrar na tabela.',
+        ],
+    ],
+    [
+        'name'        => 'tooltip',
+        'title'       => 'Tooltip',
+        'description' => 'Explicação curta presa a um gatilho. Sem JavaScript: abre no hover e no foco do teclado.',
+        'sources'     => ['tooltip'],
+        'examples'    => [
+            [
+                'title'  => 'Em volta de um controle',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.tooltip text="Copia o link desta página">
+                        <x-ui.button size="sm" icon="heroicon-m-link">Copiar link</x-ui.button>
+                    </x-ui.tooltip>
+
+                    <x-ui.tooltip text="Abre no WhatsApp" placement="bottom">
+                        <x-ui.button size="sm" variant="primary">Falar agora</x-ui.button>
+                    </x-ui.tooltip>
+                    BLADE,
+            ],
+            [
+                'title'  => 'Em texto, que não recebe foco sozinho',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.text>
+                        Prazo de
+                        <x-ui.tooltip text="Dias úteis, contados a partir da aprovação da arte." focusable placement="top">
+                            <x-ui.text inline class="underline decoration-dotted">5 dias</x-ui.text>
+                        </x-ui.tooltip>
+                    </x-ui.text>
+
+                    <x-ui.tooltip text="À esquerda" placement="left"><x-ui.badge>left</x-ui.badge></x-ui.tooltip>
+                    <x-ui.tooltip text="À direita" placement="right"><x-ui.badge>right</x-ui.badge></x-ui.tooltip>
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'Abre no <code>hover</code> e no <code>focus-within</code>: um gatilho alcançado pelo teclado nunca recebe ponteiro, e uma dica que só o mouse abre é uma dica que metade dos visitantes não vê.',
+            'Quando o gatilho já é um botão ou um link, não é preciso mais nada. Em texto comum, <code>focusable</code> põe <code>tabindex="0"</code> e <code>aria-describedby</code> no invólucro, que é o que leva a dica ao teclado e ao leitor de tela.',
+            'Sem <code>text</code>, o componente rende só o gatilho — nada de bolha vazia numa página gerada por laço.',
+            'A bolha tem <code>pointer-events-none</code>: ela nunca fica entre o ponteiro e o que está embaixo.',
+        ],
+    ],
+    [
         'name'        => 'card',
         'title'       => 'Card',
         'description' => 'Bloco de conteúdo sobre uma superfície. Vira <code>&lt;a&gt;</code> sozinho quando recebe <code>href</code>, e só então ganha o movimento de hover.',

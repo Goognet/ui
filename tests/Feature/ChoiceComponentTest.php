@@ -46,7 +46,7 @@ it('asks a radio for the value it sends', function (): void {
 });
 
 it('rounds the checkbox and the radio differently, from one shared look', function (): void {
-    expect((string) $this->blade('<x-ui.checkbox name="a" />'))->toContain('accent-primary')->toContain('rounded-sm');
-
-    expect((string) $this->blade('<x-ui.radio name="a" value="1" />'))->toContain('accent-primary')->toContain('rounded-full');
+    expect((string) $this->blade('<x-ui.checkbox name="a" />'))->toContain('accent-primary')->toContain('rounded-sm')
+        ->and((string) $this->blade('<x-ui.radio name="a" value="1" />'))->toContain('accent-primary')
+        ->toContain('rounded-full');
 });

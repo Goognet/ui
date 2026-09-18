@@ -29,9 +29,8 @@ it('gives two dropdowns on the same page ids of their own', function (): void {
 });
 
 it('hangs the panel from the side it was told to', function (): void {
-    expect((string) $this->blade('<x-ui.dropdown label="A">a</x-ui.dropdown>'))->toContain('start-0');
-
-    expect((string) $this->blade('<x-ui.dropdown label="A" align="end">a</x-ui.dropdown>'))->toContain('end-0');
+    expect((string) $this->blade('<x-ui.dropdown label="A">a</x-ui.dropdown>'))->toContain('start-0')
+        ->and((string) $this->blade('<x-ui.dropdown label="A" align="end">a</x-ui.dropdown>'))->toContain('end-0');
 });
 
 it('takes a trigger of its own', function (): void {
