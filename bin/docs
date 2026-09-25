@@ -39,6 +39,8 @@ $app->usePublicPath($output);
 
 $app['config']->set([
     'app.name'                     => 'goognet/ui',
+    /* The catalogue is written in Portuguese, so the components it renders speak it too. */
+    'app.locale'                   => 'pt_BR',
     'app.url'                      => getenv('DOCS_URL') ?: 'https://goognet.github.io/ui',
     'app.key'                      => 'base64:' . base64_encode(random_bytes(32)),
     'goognet-ui.catalogue.enabled' => true,

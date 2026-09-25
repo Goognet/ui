@@ -235,7 +235,7 @@ npm install swiper fslightbox</code></pre>
                 </header>
 
                 <div class="mt-8 grid gap-6 lg:grid-cols-2">
-                    <article class="rounded-2xl border border-[var(--doc-line)] bg-[var(--doc-surface)] p-5">
+                    <article class="min-w-0 rounded-2xl border border-[var(--doc-line)] bg-[var(--doc-surface)] p-5">
                         <h3 class="text-sm font-semibold">Trocar uma frase</h3>
 
                         <p class="mt-2 text-sm leading-relaxed text-[var(--doc-muted)]">
@@ -251,7 +251,7 @@ return [
 ];</code></pre>
                     </article>
 
-                    <article class="rounded-2xl border border-[var(--doc-line)] bg-[var(--doc-surface)] p-5">
+                    <article class="min-w-0 rounded-2xl border border-[var(--doc-line)] bg-[var(--doc-surface)] p-5">
                         <h3 class="text-sm font-semibold">Adicionar um idioma</h3>
 
                         <p class="mt-2 text-sm leading-relaxed text-[var(--doc-muted)]">

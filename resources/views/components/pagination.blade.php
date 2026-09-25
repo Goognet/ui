@@ -128,7 +128,14 @@
 
             @if ($numbered)
                 @foreach (Pagination::pages($paginator) as $page)
-                    <li>
+                    {{--
+                        A phone fits about eight cells on a line, and the framework's default
+                        window is fifteen — they used to stack into three rows. Off the small
+                        screen the row is the two arrows around the page you are on; from `sm`
+                        up the whole window is back. The anchors stay in the markup either way,
+                        so a crawler still finds every page.
+                    --}}
+                    <li @class([$ui->classes('item', ''), 'hidden sm:block' => ! $page['current']])>
                         @if ($page['gap'])
                             <span aria-hidden="true" class="{{ $gapClass }}">{{ $page['label'] }}</span>
                         @elseif ($page['current'])

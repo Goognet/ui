@@ -114,3 +114,26 @@ it('leaves the summary out of a page that has nothing on it', function (): void 
     expect((string) $this->blade('<x-ui.pagination :paginator="$paginator" />', ['paginator' => $beyondTheEnd]))
         ->not->toContain('Mostrando');
 });
+
+it('shows only the page you are on until there is room for the window', function (): void {
+    $html = (string) $this->blade('<x-ui.pagination :paginator="$paginator" />', ['paginator' => lengthAware(300, page: 7)]);
+
+    $items = [];
+    preg_match_all('/<li([^>]*)>\s*<(a|span)[^>]*?(aria-current="page")?[^>]*>\s*([0-9…]+)/u', $html, $items, PREG_SET_ORDER);
+
+    $hidden = collect($items)->filter(fn (array $item): bool => str_contains($item[1], 'hidden sm:block'))->pluck(4);
+    $shown  = collect($items)->reject(fn (array $item): bool => str_contains($item[1], 'hidden sm:block'))->pluck(4);
+
+    /** Everything but the current page steps aside on a phone; nothing steps aside from `sm` up. */
+    expect($shown->all())->toBe(['7'])
+        ->and($hidden)->toContain('1', '6', '8', '30', '…');
+});
+
+it('keeps every page in the markup for a crawler, hidden or not', function (): void {
+    $html = (string) $this->blade('<x-ui.pagination :paginator="$paginator" />', ['paginator' => lengthAware(300, page: 7)]);
+
+    /** `hidden` is a class, not a missing element: the anchor is still there to be followed. */
+    expect($html)->toContain('href="/artigos?page=1"')
+        ->toContain('href="/artigos?page=30"')
+        ->toContain('href="/artigos?page=6"');
+});

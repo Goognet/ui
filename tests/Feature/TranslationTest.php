@@ -117,3 +117,15 @@ it('never lets a translated line smuggle markup into the cookie notice', functio
         ->not->toContain('<script>alert(1)</script>')
         ->toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
 });
+
+it('builds the public catalogue in the language it is written in', function (): void {
+    /**
+     * `bin/docs` boots its own application, outside this suite, and a fresh Laravel defaults
+     * to `en` — which silently published a Portuguese page with English buttons on it. Only
+     * the script can say which locale it picks.
+     */
+    $script = (string) file_get_contents(__DIR__ . '/../../bin/docs');
+
+    expect($script)->toContain("'app.locale'");
+    expect($script)->toContain("'pt_BR'");
+});
