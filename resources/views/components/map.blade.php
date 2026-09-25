@@ -1,6 +1,6 @@
 @props([
     'src'   => null,
-    'title' => 'Mapa de localização',
+    'title' => null,
     'ratio' => 'video',
     'eager' => false,
 ])
@@ -13,6 +13,8 @@
     $attributes = SafeUrl::attributes($attributes);
 
     $ui = Ui::component('map');
+
+    $title ??= __('goognet-ui::ui.map.title');
 
     /** An empty `src` loads the current page inside itself, so a refused or missing address emits nothing. */
     $frameSrc = SafeUrl::frame($src ?? config('goognet-ui.location.map'));

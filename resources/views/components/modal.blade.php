@@ -65,7 +65,7 @@
                         class="ms-auto"
                         data-modal-close
                     >
-                        <span class="sr-only">Fechar</span>
+                        <span class="sr-only">{{ __('goognet-ui::ui.modal.close') }}</span>
                     </x-goognet-ui::button>
                 @endif
             </div>

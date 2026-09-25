@@ -78,31 +78,49 @@
     $previousUrl = SafeUrl::href($paginator->previousPageUrl());
 
     $nextUrl = SafeUrl::href($paginator->nextPageUrl());
+
+    $numberClass = $ui->classes('number', 'font-control text-neutral-900');
 @endphp
 
 @if ($paginator->hasPages())
     <nav
         class="{{ ClassList::merge($ui->classes('base', 'flex flex-wrap items-center justify-between gap-4'), (string) $attributes->get('class')) }}"
-        {{ $attributes->except('class')->merge(['aria-label' => 'Paginação']) }}
+        {{ $attributes->except('class')->merge(['aria-label' => __('goognet-ui::ui.pagination.label')]) }}
     >
         @if ($showSummary)
+            {{--
+                Printed raw so the three figures can carry their own emphasis wherever the
+                sentence puts them — the order moves between languages. Every part comes from
+                the translation file or from the paginator's own integers.
+            --}}
             <p class="{{ $ui->classes('summary', 'text-sm text-neutral-600') }}">
-                Mostrando
-                <span class="font-control text-neutral-900">{{ $paginator->firstItem() }}</span>–<span
-                    class="font-control text-neutral-900"
-                    >{{ $paginator->lastItem() }}</span>
-                de <span class="font-control text-neutral-900">{{ $paginator->total() }}</span>
+                {!!
+                    __('goognet-ui::ui.pagination.summary', [
+                        'first' => '<span class="' . $numberClass . '">' . $paginator->firstItem() . '</span>',
+                        'last'  => '<span class="' . $numberClass . '">' . $paginator->lastItem() . '</span>',
+                        'total' => '<span class="' . $numberClass . '">' . $paginator->total() . '</span>',
+                    ])
+                !!}
             </p>
         @endif
 
         <ul class="{{ $ui->classes('list', 'flex flex-wrap items-center gap-1') }}">
             <li>
                 @if (filled($previousUrl))
-                    <a href="{{ $previousUrl }}" rel="prev" aria-label="Página anterior" class="{{ $arrowClass }}">
+                    <a
+                        href="{{ $previousUrl }}"
+                        rel="prev"
+                        aria-label="{{ __('goognet-ui::ui.pagination.previous') }}"
+                        class="{{ $arrowClass }}"
+                    >
                         {{ svg('heroicon-m-chevron-left', $iconClass) }}
                     </a>
                 @else
-                    <span aria-disabled="true" aria-label="Página anterior" class="{{ $disabledClass }}">
+                    <span
+                        aria-disabled="true"
+                        aria-label="{{ __('goognet-ui::ui.pagination.previous') }}"
+                        class="{{ $disabledClass }}"
+                    >
                         {{ svg('heroicon-m-chevron-left', $iconClass) }}
                     </span>
                 @endif
@@ -118,7 +136,7 @@
                         @else
                             <a
                                 href="{{ SafeUrl::href($page['url']) }}"
-                                aria-label="Ir para a página {{ $page['label'] }}"
+                                aria-label="{{ __('goognet-ui::ui.pagination.goto', ['page' => $page['label']]) }}"
                                 class="{{ $pageClass }}"
                             >
                                 {{ $page['label'] }}</a>
@@ -129,11 +147,20 @@
 
             <li>
                 @if (filled($nextUrl))
-                    <a href="{{ $nextUrl }}" rel="next" aria-label="Próxima página" class="{{ $arrowClass }}">
+                    <a
+                        href="{{ $nextUrl }}"
+                        rel="next"
+                        aria-label="{{ __('goognet-ui::ui.pagination.next') }}"
+                        class="{{ $arrowClass }}"
+                    >
                         {{ svg('heroicon-m-chevron-right', $iconClass) }}
                     </a>
                 @else
-                    <span aria-disabled="true" aria-label="Próxima página" class="{{ $disabledClass }}">
+                    <span
+                        aria-disabled="true"
+                        aria-label="{{ __('goognet-ui::ui.pagination.next') }}"
+                        class="{{ $disabledClass }}"
+                    >
                         {{ svg('heroicon-m-chevron-right', $iconClass) }}
                     </span>
                 @endif

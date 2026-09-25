@@ -1,6 +1,6 @@
 @props([
     'items' => null,
-    'label' => 'Menu principal',
+    'label' => null,
 ])
 
 @php
@@ -12,6 +12,8 @@
     $attributes = SafeUrl::attributes($attributes);
 
     $ui = Ui::component('menu');
+
+    $label ??= __('goognet-ui::ui.menu.label');
 
     $resolveUrls = function (array $items) use (&$resolveUrls): array {
         return collect($items)
@@ -228,7 +230,7 @@
         aria-controls="{{ $panelId }}"
         aria-expanded="false"
     >
-        <span class="sr-only">Abrir menu</span>
+        <span class="sr-only">{{ __('goognet-ui::ui.menu.open') }}</span>
         {{ svg('heroicon-o-bars-3', 'size-6') }}
     </button>
 
@@ -252,7 +254,7 @@
             class="ms-auto inline-flex size-10 cursor-pointer items-center justify-center"
             data-menu-close
         >
-            <span class="sr-only">Fechar menu</span>
+            <span class="sr-only">{{ __('goognet-ui::ui.menu.close') }}</span>
             {{ svg('heroicon-o-x-mark', 'size-6') }}
         </button>
 

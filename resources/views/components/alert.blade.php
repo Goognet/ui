@@ -61,7 +61,7 @@
             class="{{ $ui->classes('dismiss', '-m-1.5 grid size-8 shrink-0 cursor-pointer place-items-center rounded-control text-neutral-400 transition-colors duration-(--duration-fast) ease-(--ease-fluid) hover:text-neutral-700') }}"
             data-alert-dismiss
         >
-            <span class="sr-only">Fechar aviso</span>
+            <span class="sr-only">{{ __('goognet-ui::ui.alert.dismiss') }}</span>
             {{ svg('heroicon-m-x-mark', 'size-5') }}
         </button>
     @endif

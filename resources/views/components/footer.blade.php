@@ -121,8 +121,8 @@
 
         <div class="mt-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             @if ($menu->isNotEmpty())
-                <nav aria-label="Rodapé">
-                    <p class="{{ $columnTitle }}">Navegação</p>
+                <nav aria-label="{{ __('goognet-ui::ui.footer.label') }}">
+                    <p class="{{ $columnTitle }}">{{ __('goognet-ui::ui.footer.navigation') }}</p>
 
                     <div class="mt-3 flex flex-col gap-1">
                         @foreach ($menu as $item)
@@ -168,7 +168,7 @@
 
     <x-goognet-ui::container>
         <div class="{{ $ui->classes('bottom', 'flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 py-5 text-sm text-neutral-500') }}">
-            <p>&copy; {{ now()->year }} {{ $company['name'] ?? '' }}. Todos os direitos reservados.</p>
+            <p>&copy; {{ now()->year }} {{ $company['name'] ?? '' }}. {{ __('goognet-ui::ui.footer.rights') }}</p>
 
             <x-goognet-ui::link
                 href="#"
@@ -176,7 +176,7 @@
                 icon-trailing="heroicon-m-arrow-up"
                 class="inline-flex items-center gap-1.5 py-1 text-neutral-600"
             >
-                Voltar ao topo</x-goognet-ui::link>
+                {{ __('goognet-ui::ui.footer.top') }}</x-goognet-ui::link>
         </div>
 
         @if ($validator || $hasCredit)
@@ -202,7 +202,7 @@
                             {{ $credit }}
                         @else
                             <p>
-                                Desenvolvido por
+                                {{ __('goognet-ui::ui.footer.credit') }}
                                 <x-goognet-ui::link
                                     :href="$agency['url'] ?? null"
                                     external

@@ -102,6 +102,11 @@
                     class="rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--doc-ink)] transition-colors duration-(--duration-fast) ease-(--ease-fluid) hover:bg-[var(--doc-surface)] data-[current]:bg-[var(--doc-surface)]"
                 >Personalização</a>
 
+                <a
+                    href="#idiomas"
+                    class="rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--doc-ink)] transition-colors duration-(--duration-fast) ease-(--ease-fluid) hover:bg-[var(--doc-surface)] data-[current]:bg-[var(--doc-surface)]"
+                >Idiomas</a>
+
                 @foreach ($components as $doc)
                     <a
                         href="#{{ $doc['name'] }}"
@@ -209,6 +214,59 @@ npm install swiper fslightbox</code></pre>
                 <p class="mt-6 max-w-2xl text-sm leading-relaxed text-[var(--doc-muted)]">
                     Último recurso: <code>php artisan vendor:publish --tag=goognet-ui-views</code> copia as views para o
                     site. A partir daí elas deixam de receber as atualizações do pacote.
+                </p>
+            </section>
+
+            <section
+                id="idiomas"
+                class="scroll-mt-20 border-b border-[var(--doc-line)] py-12"
+                aria-labelledby="idiomas-titulo"
+            >
+                <header>
+                    <h2 id="idiomas-titulo" class="text-2xl font-semibold tracking-tight">Idiomas</h2>
+
+                    <p class="mt-3 max-w-2xl text-[15px] leading-relaxed text-pretty text-[var(--doc-muted)]">
+                        Todo texto que um componente escreve sozinho — o botão de fechar, o aviso de cookies, o rodapé,
+                        a paginação — sai dos arquivos de idioma, e não do Blade. O pacote traz
+                        <code>pt_BR</code>, <code>en</code> e <code>es</code>. O que o visitante lê segue o
+                        <code>app.locale</code> do request, então um site multi-idioma só precisa chamar
+                        <code>App::setLocale()</code>.
+                    </p>
+                </header>
+
+                <div class="mt-8 grid gap-6 lg:grid-cols-2">
+                    <article class="rounded-2xl border border-[var(--doc-line)] bg-[var(--doc-surface)] p-5">
+                        <h3 class="text-sm font-semibold">Trocar uma frase</h3>
+
+                        <p class="mt-2 text-sm leading-relaxed text-[var(--doc-muted)]">
+                            Crie o arquivo com apenas as chaves que quiser mudar. As que faltarem continuam vindo do
+                            pacote, então não há o que manter em dia.
+                        </p>
+
+                        <pre
+                            class="mt-4 overflow-x-auto rounded-xl bg-[var(--doc-sunken)] px-4 py-3 font-mono text-xs leading-relaxed text-[var(--doc-ink-2)]"
+                        ><code>// lang/vendor/goognet-ui/pt_BR/ui.php
+return [
+    'cookie' =&gt; ['accept' =&gt; 'Tudo bem'],
+];</code></pre>
+                    </article>
+
+                    <article class="rounded-2xl border border-[var(--doc-line)] bg-[var(--doc-surface)] p-5">
+                        <h3 class="text-sm font-semibold">Adicionar um idioma</h3>
+
+                        <p class="mt-2 text-sm leading-relaxed text-[var(--doc-muted)]">
+                            Publique os três que existem, use um como molde e traduza. Um idioma sem tradução cai no
+                            <code>fallback_locale</code> da aplicação.
+                        </p>
+
+                        <pre class="mt-4 overflow-x-auto rounded-xl bg-[var(--doc-sunken)] px-4 py-3 font-mono text-xs leading-relaxed text-[var(--doc-ink-2)]"><code>php artisan vendor:publish --tag=goognet-ui-lang</code></pre>
+                    </article>
+                </div>
+
+                <p class="mt-6 max-w-2xl text-sm leading-relaxed text-[var(--doc-muted)]">
+                    As frases com número ou termo no meio usam marcador — <code>:first</code>, <code>:last</code>,
+                    <code>:total</code>, <code>:page</code>, <code>:essential</code> — e não concatenação, para que a
+                    ordem das palavras possa mudar de um idioma para outro.
                 </p>
             </section>
 

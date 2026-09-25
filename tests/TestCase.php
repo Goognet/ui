@@ -42,6 +42,12 @@ abstract class TestCase extends Orchestra
     protected function defineEnvironment($app): void
     {
         $app['config']->set('app.key', 'base64:' . base64_encode(str_repeat('k', 32)));
+
+        /**
+         * Testbench boots in `en`, and the assertions here are written against the Portuguese
+         * the package leads with. A test that wants another language sets the locale itself.
+         */
+        $app['config']->set('app.locale', 'pt_BR');
     }
 
     protected function defineRoutes($router): void

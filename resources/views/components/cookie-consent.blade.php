@@ -44,10 +44,12 @@
                 class="{{ $ui->classes('text', 'text-sm leading-relaxed text-pretty text-neutral-700') }}"
             >
                 @if ($slot->isEmpty())
-                    Usamos apenas
-                    <b class="font-semibold">cookies essenciais</b>
-                    para o funcionamento do site. Ao continuar navegando, você concorda com a nossa política de
-                    privacidade.
+                    {{--
+                        Printed raw because the sentence carries the emphasised term inside it, and
+                        word order moves between languages. Both halves come from the translation
+                        files and the term is escaped on the way in, so no markup can ride along.
+                    --}}
+                    {!! __('goognet-ui::ui.cookie.message', ['essential' => '<b class="font-semibold">' . e(__('goognet-ui::ui.cookie.essential')) . '</b>']) !!}
                 @else
                     {{ $slot }}
                 @endif
@@ -56,10 +58,17 @@
 
         <div class="{{ $ui->classes('actions', 'mt-4 flex flex-wrap items-center gap-2') }}">
             @if (filled($policy))
-                <x-goognet-ui::button :href="$policy" size="sm">Saber mais</x-goognet-ui::button>
+                <x-goognet-ui::button
+                    :href="$policy"
+                    size="sm"
+                >{{ __('goognet-ui::ui.cookie.more') }}</x-goognet-ui::button>
             @endif
 
-            <x-goognet-ui::button variant="primary" size="sm" data-cookie-accept>Aceitar</x-goognet-ui::button>
+            <x-goognet-ui::button
+                variant="primary"
+                size="sm"
+                data-cookie-accept
+            >{{ __('goognet-ui::ui.cookie.accept') }}</x-goognet-ui::button>
         </div>
     </div>
 @endunless

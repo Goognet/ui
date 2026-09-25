@@ -1110,7 +1110,8 @@ return [
             'O resumo é a frase <code>Mostrando 61–70 de 300</code>. Desligue com <code>:summary="false"</code>; ele já não aparece quando o paginador não sabe o total.',
             'Cada célula tem a altura e a largura mínima dos tokens de controle (<code>--spacing-control-sm</code>), então o alvo de toque passa o mínimo do WCAG 2.2 e a linha não muda de largura entre a primeira página e as outras.',
             'Para o <code>$posts->links()</code> desenhar este componente sem mexer em nenhuma chamada, registre a view adaptadora no <code>AppServiceProvider</code>: <code>Paginator::defaultView(\'goognet-ui::pagination\')</code>.',
-            '<code>Ui::pagination()</code> define padrões e classes por parte: <code>base</code>, <code>summary</code>, <code>list</code>, <code>page</code>, <code>current</code>, <code>gap</code>, <code>arrow</code> e <code>disabled</code>.',
+            '<code>Ui::pagination()</code> define padrões e classes por parte: <code>base</code>, <code>summary</code>, <code>list</code>, <code>number</code>, <code>page</code>, <code>current</code>, <code>gap</code>, <code>arrow</code> e <code>disabled</code>.',
+            'O texto — o resumo, o nome da navegação e os rótulos das setas — vem dos arquivos de idioma, na seção <strong>Idiomas</strong>, no topo.',
         ],
     ],
     [

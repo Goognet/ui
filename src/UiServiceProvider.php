@@ -31,6 +31,13 @@ final class UiServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', self::NAMESPACE);
 
+        /**
+         * Every string the components write on their own. The package ships pt_BR, en and es,
+         * and the site adds a locale by dropping a file in `lang/vendor/goognet-ui`. What the
+         * visitor reads follows `app.locale`, so a multilingual site only has to set it.
+         */
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', self::NAMESPACE);
+
         /** The consent cookie is written by the browser in plain text; decrypting it would read as absent. */
         EncryptCookies::except(ConsentCookie::name());
 
@@ -52,6 +59,10 @@ final class UiServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../resources/views' => resource_path('views/vendor/' . self::NAMESPACE),
             ], 'goognet-ui-views');
+
+            $this->publishes([
+                __DIR__ . '/../lang' => lang_path('vendor/' . self::NAMESPACE),
+            ], 'goognet-ui-lang');
         }
     }
 
