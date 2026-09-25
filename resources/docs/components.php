@@ -1065,6 +1065,55 @@ return [
         ],
     ],
     [
+        'name'        => 'pagination',
+        'title'       => 'Pagination',
+        'description' => 'Navegação entre páginas de um paginador do Laravel. Recebe o próprio <code>$paginator</code> e desenha o resumo, as páginas e as setas.',
+        'sources'     => ['pagination'],
+        'examples'    => [
+            [
+                'title' => 'Um paginador completo',
+                'code'  => <<<'BLADE'
+                    <x-ui.pagination :paginator="new Illuminate\Pagination\LengthAwarePaginator(range(1, 10), 300, 10, 7, ['path' => '/exemplo'])" />
+                    BLADE,
+            ],
+            [
+                'title' => 'Tamanhos e raio',
+                'code'  => <<<'BLADE'
+                    <x-ui.pagination
+                        size="sm"
+                        :paginator="new Illuminate\Pagination\LengthAwarePaginator(range(1, 10), 90, 10, 4, ['path' => '/exemplo'])"
+                    />
+                    <x-ui.pagination
+                        size="lg"
+                        rounded="full"
+                        :paginator="new Illuminate\Pagination\LengthAwarePaginator(range(1, 10), 90, 10, 4, ['path' => '/exemplo'])"
+                    />
+                    BLADE,
+            ],
+            [
+                'title' => 'Só anterior e próxima, sem resumo',
+                'code'  => <<<'BLADE'
+                    <x-ui.pagination
+                        simple
+                        :summary="false"
+                        :paginator="new Illuminate\Pagination\LengthAwarePaginator(range(1, 10), 300, 10, 7, ['path' => '/exemplo'])"
+                    />
+                    BLADE,
+            ],
+        ],
+        'notes' => [
+            'O prop <code>paginator</code> é o objeto que o controller já devolve — <code>Model::query()->paginate()</code>, <code>simplePaginate()</code> ou <code>cursorPaginate()</code>. Nada de passar página e total soltos.',
+            'Sem mais de uma página o componente não desenha nada, como o <code>links()</code> do Laravel. Uma barra de paginação com uma página só é ruído.',
+            'As páginas numeradas dependem de o paginador saber o total. <code>simplePaginate()</code> e <code>cursorPaginate()</code> não sabem, então caem sozinhos em anterior/próxima — o <code>simple</code> força esse formato também num paginador completo.',
+            'A janela de páginas e as reticências vêm do <code>UrlWindow</code> do próprio Laravel, então a régua é a mesma das views de paginação de fábrica. Quantas páginas aparecem de cada lado se ajusta no paginador, com <code>->onEachSide(2)</code>.',
+            'A linha de páginas quebra em vez de estourar a largura. Com o padrão do Laravel (<code>onEachSide</code> igual a 3) são até 13 células, que viram duas linhas num celular — <code>->onEachSide(1)</code> deixa tudo numa linha só até em 375px.',
+            'O resumo é a frase <code>Mostrando 61–70 de 300</code>. Desligue com <code>:summary="false"</code>; ele já não aparece quando o paginador não sabe o total.',
+            'Cada célula tem a altura e a largura mínima dos tokens de controle (<code>--spacing-control-sm</code>), então o alvo de toque passa o mínimo do WCAG 2.2 e a linha não muda de largura entre a primeira página e as outras.',
+            'Para o <code>$posts->links()</code> desenhar este componente sem mexer em nenhuma chamada, registre a view adaptadora no <code>AppServiceProvider</code>: <code>Paginator::defaultView(\'goognet-ui::pagination\')</code>.',
+            '<code>Ui::pagination()</code> define padrões e classes por parte: <code>base</code>, <code>summary</code>, <code>list</code>, <code>page</code>, <code>current</code>, <code>gap</code>, <code>arrow</code> e <code>disabled</code>.',
+        ],
+    ],
+    [
         'name'        => 'menu',
         'title'       => 'Menu',
         'description' => 'Navegação principal. No desktop abre dropdown ou megamenu; abaixo de lg vira hambúrguer com gaveta e acordeão.',
