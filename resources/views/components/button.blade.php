@@ -45,11 +45,11 @@
         'lg'   => 'size-control-lg text-base',
     ];
 
-    /** Dark ink on the brand fills: white on them measures 4.12:1 and fails AA, neutral-950 measures 4.89:1. */
+    /** The text over a brand fill follows the fill's lightness; see `--color-primary-contrast`. */
     $variants = $ui->variants([
         'default'   => 'border border-neutral-200 bg-white text-neutral-800 shadow-control hover:border-neutral-300 hover:shadow-control-hover',
-        'primary'   => 'bg-primary text-neutral-950 shadow-control hover:bg-primary-dark hover:shadow-control-hover',
-        'secondary' => 'bg-secondary text-neutral-950 shadow-control hover:bg-secondary-dark hover:shadow-control-hover',
+        'primary'   => 'bg-primary text-primary-contrast shadow-control hover:bg-primary-dark hover:shadow-control-hover',
+        'secondary' => 'bg-secondary text-secondary-contrast shadow-control hover:bg-secondary-dark hover:shadow-control-hover',
         'filled'    => 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200',
         'ghost'     => 'bg-transparent text-neutral-700 hover:bg-neutral-100',
     ]);

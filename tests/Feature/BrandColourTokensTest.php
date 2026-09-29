@@ -26,11 +26,46 @@ it('derives the semantic tokens from the scale, not from the palette again', fun
      * both pointed at the palette in parallel. A site that repainted the first kept the second:
      * the button turned blue and the link's hover stayed green.
      */
-    expect(theme())
-        ->toContain("--color-{$brand}: var(--color-{$brand}-500);")
-        ->toContain("--color-{$brand}-dark: var(--color-{$brand}-600);")
-        ->toContain("--color-{$brand}-light: var(--color-{$brand}-300);");
+    expect(theme())->toContain("--color-{$brand}: var(--color-{$brand}-500);");
 })->with(['primary', 'secondary']);
+
+it('measures the dark and light pair off the brand colour, not off a step of the scale', function (string $brand): void {
+    /**
+     * `--color-primary-dark: var(--color-primary-600)` only holds while the brand sits on the
+     * 500. A site that pointed the brand at cyan-700 kept the 600 as its "dark" — a lighter
+     * colour — and the button brightened on hover. Lightness is measured from the brand now.
+     */
+    expect(theme())
+        ->toMatch('/--color-' . $brand . '-dark:\s*oklch\(from var\(--color-' . $brand . '\) calc\(l - /')
+        ->toMatch('/--color-' . $brand . '-light:\s*oklch\(from var\(--color-' . $brand . '\) calc\(l \+ /');
+})->with(['primary', 'secondary']);
+
+it('lets the brand pick the text that covers it', function (string $brand): void {
+    /**
+     * No single colour reads on every fill: black over lime measures 10.77:1 and white 1.96:1,
+     * and over cyan-700 they swap to 3.81:1 and 5.28:1. The token switches on the fill's
+     * lightness, so the components can stop naming a colour they cannot know.
+     */
+    expect(theme())->toMatch(
+        '/--color-' . $brand . '-contrast:\s*oklch\(from var\(--color-' . $brand . '\) clamp\(0, \(l - 0\.\d+\) \* -\d+, 1\) 0 0\)/'
+    );
+})->with(['primary', 'secondary']);
+
+it('never hardcodes the text colour over a brand fill', function (): void {
+    /** A fixed `text-neutral-950` here is the bug the contrast token exists to prevent. */
+    $offenders = collect(File::allFiles(__DIR__ . '/../../resources/views/components'))
+        ->flatMap(function (SplFileInfo $file): array {
+            preg_match_all('/\bbg-(primary|secondary)\b[^\'"]*/', $file->getContents(), $found);
+
+            return collect($found[0])
+                ->filter(fn (string $classes): bool => (bool) preg_match('/\btext-(?!primary-contrast|secondary-contrast)[a-z]+-\d{2,3}\b/', $classes))
+                ->map(fn (string $classes): string => $file->getFilename() . ': ' . $classes)
+                ->all();
+        })
+        ->all();
+
+    expect($offenders)->toBeEmpty();
+});
 
 it('keeps the ink tied to the brand colour rather than to a fixed one', function (string $brand): void {
     /** Hardcoding a colour here would be the same bug in a new place. */

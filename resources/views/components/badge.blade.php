@@ -40,8 +40,8 @@
     /** Same variant names as the button, so one vocabulary covers both. */
     $variants = $ui->variants([
         'default'   => 'border border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-50',
-        'primary'   => 'bg-primary text-neutral-950 hover:bg-primary-dark',
-        'secondary' => 'bg-secondary text-neutral-950 hover:bg-secondary-dark',
+        'primary'   => 'bg-primary text-primary-contrast hover:bg-primary-dark',
+        'secondary' => 'bg-secondary text-secondary-contrast hover:bg-secondary-dark',
         'filled'    => 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200',
         'ghost'     => 'bg-transparent text-neutral-700 hover:bg-neutral-100',
     ]);

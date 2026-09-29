@@ -21,8 +21,21 @@
     --color-primary-950: var(--color-lime-950);
     /* Derived from the scale: repainting `--color-primary-500` moves every token that uses it. */
     --color-primary: var(--color-primary-500);
-    --color-primary-dark: var(--color-primary-600);
-    --color-primary-light: var(--color-primary-300);
+
+    /*
+     * Measured from `--color-primary` itself rather than read off a fixed step of the scale.
+     * A site that points the brand at the 700 kept the 600 as its "dark" and hovered lighter,
+     * because counting steps only holds while the brand sits on the 500.
+     */
+    --color-primary-dark: oklch(from var(--color-primary) calc(l - 0.08) c h);
+    --color-primary-light: oklch(from var(--color-primary) calc(l + 0.14) c h);
+
+    /*
+     * The text that covers a brand fill, black below L 0.62 and white above. A single hardcoded
+     * colour cannot serve both: on lime, black reads 10.77:1 and white 1.96:1; on cyan-700 they
+     * swap to 3.81:1 and 5.28:1.
+     */
+    --color-primary-contrast: oklch(from var(--color-primary) clamp(0, (l - 0.62) * -1000, 1) 0 0);
 
     /* Readable ink: lightness forced to 0.45, hue kept. Brand colours as text fail 4.5:1; ink passes. */
     --color-primary-ink: oklch(from var(--color-primary) 0.45 c h);
@@ -40,8 +53,11 @@
     --color-secondary-950: var(--color-purple-950);
     /* Derived from the scale: repainting `--color-secondary-500` moves every token that uses it. */
     --color-secondary: var(--color-secondary-500);
-    --color-secondary-dark: var(--color-secondary-600);
-    --color-secondary-light: var(--color-secondary-300);
+
+    /* Measured from `--color-secondary`, same as the primary's. */
+    --color-secondary-dark: oklch(from var(--color-secondary) calc(l - 0.08) c h);
+    --color-secondary-light: oklch(from var(--color-secondary) calc(l + 0.14) c h);
+    --color-secondary-contrast: oklch(from var(--color-secondary) clamp(0, (l - 0.62) * -1000, 1) 0 0);
 
     /* Readable ink: lightness forced to 0.45, hue kept. Brand colours as text fail 4.5:1; ink passes. */
     --color-secondary-ink: oklch(from var(--color-secondary) 0.45 c h);
