@@ -40,7 +40,7 @@
 @endphp
 
 <label id="{{ $triggerId }}" class="{{ $ui->classes('trigger', implode(' ', $triggerClasses)) }}">
-    <input type="radio" name="{{ $name }}" class="sr-only" aria-controls="{{ $panelId }}" @checked($checked) />
+    <input type="radio" name="{{ $name }}" class="sr-only" aria-controls="{{ $panelId }}" @checked($checked)>
 
     @if (filled($icon))
         {{ is_string($icon) ? svg($icon, 'size-4') : $icon }}

@@ -44,7 +44,7 @@
         @if ($loop) loop @endif
     >
         @foreach ($sources as $extension => $type)
-            <source src="{{ Vite::asset($base . '.' . $extension) }}" type="{{ $type }}" />
+            <source src="{{ Vite::asset($base . '.' . $extension) }}" type="{{ $type }}">
         @endforeach
     </video>
 

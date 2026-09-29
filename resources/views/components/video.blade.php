@@ -60,7 +60,7 @@
             loading="{{ $eager ? 'eager' : 'lazy' }}"
             decoding="async"
             class="{{ $posterClass }}"
-        />
+        >
     @endif
 
     {{-- Not decoration: the white play button disappears on a light thumbnail without it. --}}

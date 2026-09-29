@@ -62,17 +62,17 @@
 
 @if ($isRaster && filled($dimensions))
     <picture>
-        <source type="image/webp" srcset="{{ $srcset('webp') }}" sizes="{{ $sizes }}" />
+        <source type="image/webp" srcset="{{ $srcset('webp') }}" sizes="{{ $sizes }}">
 
         <img
             src="{{ Vite::asset((string) $path) }}"
             srcset="{{ $srcset(pathinfo((string) $path, PATHINFO_EXTENSION)) }}"
             sizes="{{ $sizes }}"
             {{ $imageAttributes }}
-        />
+        >
     </picture>
 @elseif ($isRemote)
-    <img src="{{ $safeSrc }}" {{ $imageAttributes }} />
+    <img src="{{ $safeSrc }}" {{ $imageAttributes }}>
 @elseif ($isLocal)
-    <img src="{{ Vite::asset((string) $path) }}" {{ $imageAttributes }} />
+    <img src="{{ Vite::asset((string) $path) }}" {{ $imageAttributes }}>
 @endif

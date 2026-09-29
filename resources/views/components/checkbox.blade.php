@@ -45,7 +45,7 @@
             @if (filled($message)) aria-invalid="true" @endif
             @if (filled($described)) aria-describedby="{{ $described }}" @endif
             {{ $attributes->except('class') }}
-        />
+        >
 
         <span class="{{ $ui->classes('text', 'text-sm text-neutral-700') }}">{{ $label ?? $slot }}</span>
     </label>

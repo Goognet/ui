@@ -74,7 +74,7 @@
                 class="peer sr-only"
                 @checked($selected === $star)
                 @disabled($disabled)
-            />
+            >
 
             <label
                 for="{{ $group . '-' . $star }}"
@@ -99,7 +99,7 @@
                 class="sr-only"
                 @checked($selected === null)
                 @disabled($disabled)
-            />
+            >
         @endif
     </fieldset>
 @else

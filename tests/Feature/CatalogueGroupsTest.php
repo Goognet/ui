@@ -2,8 +2,8 @@
 
 declare(strict_types = 1);
 
-use Illuminate\Support\Collection;
 use Goognet\Ui\Support\Catalogue;
+use Illuminate\Support\Collection;
 
 /**
  * The index is grouped by the job the reader came to do, which only works while the grouping is

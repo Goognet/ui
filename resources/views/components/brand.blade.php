@@ -89,11 +89,11 @@
     <span {{ $logo->attributes->class([$ui->classes('mark', 'inline-flex shrink-0 items-center justify-center')]) }}>{{ $logo }}</span>
 @elseif (filled($webpPath))
     <picture>
-        <source srcset="{{ Vite::asset($webpPath) }}" type="image/webp" />
-        <img src="{{ $source }}" alt="{{ $alt }}" {{ $imageAttributes }} />
+        <source srcset="{{ Vite::asset($webpPath) }}" type="image/webp">
+        <img src="{{ $source }}" alt="{{ $alt }}" {{ $imageAttributes }}>
     </picture>
 @elseif (filled($source))
-    <img src="{{ $source }}" alt="{{ $alt }}" {{ $imageAttributes }} />
+    <img src="{{ $source }}" alt="{{ $alt }}" {{ $imageAttributes }}>
 @endif
 
 @if ($hasName)

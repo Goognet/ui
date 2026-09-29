@@ -28,22 +28,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     @if ($isPublic)
         <meta
             name="description"
             content="{{ $heading === null ? 'Componentes Blade para Laravel e Tailwind CSS 4, acessíveis e com filtro de URL em todo href e src.' : $heading . ' — componente Blade do goognet/ui para Laravel e Tailwind CSS 4.' }}"
-        />
+        >
         <title>
             {{ $heading === null ? 'goognet/ui · Componentes Blade para Laravel' : $heading . ' · goognet/ui' }}
         </title>
         <link
             rel="icon"
             href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23bef264'/%3E%3Cpath d='M9 16h14M16 9v14' stroke='%23191c17' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"
-        />
+        >
     @else
-        <meta name="robots" content="noindex, nofollow" />
+        <meta name="robots" content="noindex, nofollow">
         <title>{{ $heading === null ? 'Componentes' : $heading }} · {{ config('app.name') }}</title>
     @endif
 

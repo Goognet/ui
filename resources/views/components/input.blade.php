@@ -84,6 +84,6 @@
             @if (filled($message)) aria-invalid="true" @endif
             @if (filled($described = Field::describedBy([$fieldId . '-hint' => filled($hint), $fieldId . '-error' => filled($message)]))) aria-describedby="{{ $described }}" @endif
             {{ $attributes->except('class') }}
-        />
+        >
     </div>
 </x-goognet-ui::field>
