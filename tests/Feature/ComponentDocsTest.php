@@ -112,6 +112,43 @@ it('exercises every prop in at least one example', function (): void {
     expect($gaps)->toBeEmpty();
 });
 
+it('shows every variant a component defines', function (): void {
+    /**
+     * The prop guard above passes as soon as one example writes `variant="primary"`, so an
+     * `outline` shipped undocumented and nobody reading the catalogue could know it existed.
+     * The names come from the component's own source, which is the only list that cannot drift.
+     */
+    $variantsOf = function (string $component): array {
+        $source = (string) file_get_contents(__DIR__ . '/../../resources/views/components/' . $component . '.blade.php');
+
+        if (preg_match('/\$ui->variants\(\[(.*?)\n    \]\)/s', $source, $block) !== 1) {
+            return [];
+        }
+
+        preg_match_all("/'([a-z-]+)'\s*=>/", $block[1], $names);
+
+        return $names[1];
+    };
+
+    $gaps = collect(Catalogue::entries())
+        ->mapWithKeys(function (array $doc) use ($variantsOf): array {
+            $code = collect($doc['examples'])->pluck('code')->implode("\n");
+
+            $missing = collect($doc['sources'])
+                ->flatMap($variantsOf)
+                ->unique()
+                /** `default` is what a call with no variant renders, and every component demonstrates that. */
+                ->reject(fn (string $variant): bool => $variant === 'default' || str_contains($code, 'variant="' . $variant . '"'))
+                ->values()
+                ->all();
+
+            return $missing === [] ? [] : [$doc['name'] => $missing];
+        })
+        ->all();
+
+    expect($gaps)->toBeEmpty();
+});
+
 it('never writes a raw html tag into the catalogue prose', function (): void {
     /**
      * Descriptions and notes render with `{!! !!}`, so `<dialog>` written as prose became a

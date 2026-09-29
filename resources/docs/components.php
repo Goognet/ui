@@ -26,6 +26,7 @@ return [
                     <x-ui.button>Padrão</x-ui.button>
                     <x-ui.button variant="primary">Primary</x-ui.button>
                     <x-ui.button variant="secondary">Secondary</x-ui.button>
+                    <x-ui.button variant="outline">Outline</x-ui.button>
                     <x-ui.button variant="filled">Filled</x-ui.button>
                     <x-ui.button variant="ghost">Ghost</x-ui.button>
                     BLADE,
@@ -70,7 +71,8 @@ return [
             'Altura, arredondamento, peso da fonte e sombra vêm de tokens (<code>--spacing-control</code>, <code>--radius-control</code>, <code>--font-weight-control</code>, <code>--shadow-control</code>). Redefina no <code>@theme</code> do site e todos os botões acompanham — veja a seção <strong>Personalização</strong>, no topo.',
             'Uma classe na chamada substitui a do componente para a mesma propriedade: <code>class="rounded-full h-14"</code> tira o <code>rounded-control</code> e o <code>h-control</code> em vez de somar a eles.',
             '<code>Ui::button()</code> define padrões (<code>defaults</code>), variantes e tamanhos novos, e classes por parte: <code>base</code>, <code>content</code>, <code>icon</code> e <code>spinner</code>. Um tamanho novo vale para o botão comum; o <code>square</code> segue a escala de tokens.',
-            'As variantes <code>primary</code> e <code>secondary</code> usam <code>--color-primary</code> e <code>--color-secondary</code> — a cor da marca, sem tom numerado. A tinta por cima é escura: branco sobre o roxo mede 4,12:1 e reprova, <code>neutral-950</code> mede 4,89:1 e passa, então o preenchimento continua sendo a cor que o site escolheu.',
+            'As variantes <code>primary</code> e <code>secondary</code> usam <code>--color-primary</code> e <code>--color-secondary</code> — a cor da marca, sem tom numerado. A tinta por cima não é escolhida: <code>--color-primary-contrast</code> vira preto abaixo de <code>L 0.62</code> e branco acima. Nenhuma cor fixa serve para as duas pontas — preto sobre o lime mede 10,74:1 e branco 1,96:1; sobre o ciano-700 elas trocam, 3,81:1 e 5,28:1.',
+            'A variante <code>outline</code> desenha a marca como borda. O texto dela é <code>text-primary-ink</code>, não <code>text-primary</code>, pelo motivo da nota seguinte.',
             'Para <em>texto</em> sobre fundo claro existe <code>text-primary-ink</code>: a mesma cor numa luminosidade legível, derivada com <code>oklch(from var(--color-primary) 0.45 c h)</code>. A cor da marca como texto mede 1,95:1 — passar o mouse num link deixava ele menos legível do que estava.',
             'O <code>ink</code> é derivado, não escolhido: ele acompanha qualquer cor que o site defina. Medido em seis marcas bem diferentes, incluindo amarelo (1,57 → 7,43) e ciano (1,81 → 6,33).',
             'Com <code>href</code> o elemento é <code>&lt;a&gt;</code>; sem, é <code>&lt;button&gt;</code> e o prop <code>type</code> passa a valer.',
@@ -90,6 +92,7 @@ return [
                     <x-ui.badge>Padrão</x-ui.badge>
                     <x-ui.badge variant="primary">Primary</x-ui.badge>
                     <x-ui.badge variant="secondary">Secondary</x-ui.badge>
+                    <x-ui.badge variant="outline">Outline</x-ui.badge>
                     <x-ui.badge variant="filled">Filled</x-ui.badge>
                     <x-ui.badge variant="ghost">Ghost</x-ui.badge>
                     BLADE,
@@ -679,6 +682,7 @@ return [
         'notes' => [
             'A faixa de chamada vem antes dos links: quem chegou ao fim está perguntando o que fazer agora. Os textos são props (<code>callout-title</code>, <code>callout-text</code>, <code>callout-action</code>) e <code>:callout="false"</code> tira a faixa — numa política de privacidade, por exemplo. <code>:validator="false"</code> tira o selo do W3C.',
             'Nada é escrito à mão: navegação de <code>goognet-ui.menu</code>, redes de <code>goognet-ui.social</code>, contatos e nome de <code>goognet-ui.company</code>, assinatura de <code>goognet-ui.agency</code>. Coluna sem dado não é renderizada, em vez de sair vazia.',
+            'O menu é <strong>achatado</strong>: a barra esconde uma página dentro de um dropdown, o rodapé não tem onde esconder. Todos os níveis são percorridos — <code>children</code> e <code>groups</code> — e os links sobem para uma lista só. O pai de um dropdown não entra, porque é rótulo e não destino, e um endereço alcançado duas vezes aparece uma. Item com <code>route</code> vazio não tem URL e fica fora: a barra o mostraria, o rodapé não.',
             'A assinatura sai de <code>goognet-ui.agency</code>, e o slot <code>credit</code> a substitui quando o crédito é um logo, outra frase ou nada disso. Sem nome na config e sem slot, a linha inteira não é renderizada.',
             'O slot padrão vira mais uma coluna na grade — CNPJ, endereço, selo. Conteúdo mais largo se resolve no próprio bloco, com <code>sm:col-span-2</code>.',
             'A marca ocupa uma faixa própria, acima de três colunas de largura igual. Como primeira coluna ela ficava com 473px para 280px de conteúdo — 233px de vão morto ao lado, porque foi dimensionada supondo uma descrição que o boilerplate não traz preenchida.',
@@ -882,10 +886,19 @@ return [
                 'title'  => 'Variantes de hover',
                 'layout' => 'row',
                 'code'   => <<<'BLADE'
-                    <x-ui.link href="#">primary</x-ui.link>
+                    <x-ui.link href="#" variant="primary">primary</x-ui.link>
                     <x-ui.link href="#" variant="secondary">secondary</x-ui.link>
-                    <x-ui.link href="#" variant="neutral">neutral</x-ui.link>
+                    <x-ui.link href="#" variant="neutral">neutral, o padrão</x-ui.link>
                     <x-ui.link href="#" variant="none">sem cor no hover</x-ui.link>
+                    BLADE,
+            ],
+            [
+                'title' => 'Hover branco, para fundo escuro',
+                'code'  => <<<'BLADE'
+                    <div class="rounded-surface flex gap-6 bg-neutral-900 p-6 text-neutral-300">
+                        <x-ui.link href="#" variant="white">Sobre nós</x-ui.link>
+                        <x-ui.link href="#" variant="white" icon="heroicon-m-phone">(11) 3602-6440</x-ui.link>
+                    </div>
                     BLADE,
             ],
             [

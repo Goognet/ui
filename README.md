@@ -65,7 +65,7 @@ use Goognet\Ui\Ui;
 
 Ui::button()
     ->defaults(['variant' => 'primary'])
-    ->variant('danger', 'bg-red-600 text-white hover:bg-red-700')
+    ->variant('inverted', 'bg-white text-neutral-900 hover:bg-neutral-100')
     ->part('base', 'uppercase tracking-wide');
 ```
 

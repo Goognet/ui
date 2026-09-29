@@ -172,7 +172,7 @@ npm install swiper fslightbox</code></pre>
                             'title' => '3. Por projeto, em PHP — variantes, tamanhos e partes',
                             'text'  => 'No <code>AppServiceProvider</code> do site. A chamada ainda tem a última palavra sobre isto.',
                             'lang'  => 'php',
-                            'code'  => "use Goognet\\Ui\\Ui;\n\nUi::button()\n    ->defaults(['variant' => 'primary', 'rounded' => 'full'])\n    ->variant('danger', 'bg-red-600 text-white hover:bg-red-700')\n    ->size('xl', 'h-14 px-8 text-lg')\n    ->part('base', 'uppercase tracking-wide');",
+                            'code'  => "use Goognet\\Ui\\Ui;\n\nUi::button()\n    ->defaults(['variant' => 'primary', 'rounded' => 'full'])\n    ->variant('inverted', 'bg-white text-neutral-900 hover:bg-neutral-100')\n    ->size('xl', 'h-14 px-8 text-lg')\n    ->part('base', 'uppercase tracking-wide');",
                         ],
                     ];
                 @endphp
