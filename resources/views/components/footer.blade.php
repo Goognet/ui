@@ -24,10 +24,35 @@
 
     $agency = (array) config('goognet-ui.agency', []);
 
-    $menu = collect(config('goognet-ui.menu', []))
-        ->filter(fn (mixed $item): bool => is_array($item))
-        ->map(fn (array $item): array => [...$item, 'url' => Navigation::resolve($item)])
-        ->filter(fn (array $item): bool => filled($item['url']) && filled($item['label'] ?? null))
+    /**
+     * The menu flattened into one list of links.
+     *
+     * The bar can hide a page behind a dropdown, the footer has no dropdown to hide it in: a
+     * site whose services lived under a `Serviços` parent had them in the bar and nowhere in
+     * the footer. Every level is walked and the links come up to the top.
+     *
+     * An item without a resolved URL drops out — a dropdown parent is a label, not a
+     * destination — and a URL reached twice is listed once.
+     */
+    $flattenMenu = function (array $items) use (&$flattenMenu): array {
+        return collect($items)
+            ->filter(fn (mixed $item): bool => is_array($item))
+            ->flatMap(function (array $item) use (&$flattenMenu): array {
+                $link = [...$item, 'url' => Navigation::resolve($item)];
+
+                $nested = collect(['children', 'groups'])
+                    ->flatMap(fn (string $key): array => $flattenMenu((array) ($item[$key] ?? [])))
+                    ->all();
+
+                $self = filled($link['url']) && filled($link['label'] ?? null) ? [$link] : [];
+
+                return [...$self, ...$nested];
+            })
+            ->all();
+    };
+
+    $menu = collect($flattenMenu((array) config('goognet-ui.menu', [])))
+        ->unique('url')
         ->values();
 
     $networks = collect([

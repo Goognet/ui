@@ -53,6 +53,40 @@ it('takes the navigation from the shared menu', function (): void {
         ->and($rendered)->not->toContain('Sem link');
 });
 
+it('brings the links nested under a dropdown up into the list', function (): void {
+    /**
+     * The bar can hide a page behind a dropdown, the footer cannot: a site whose services sat
+     * under a `Serviços` parent had them in the bar and nowhere in the footer.
+     */
+    config()->set('goognet-ui.menu', [
+        ['label' => 'Serviços', 'children' => [
+            ['label' => 'Manutenção', 'url' => '/manutencao'],
+            ['label' => 'Automação', 'url' => '/automacao'],
+        ]],
+        ['label' => 'Institucional', 'groups' => [
+            ['label' => 'A empresa', 'children' => [
+                ['label' => 'Sobre nós', 'url' => '/sobre-nos'],
+            ]],
+        ]],
+    ]);
+
+    expect((string) $this->blade('<x-ui.footer />'))
+        ->toContain('/manutencao')
+        ->toContain('/automacao')
+        ->toContain('/sobre-nos');
+});
+
+it('lists a url reached twice only once', function (): void {
+    /** Flattening puts a parent and its "see all" child on the same address. */
+    config()->set('goognet-ui.menu', [
+        ['label' => 'Serviços', 'url' => '/servicos', 'children' => [
+            ['label' => 'Todos os serviços', 'url' => '/servicos'],
+        ]],
+    ]);
+
+    expect(substr_count((string) $this->blade('<x-ui.footer />'), '"/servicos"'))->toBe(1);
+});
+
 it('links the policy only when the route exists', function (): void {
     expect((string) $this->blade('<x-ui.footer />'))->toContain(route('privacy'));
 });
