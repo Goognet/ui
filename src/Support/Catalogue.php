@@ -21,6 +21,46 @@ final class Catalogue
         return $entries;
     }
 
+    /**
+     * The index, grouped by the job the reader came to do.
+     *
+     * A list of 39 names in alphabetical order answers "what is it called", which is the one
+     * question a reader who is looking already knows the answer to. Someone building a header
+     * wants the four components that make a header, next to each other.
+     *
+     * The order is the order of the page. `CatalogueGroupsTest` fails when a component is in no
+     * group or in two, so a new component cannot be filed by forgetting to file it.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function groups(): array
+    {
+        return [
+            'Navegação'          => ['navbar', 'menu', 'megamenu', 'brand', 'breadcrumb', 'sidebar', 'pagination', 'link'],
+            'Formulário'         => ['field', 'input', 'textarea', 'select', 'checkbox', 'radio', 'button', 'rating'],
+            'Conteúdo'           => ['heading', 'text', 'container', 'card', 'table', 'badge', 'counter', 'accordion', 'tabs'],
+            'Mídia'              => ['image', 'gallery', 'carousel', 'video', 'video-background', 'map'],
+            'Sobreposição'       => ['modal', 'dropdown', 'tooltip', 'toast', 'alert'],
+            'Rodapé e conversão' => ['footer', 'whatsapp', 'cookie-consent'],
+        ];
+    }
+
+    /**
+     * The entry of one component, or null when the name is not catalogued.
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function entry(string $component): ?array
+    {
+        foreach (self::entries() as $entry) {
+            if ($entry['name'] === $component) {
+                return $entry;
+            }
+        }
+
+        return null;
+    }
+
     /** The tag a reader should type for a component, under whatever prefix the site configured. */
     public static function tag(string $component): string
     {

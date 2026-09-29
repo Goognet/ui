@@ -86,6 +86,77 @@ final class ComponentProps
     }
 
     /**
+     * The parts of a component that `Ui::component()->part()` can paint, read from the
+     * `$ui->classes('name', …)` calls in its source.
+     *
+     * @return list<string>
+     */
+    public static function parts(string $component): array
+    {
+        preg_match_all("/\\\$ui->classes\('([a-z0-9-]+)'/", self::sourceOf($component), $names);
+
+        return array_values(array_unique($names[1]));
+    }
+
+    /**
+     * The theme tokens a component's classes resolve to, so its page can name what redefining
+     * each one moves. Only the utilities the package defines as tokens count: a `p-6` is a
+     * Tailwind step and not something a site is meant to retheme.
+     *
+     * @return list<string>
+     */
+    public static function tokens(string $component): array
+    {
+        $source = self::sourceOf($component);
+
+        $utilities = [
+            'control'              => '--spacing-control',
+            'control-xs'           => '--spacing-control-xs',
+            'control-sm'           => '--spacing-control-sm',
+            'control-lg'           => '--spacing-control-lg',
+            'rounded-control'      => '--radius-control',
+            'rounded-surface'      => '--radius-surface',
+            'rounded-media'        => '--radius-media',
+            'font-control'         => '--font-weight-control',
+            'font-heading'         => '--font-weight-heading',
+            'shadow-control'       => '--shadow-control',
+            'shadow-control-hover' => '--shadow-control-hover',
+            'shadow-surface'       => '--shadow-surface',
+            'shadow-soft'          => '--shadow-soft',
+            'shadow-lifted'        => '--shadow-lifted',
+            'container-page'       => '--container-page',
+        ];
+
+        $found = [];
+
+        foreach ($utilities as $utility => $token) {
+            /**
+             * `h-control` and `size-control-sm` both come from the spacing token, so the prefix
+             * varies. The lookahead keeps `shadow-control` out of `shadow-control-hover`, which
+             * is a token of its own and would otherwise be reported as both.
+             */
+            $pattern = str_starts_with($utility, 'control')
+                ? '/\b(?:h|w|size|min-h)-' . preg_quote($utility, '/') . '(?![\w-])/'
+                : '/\b' . preg_quote($utility, '/') . '(?![\w-])/';
+
+            if (preg_match($pattern, $source) === 1) {
+                $found[] = $token;
+            }
+        }
+
+        return array_values(array_unique($found));
+    }
+
+    private static function sourceOf(string $component): string
+    {
+        $path = self::directory() . '/' . $component . '.blade.php';
+
+        return preg_match('/^[a-z0-9-]+$/', $component) === 1 && is_file($path)
+            ? (string) file_get_contents($path)
+            : '';
+    }
+
+    /**
      * @return list<string>
      */
     private static function keysOf(string $source, string $method): array

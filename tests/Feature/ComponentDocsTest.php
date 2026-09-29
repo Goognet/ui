@@ -37,12 +37,28 @@ it('renders the public page for github pages, indexable and with the install ste
         ->assertDontSee('apenas em dev');
 });
 
-it('renders a section for every catalogued component', function (): void {
+it('gives every catalogued component a page of its own', function (): void {
+    /** One page each, not one page with 39 anchors: the index was a megabyte to reach any of them. */
+    foreach (Catalogue::entries() as $doc) {
+        $this->get(route('goognet-ui.catalogue.component', $doc['name']))
+            ->assertOk()
+            ->assertSee($doc['title']);
+    }
+});
+
+it('answers a name nobody catalogued with a 404, not the index', function (): void {
+    $this->get(route('goognet-ui.catalogue.component', 'nao-existe'))->assertNotFound();
+});
+
+it('links every component from the index, grouped by the job', function (): void {
     $rendered = (string) $this->get(route('goognet-ui.catalogue'))->getContent();
 
-    foreach (Catalogue::entries() as $doc) {
-        expect($rendered)->toContain('id="' . $doc['name'] . '"')
-            ->and($rendered)->toContain($doc['title']);
+    foreach (Catalogue::groups() as $group => $names) {
+        expect($rendered)->toContain($group);
+
+        foreach ($names as $name) {
+            expect($rendered)->toContain(route('goognet-ui.catalogue.component', $name));
+        }
     }
 });
 
@@ -57,21 +73,50 @@ it('documents every component that lives in the ui folder', function (): void {
     expect($documented->all())->toEqual($existing->all());
 });
 
-it('reads the props of a component straight from its source', function (): void {
-    $rendered = html_entity_decode((string) $this->get(route('goognet-ui.catalogue'))->getContent(), ENT_QUOTES);
+it('reads the props of a component straight from its source', function (string $component, string $expected): void {
+    /** Defaults and flags shown in the table come from the `@props` block, never from a copy. */
+    $rendered = html_entity_decode(
+        (string) $this->get(route('goognet-ui.catalogue.component', $component))->getContent(),
+        ENT_QUOTES,
+    );
 
-    /** Defaults shown in the table come from the `@props` block, never from a copy. */
-    expect($rendered)->toContain('icon-trailing')
-        ->and($rendered)->toContain("'base'")
-        ->and($rendered)->toContain('herdado do pai')
-        ->and($rendered)->toContain('obrigatório');
+    expect($rendered)->toContain($expected);
+})->with([
+    'a prop and its default'   => ['button', 'icon-trailing'],
+    'the default itself'       => ['button', "'button'"],
+    'one inherited from a pai' => ['tabs', 'herdado do pai'],
+    'one with no default'      => ['image', 'obrigatório'],
+]);
+
+it('names the values a variant and a size accept', function (): void {
+    /** The prop table used to say `variant` takes a string and leave the reader to the source. */
+    $rendered = (string) $this->get(route('goognet-ui.catalogue.component', 'button'))->getContent();
+
+    foreach (['default', 'primary', 'secondary', 'outline', 'filled', 'ghost'] as $variant) {
+        expect($rendered)->toContain($variant);
+    }
+});
+
+it('says what each component exposes to Ui::component()', function (): void {
+    /** The parts and tokens are read from the source, so the page cannot promise one that is gone. */
+    $rendered = html_entity_decode(
+        (string) $this->get(route('goognet-ui.catalogue.component', 'button'))->getContent(),
+        ENT_QUOTES,
+    );
+
+    expect($rendered)->toContain('spinner')
+        ->and($rendered)->toContain('--radius-control')
+        ->and($rendered)->toContain('--shadow-control-hover');
 });
 
 it('runs every example in the catalogue', function (): void {
-    $rendered = html_entity_decode((string) $this->get(route('goognet-ui.catalogue'))->getContent(), ENT_QUOTES);
-
-    /** A broken example would surface as an exception page instead of the gallery. */
+    /** A broken example would surface as an exception page instead of the component's page. */
     foreach (Catalogue::entries() as $doc) {
+        $rendered = html_entity_decode(
+            (string) $this->get(route('goognet-ui.catalogue.component', $doc['name']))->getContent(),
+            ENT_QUOTES,
+        );
+
         foreach ($doc['examples'] as $example) {
             expect($rendered)->toContain(trim($example['code']));
         }

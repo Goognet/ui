@@ -14,6 +14,7 @@ use AndreiIonita\BladeRemixIcon\BladeRemixIconServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Goognet\Ui\UiServiceProvider;
+use Goognet\Ui\Support\Catalogue;
 use Illuminate\Support\Facades\Vite;
 use Orchestra\Testbench\Foundation\Application;
 
@@ -49,14 +50,50 @@ $app['config']->set([
     'goognet-ui.catalogue.vite'    => ['docs/app.css', 'docs/app.js'],
 ]);
 
-/* Relative, so the page works under /ui/ on github.io and on a custom domain alike. */
-Vite::createAssetPathsUsing(fn (string $path): string => $path);
+/*
+ * Relative, so the pages work under /ui/ on github.io and on a custom domain alike. The prefix
+ * follows the page being written: the index sits at the root and a component one folder in.
+ */
+$prefix = '';
 
-$html = view('goognet-ui::catalogue')->render();
+/** By reference: an arrow function captures by value, and the prefix changes after this line. */
+Vite::createAssetPathsUsing(function (string $path) use (&$prefix): string {
+    return $prefix . $path;
+});
 
-file_put_contents($output . '/index.html', $html);
+/* A folder per component — /ui/button/ — rather than /ui/button.html, which the URLs then carry. */
+$link = function (?string $name) use (&$prefix): string {
+    return $name === null ? ($prefix === '' ? './' : $prefix) : $prefix . $name . '/';
+};
+
+$write = function (string $path, string $html) use ($output): int {
+    $target = $output . ($path === '' ? '' : '/' . $path) . '/index.html';
+
+    if (! is_dir(dirname($target))) {
+        mkdir(dirname($target), recursive: true);
+    }
+
+    file_put_contents($target, $html);
+
+    return strlen($html);
+};
+
+$bytes = $write('', view('goognet-ui::components.catalogue.index', ['link' => $link])->render());
+
+$pages = 1;
+
+$prefix = '../';
+
+foreach (Catalogue::entries() as $entry) {
+    $bytes += $write($entry['name'], view('goognet-ui::components.catalogue.component', [
+        'doc'  => $entry,
+        'link' => $link,
+    ])->render());
+
+    $pages++;
+}
 
 /* GitHub Pages runs Jekyll by default, which drops files and folders starting with an underscore. */
 touch($output . '/.nojekyll');
 
-fwrite(STDOUT, sprintf("build/docs/index.html — %d kB\n", intdiv(strlen($html), 1024)));
+fwrite(STDOUT, sprintf("build/docs — %d páginas, %d kB no total\n", $pages, intdiv($bytes, 1024)));

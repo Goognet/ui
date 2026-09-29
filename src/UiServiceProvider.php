@@ -77,14 +77,35 @@ final class UiServiceProvider extends ServiceProvider
             return;
         }
 
+        $path = (string) config(self::NAMESPACE . '.catalogue.path', 'dev/components');
+
+        /**
+         * Two routes rather than one with `{component?}`: the index and a component page are
+         * different pages, and naming them apart keeps the links in the views honest about
+         * which one they mean.
+         */
         Route::middleware('web')
-            ->get((string) config(self::NAMESPACE . '.catalogue.path', 'dev/components'), function (): Factory | View {
+            ->get($path, function (): Factory | View {
                 abort_unless(Catalogue::enabled(), 404);
 
                 /** @phpstan-ignore argument.type (a package view namespace is registered at runtime; Larastan only sees the app's) */
-                return view('goognet-ui::catalogue');
+                return view('goognet-ui::catalogue', ['component' => null]);
             })
             ->name('goognet-ui.catalogue')
+            ->defaults('sitemap', false);
+
+        Route::middleware('web')
+            ->get($path . '/{component}', function (string $component): Factory | View {
+                abort_unless(Catalogue::enabled(), 404);
+
+                /** A name nobody catalogued is a 404, not the index: a wrong link should say so. */
+                $entry = Catalogue::entry($component) ?? abort(404);
+
+                /** @phpstan-ignore argument.type (a package view namespace is registered at runtime; Larastan only sees the app's) */
+                return view('goognet-ui::catalogue', ['component' => $entry]);
+            })
+            ->where('component', '[a-z0-9-]+')
+            ->name('goognet-ui.catalogue.component')
             ->defaults('sitemap', false);
     }
 
