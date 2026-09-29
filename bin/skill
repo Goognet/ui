@@ -1,0 +1,40 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types = 1);
+
+/*
+ * Writes the Laravel Boost skill to resources/boost/skills/goognet-ui.
+ *
+ * Run it whenever `resources/docs/components.php` changes and commit the result: the files are
+ * shipped in the package, and `boost:update` copies them into every site that installs it.
+ * `BoostSkillTest` fails when what is committed no longer matches what this writes.
+ */
+
+use Goognet\Ui\Support\BoostSkill;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$root = dirname(__DIR__);
+$directory = $root . '/' . BoostSkill::DIRECTORY;
+
+/* Removed rather than merged: a component dropped from the catalogue must not leave its page behind. */
+foreach (glob($directory . '/components/*.md') ?: [] as $stale) {
+    unlink($stale);
+}
+
+$written = 0;
+
+foreach (BoostSkill::files() as $path => $contents) {
+    $target = $directory . '/' . $path;
+
+    if (! is_dir(dirname($target))) {
+        mkdir(dirname($target), recursive: true);
+    }
+
+    file_put_contents($target, $contents);
+
+    $written++;
+}
+
+fwrite(STDOUT, sprintf("%s — %d arquivos\n", BoostSkill::DIRECTORY, $written));

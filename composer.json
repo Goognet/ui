@@ -61,6 +61,7 @@
         "refactor": "rector process",
         "analyse": "phpstan analyse --no-progress",
         "test": "pest",
+        "skill": "@php bin/skill",
         "docs": [
             "npm run build:docs",
             "@php bin/docs"
