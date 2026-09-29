@@ -50,8 +50,10 @@
         'default'   => 'border border-neutral-200 bg-white text-neutral-800 shadow-control hover:border-neutral-300 hover:shadow-control-hover',
         'primary'   => 'bg-primary text-primary-contrast shadow-control hover:bg-primary-dark hover:shadow-control-hover',
         'secondary' => 'bg-secondary text-secondary-contrast shadow-control hover:bg-secondary-dark hover:shadow-control-hover',
-        'filled'    => 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200',
-        'ghost'     => 'bg-transparent text-neutral-700 hover:bg-neutral-100',
+        /** The brand drawn as an edge. `text-primary-ink` and not `text-primary`: the brand as text fails 4.5:1, the ink reads about 7:1 on white and 6:1 on its own tint. */
+        'outline' => 'border border-primary bg-transparent text-primary-ink hover:bg-primary/10',
+        'filled'  => 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200',
+        'ghost'   => 'bg-transparent text-neutral-700 hover:bg-neutral-100',
     ]);
 
     $iconSizes = [

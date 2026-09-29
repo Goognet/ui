@@ -42,6 +42,7 @@
         'default'   => 'border border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-50',
         'primary'   => 'bg-primary text-primary-contrast hover:bg-primary-dark',
         'secondary' => 'bg-secondary text-secondary-contrast hover:bg-secondary-dark',
+        'outline'   => 'border border-primary bg-transparent text-primary-ink hover:bg-primary/10',
         'filled'    => 'bg-neutral-100 text-neutral-800 hover:bg-neutral-200',
         'ghost'     => 'bg-transparent text-neutral-700 hover:bg-neutral-100',
     ]);

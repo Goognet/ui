@@ -65,7 +65,7 @@ use Goognet\Ui\Ui;
 
 Ui::button()
     ->defaults(['variant' => 'primary'])
-    ->variant('outline', 'border-2 border-primary bg-transparent text-primary-ink')
+    ->variant('danger', 'bg-red-600 text-white hover:bg-red-700')
     ->part('base', 'uppercase tracking-wide');
 ```
 

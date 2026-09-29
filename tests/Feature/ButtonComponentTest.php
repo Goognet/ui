@@ -25,6 +25,7 @@ it('applies variant classes', function (string $variant, string $expected): void
     ['default', 'bg-white'],
     ['primary', 'bg-primary'],
     ['secondary', 'bg-secondary'],
+    ['outline', 'border-primary'],
     ['filled', 'bg-neutral-100'],
     ['ghost', 'bg-transparent'],
 ]);
