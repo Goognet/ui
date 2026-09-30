@@ -18,7 +18,11 @@ final class Whatsapp
     {
         $countryCode = Phone::digits(config('goognet-ui.whatsapp.country_code', '55'));
 
-        $digits = Phone::digits(self::firstFilled($phone, config('goognet-ui.whatsapp.number')));
+        /**
+         * The trunk prefix of a national number: `(011) 97082-9612` is dialled with the zero
+         * at home and never abroad, and wa.me only speaks the international form.
+         */
+        $digits = ltrim(Phone::digits(self::firstFilled($phone, config('goognet-ui.whatsapp.number'))), '0');
 
         if ($countryCode !== '' && str_starts_with($digits, $countryCode) && in_array(strlen($digits), [12, 13], true)) {
             $digits = substr($digits, strlen($countryCode));

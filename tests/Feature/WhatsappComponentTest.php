@@ -119,3 +119,13 @@ it('lets the call site fall back to the link when the site defaults to the butto
 
     expect($rendered)->not->toContain('h-control');
 });
+
+it('drops the trunk prefix a national number is written with', function (string $phone): void {
+    /** `(011) 9...` reached wa.me as `55011...`, a number the app cannot open. */
+    expect(Whatsapp::url(phone: $phone))->toStartWith('https://wa.me/5511970829612?');
+})->with([
+    '(011) 97082-9612',
+    '011970829612',
+    '0055 11 97082-9612',
+    '11970829612',
+]);
