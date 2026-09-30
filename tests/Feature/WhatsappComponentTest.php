@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 
 use Goognet\Ui\Support\Whatsapp;
+use Goognet\Ui\Ui;
 
 beforeEach(function (): void {
     config()->set('goognet-ui.whatsapp.number', '');
@@ -75,4 +76,46 @@ it('hands its url to any component that takes an href', function (): void {
     /** `Goognet\Ui\Support\Whatsapp::url()` is what let the header and the footer use x-ui.button directly. */
     expect(Whatsapp::url())->toStartWith('https://wa.me/')
         ->and(Whatsapp::url(phone: '5511999999999'))->toContain('5511999999999');
+});
+
+it('renders a link by default', function (): void {
+    $rendered = trim((string) $this->blade('<x-ui.whatsapp>Falar</x-ui.whatsapp>'));
+
+    expect($rendered)->toStartWith('<a')
+        ->and($rendered)->not->toContain('inline-flex');
+});
+
+it('renders the button when asked for one', function (): void {
+    $this->blade('<x-ui.whatsapp as="button">Falar</x-ui.whatsapp>')
+        ->assertSee('bg-primary', false)
+        ->assertSee('h-control', false)
+        ->assertSee('target="_blank"', false);
+});
+
+it('keeps the button an anchor, since it navigates', function (): void {
+    $rendered = trim((string) $this->blade('<x-ui.whatsapp as="button">Falar</x-ui.whatsapp>'));
+
+    expect($rendered)->toStartWith('<a')
+        ->and($rendered)->toEndWith('</a>');
+});
+
+it('hands the variant and the size to the component it renders', function (): void {
+    $this->blade('<x-ui.whatsapp as="button" variant="outline" size="lg">Falar</x-ui.whatsapp>')
+        ->assertSee('border-primary', false)
+        ->assertSee('h-control-lg', false);
+});
+
+it('takes the shape the site chose by default', function (): void {
+    Ui::whatsapp()->defaults(['as' => 'button']);
+
+    $this->blade('<x-ui.whatsapp>Falar</x-ui.whatsapp>')
+        ->assertSee('bg-primary', false);
+});
+
+it('lets the call site fall back to the link when the site defaults to the button', function (): void {
+    Ui::whatsapp()->defaults(['as' => 'button']);
+
+    $rendered = trim((string) $this->blade('<x-ui.whatsapp as="link">Falar</x-ui.whatsapp>'));
+
+    expect($rendered)->not->toContain('h-control');
 });

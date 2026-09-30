@@ -1962,9 +1962,21 @@ return [
                     <x-ui.whatsapp title="Atendimento comercial">Com título próprio</x-ui.whatsapp>
                     BLADE,
             ],
+            [
+                'title'  => 'Link ou botão',
+                'layout' => 'row',
+                'code'   => <<<'BLADE'
+                    <x-ui.whatsapp>Falar no WhatsApp</x-ui.whatsapp>
+                    <x-ui.whatsapp as="button">Falar no WhatsApp</x-ui.whatsapp>
+                    <x-ui.whatsapp as="button" variant="outline" size="lg" icon="ri-whatsapp-line">Chamar agora</x-ui.whatsapp>
+                    BLADE,
+            ],
         ],
         'notes' => [
             'Os valores padrão são <code>goognet-ui.whatsapp.number</code> e <code>goognet-ui.whatsapp.message</code>, alimentados pelo <code>.env</code>.',
+            'O <code>as</code> escolhe quem renderiza: <code>link</code> usa o <code>x-ui.link</code>, <code>button</code> usa o <code>x-ui.button</code>. Nos dois casos sai um <code>&lt;a&gt;</code>, porque o WhatsApp é navegação.',
+            'As demais props seguem para o componente escolhido — <code>variant</code>, <code>size</code>, <code>icon</code>, <code>rounded</code> —, então valem os nomes daquele componente.',
+            'Para o site inteiro sair como botão: <code>Ui::whatsapp()->defaults([\'as\' => \'button\'])</code> no <code>AppServiceProvider</code>.',
         ],
     ],
 ];

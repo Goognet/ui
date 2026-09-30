@@ -2,6 +2,8 @@
     'phone'   => null,
     'message' => null,
     'title'   => 'Vamos conversar?',
+    'as'      => null,
+    'variant' => null,
 ])
 
 @php
@@ -13,13 +15,22 @@
     $attributes = SafeUrl::attributes($attributes);
 
     $ui = Ui::component('whatsapp');
+
+    /** `link` keeps the conversation inline in a sentence; `button` gives it the weight of an action. */
+    $as ??= $ui->default('as', 'link');
+
+    $isButton = $as === 'button';
+
+    /** The variant travels to whichever component renders, and each one owns the name's meaning. */
+    $variant ??= $ui->default('variant', 'primary');
 @endphp
 
-<x-goognet-ui::link
-    variant="primary"
+<x-dynamic-component
+    :component="$isButton ? 'goognet-ui::button' : 'goognet-ui::link'"
+    :variant="$variant"
     :href="Whatsapp::url($phone, $message)"
     external
     :title="$title"
     :class="ClassList::merge($ui->classes('base', ''), (string) $attributes->get('class'))"
     {{ $attributes->except('class') }}
->{{ $slot }}</x-goognet-ui::link>
+>{{ $slot }}</x-dynamic-component>
