@@ -2,7 +2,9 @@
 
 declare(strict_types = 1);
 
+use Goognet\Ui\Support\ComponentProps;
 use Goognet\Ui\Ui;
+use Illuminate\Support\Str;
 
 /**
  * @return list<string>
@@ -113,4 +115,22 @@ it('keeps the look unchanged until a site customises it', function (): void {
     expect($css)->toContain('--radius-control: 0.5rem;')
         ->toContain('--font-weight-control: 500;')
         ->toContain('--spacing-control: 2.5rem;');
+});
+
+it('documents every component on the Ui class, so an editor offers them all', function (): void {
+    /**
+     * The `@method` block is what an editor completes from: a component missing there works
+     * through `__callStatic` and is invisible to whoever is looking for it.
+     */
+    $docblock = (string) (new ReflectionClass(Ui::class))->getDocComment();
+
+    $documented = [];
+
+    preg_match_all('/@method static ComponentCustomization (\w+)\(\)/', $docblock, $matches);
+
+    foreach ($matches[1] as $method) {
+        $documented[] = Str::kebab($method);
+    }
+
+    expect($documented)->toEqualCanonicalizing(ComponentProps::components());
 });
