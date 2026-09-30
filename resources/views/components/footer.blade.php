@@ -12,7 +12,6 @@
     use Goognet\Ui\Support\Navigation;
     use Goognet\Ui\Support\Phone;
     use Goognet\Ui\Support\SafeUrl;
-    use Goognet\Ui\Support\Whatsapp;
     use Goognet\Ui\Ui;
     use Illuminate\Support\Str;
 
@@ -109,9 +108,7 @@
                     @endif
                 </div>
 
-                <x-goognet-ui::button variant="primary" :href="Whatsapp::url()" external class="shrink-0">
-                    {{ $calloutAction }}
-                </x-goognet-ui::button>
+                <x-goognet-ui::whatsapp as="button" class="shrink-0"> {{ $calloutAction }} </x-goognet-ui::whatsapp>
             </x-goognet-ui::container>
         </div>
     @endif
