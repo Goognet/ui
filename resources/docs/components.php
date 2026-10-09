@@ -1730,7 +1730,7 @@ return [
             ],
         ],
         'notes' => [
-            'O iframe leva <code>sandbox</code> sem <code>allow-top-navigation</code>: um clique dentro do mapa não consegue levar a página inteira para outro endereço. Medido com Google e OSM — renderizam igual e o "Abrir no Maps" continua abrindo nova aba.',
+            'O iframe não recebe <code>sandbox</code> por padrão. O Google Maps precisa de scripts e da origem real para manter o mapa interativo; combinar <code>allow-scripts</code> com <code>allow-same-origin</code> gera um aviso no validador W3C, e retirar apenas uma dessas permissões quebra o embed. Uma política explícita pode ser passada pelo atributo <code>sandbox</code> quando o provedor a suportar.',
             'Só abre hosts de <code>goognet-ui.security.frame_hosts</code> (Google Maps e OpenStreetMap por padrão) e só em <code>https</code>. Um endereço vindo de painel não vira página de outro site dentro do seu.',
             'Sem <code>src</code> ele usa <code>goognet-ui.location.map</code>, que vem de <code>LOCATION_MAP_LINK</code> no <code>.env</code>.',
             'A URL do Google Maps só sai do diálogo <strong>Compartilhar → Incorporar um mapa</strong>: é uma string opaca que começa com <code>/maps/embed?pb=</code> e não dá para escrever à mão. O formato antigo <code>maps.google.com/?output=embed</code> hoje redireciona para uma página com <code>X-Frame-Options: sameorigin</code>, que o navegador recusa enquadrar — por isso os exemplos aqui usam OpenStreetMap, que enquadra sem chave.',

@@ -39,8 +39,7 @@
         loading="{{ $eager ? 'eager' : 'lazy' }}"
         referrerpolicy="no-referrer-when-downgrade"
         allowfullscreen
-        {{-- No `allow-top-navigation`: a click inside the frame cannot send the whole page elsewhere. --}}
         class="{{ ClassList::merge($ui->classes('base', 'w-full border-0 ' . $ratioClass), (string) $attributes->get('class')) }}"
-        {{ $attributes->except('class')->merge(['sandbox' => 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox']) }}
+        {{ $attributes->except('class') }}
     ></iframe>
 @endif

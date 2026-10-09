@@ -111,12 +111,21 @@ it('frames only the hosts it was told to trust', function (): void {
         ->and((string) $this->blade('<x-ui.map src="https://www.google.com/maps/embed?pb=1" />'))->toContain('<iframe');
 });
 
-it('sandboxes the map so a click inside it cannot move the page', function (): void {
+it('renders trusted maps without an incompatible sandbox policy', function (): void {
     $html = (string) $this->blade('<x-ui.map src="https://www.google.com/maps/embed?pb=1" />');
 
-    expect($html)->toContain('sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"')
-        ->not->toContain('allow-top-navigation');
+    expect($html)->toContain('<iframe')
+        ->not->toContain('sandbox');
 });
+
+it('preserves an explicit sandbox policy for maps that support it', function (string $sandbox): void {
+    $html = (string) $this->blade('<x-ui.map src="https://www.openstreetmap.org/export/embed.html" :sandbox="$sandbox" />', ['sandbox' => $sandbox]);
+
+    expect($html)->toContain('sandbox="' . $sandbox . '"');
+})->with([
+    'all restrictions'  => '',
+    'scripts and links' => 'allow-scripts allow-popups',
+]);
 
 it('frames any https host once the allowlist is emptied', function (): void {
     config()->set('goognet-ui.security.frame_hosts', []);
