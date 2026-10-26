@@ -47,8 +47,23 @@ it('lets the brand pick the text that covers it', function (string $brand): void
      * lightness, so the components can stop naming a colour they cannot know.
      */
     expect(theme())->toMatch(
-        '/--color-' . $brand . '-contrast:\s*oklch\(from var\(--color-' . $brand . '\) clamp\(0, \(l - 0\.\d+\) \* -\d+, 1\) 0 0\)/'
+        '/--color-' . $brand . '-contrast:\s*lab\(from var\(--color-' . $brand . '\) clamp\(0, \(l - [0-9.]+\) \* -\d+, 100\) 0 0\)/'
     );
+})->with(['primary', 'secondary']);
+
+it('switches the text over a brand fill where black and white tie under WCAG', function (string $brand): void {
+    /**
+     * The cut was OKLCH's L at 0.62, which is perceptual and drifts from the luminance WCAG
+     * measures: it put white on cyan-600 at 3.68:1, where black reads 5.70:1. CIE L* is built
+     * on that luminance, so the tie point converts exactly: (Y + 0.05)² = 1.05 × 0.05.
+     */
+    $luminance = sqrt(1.05 * 0.05) - 0.05;
+    $tie       = 116 * ($luminance ** (1 / 3)) - 16;
+
+    preg_match('/--color-' . $brand . '-contrast:\s*lab\(from [^)]*\) clamp\(0, \(l - ([0-9.]+)\)/', theme(), $matches);
+
+    expect($matches[1] ?? null)->not->toBeNull()
+        ->and((float) $matches[1])->toEqualWithDelta($tie, 0.01);
 })->with(['primary', 'secondary']);
 
 it('never hardcodes the text colour over a brand fill', function (): void {

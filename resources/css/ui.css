@@ -31,11 +31,16 @@
     --color-primary-light: oklch(from var(--color-primary) calc(l + 0.14) c h);
 
     /*
-     * The text that covers a brand fill, black below L 0.62 and white above. A single hardcoded
-     * colour cannot serve both: on lime, black reads 10.77:1 and white 1.96:1; on cyan-700 they
-     * swap to 3.81:1 and 5.28:1.
+     * The text that covers a brand fill, white below CIE L* 49.39 and black above. A single
+     * hardcoded colour cannot serve both: on lime, black reads 10.77:1 and white 1.96:1; on
+     * cyan-700 they swap to 3.81:1 and 5.28:1.
+     *
+     * L* is read in `lab` rather than in `oklch` because it is built on the same luminance WCAG
+     * measures, and 49.39 is where black and white tie at 4.58:1. OKLCH's L is perceptual and
+     * drifts from it on saturated hues: its old 0.62 cut put white on cyan-600 at 3.68:1, where
+     * black reads 5.70:1, and picked against WCAG on 9% of the sRGB cube, against 0.8% here.
      */
-    --color-primary-contrast: oklch(from var(--color-primary) clamp(0, (l - 0.62) * -1000, 1) 0 0);
+    --color-primary-contrast: lab(from var(--color-primary) clamp(0, (l - 49.39) * -1000, 100) 0 0);
 
     /* Readable ink: lightness forced to 0.45, hue kept. Brand colours as text fail 4.5:1; ink passes. */
     --color-primary-ink: oklch(from var(--color-primary) 0.45 c h);
@@ -57,7 +62,7 @@
     /* Measured from `--color-secondary`, same as the primary's. */
     --color-secondary-dark: oklch(from var(--color-secondary) calc(l - 0.08) c h);
     --color-secondary-light: oklch(from var(--color-secondary) calc(l + 0.14) c h);
-    --color-secondary-contrast: oklch(from var(--color-secondary) clamp(0, (l - 0.62) * -1000, 1) 0 0);
+    --color-secondary-contrast: lab(from var(--color-secondary) clamp(0, (l - 49.39) * -1000, 100) 0 0);
 
     /* Readable ink: lightness forced to 0.45, hue kept. Brand colours as text fail 4.5:1; ink passes. */
     --color-secondary-ink: oklch(from var(--color-secondary) 0.45 c h);
