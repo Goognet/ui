@@ -79,6 +79,14 @@ Para ver uma mudança antes de publicar: `composer docs` gera a página e `compo
 
 `config/goognet-ui.php` reúne prefixo, segurança (esquemas e hosts de iframe), dados da empresa, redes sociais, menu, WhatsApp e o catálogo.
 
+O e-mail público da empresa vem de `CONTACT_EMAIL` no `.env`:
+
+```dotenv
+CONTACT_EMAIL="contato@exemplo.com.br"
+```
+
+Em configurações já publicadas, ajuste `company.mail` para `env('CONTACT_EMAIL')` e renomeie a chave antiga no `.env`. Evite `MAIL`: no Linux, essa variável pode conter o caminho da caixa postal do usuário e prevalecer sobre o `.env`. Depois de atualizar o servidor, recrie o cache com `php artisan config:cache`.
+
 ## Imagens e vídeos responsivos
 
 `x-ui.image` e `x-ui.video-background` usam as variantes geradas no build do site (`foto-400.webp`, `video.webm`). Sem esse passo no `vite.config.js`, a imagem sai sem `srcset` e o vídeo não encontra os arquivos.

@@ -224,3 +224,30 @@ it('takes a column of its own from the default slot', function (): void {
     expect((string) $this->blade($blade))->toContain('Selo de segurança')
         ->toContain('sm:col-span-2');
 });
+
+it('uses the public contact email without exposing the server mailbox path', function (?string $email): void {
+    $environment = $_ENV;
+    $server      = $_SERVER;
+
+    try {
+        $_ENV['MAIL']          = $_SERVER['MAIL'] = '/var/spool/mail/site';
+        $_ENV['CONTACT_EMAIL'] = $_SERVER['CONTACT_EMAIL'] = $email ?? '(null)';
+        $configuration         = require __DIR__ . '/../../config/goognet-ui.php';
+        config()->set('goognet-ui.company.mail', $configuration['company']['mail']);
+
+        $response = $this->get(route('privacy'))->assertOk()->assertDontSee('/var/spool/mail/site');
+
+        if (filled($email)) {
+            $response->assertSee('href="mailto:contato@example.com"', false);
+        } else {
+            $response->assertDontSee('mailto:', false);
+        }
+    } finally {
+        $_ENV    = $environment;
+        $_SERVER = $server;
+    }
+})->with([
+    'configured email' => ['contato@example.com'],
+    'empty email'      => [''],
+    'null email'       => [null],
+]);

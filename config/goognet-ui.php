@@ -82,7 +82,7 @@ return [
         'description' => null,
         'logo'        => null,
         'phone'       => null,
-        'mail'        => null,
+        'mail'        => env('CONTACT_EMAIL'),
     ],
 
     'whatsapp' => [
