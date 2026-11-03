@@ -68,7 +68,10 @@
 
     $contacts = collect([
         ['label' => $company['mail'] ?? null, 'url' => filled($company['mail'] ?? null) ? 'mailto:' . $company['mail'] : null],
-        ['label' => $company['phone'] ?? null, 'url' => filled($company['phone'] ?? null) ? 'tel:' . Phone::digits($company['phone']) : null],
+        ...array_map(
+            fn (string $phone): array => ['label' => $phone, 'url' => 'tel:' . Phone::digits($phone)],
+            Phone::companyNumbers(),
+        ),
     ])->filter(fn (array $contact): bool => filled($contact['label']));
 
     $privacyUrl = Navigation::privacyUrl();

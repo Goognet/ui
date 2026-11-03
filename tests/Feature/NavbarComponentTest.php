@@ -257,7 +257,7 @@ it('puts the info strip above the bar', function (): void {
 
     $this->blade($template)
         ->assertSeeInOrder(['(11) 4002-8922', 'marca'])
-        ->assertSee('flex h-12 items-center justify-between gap-4', false);
+        ->assertSee('flex min-h-12 items-center justify-between gap-4 py-2', false);
 });
 
 it('separates the info strip from the bar', function (): void {

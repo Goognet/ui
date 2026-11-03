@@ -6,6 +6,7 @@ beforeEach(function (): void {
     config()->set('goognet-ui.company.name', 'Empresa Exemplo');
     config()->set('goognet-ui.company.mail', 'contato@exemplo.com.br');
     config()->set('goognet-ui.company.phone', '(11) 91234-5678');
+    config()->set('goognet-ui.company.phones', []);
     config()->set('goognet-ui.agency.name', 'Goognet');
     config()->set('goognet-ui.agency.url', 'https://www.goognet.com.br');
     config()->set('goognet-ui.menu', [['label' => 'Início', 'url' => '/']]);
@@ -104,6 +105,41 @@ it('drops the contact column when nothing is configured', function (): void {
     config()->set('goognet-ui.company.phone', '');
 
     expect((string) $this->blade('<x-ui.footer />'))->not->toContain('mailto:');
+});
+
+it('renders each company phone as a separate contact link without duplicates', function (): void {
+    config()->set('goognet-ui.company.phones', ['11912345678', '(11) 3456-7890', '(21) 98765-4321', '', null]);
+
+    $rendered = (string) $this->blade('<x-ui.footer />');
+
+    expect($rendered)->toContain('href="tel:11912345678"', 'href="tel:1134567890"', 'href="tel:21987654321"')
+        ->toContain('(11) 91234-5678', '(11) 3456-7890', '(21) 98765-4321')
+        ->and(substr_count($rendered, 'href="tel:'))->toBe(3);
+});
+
+it('keeps the contact column when only an additional phone is configured', function (): void {
+    config(['goognet-ui.company' => ['phones' => ['(11) 3456-7890']]]);
+
+    $this->blade('<x-ui.footer :callout="false" />')
+        ->assertSee('Contato')
+        ->assertSee('href="tel:1134567890"', false);
+});
+
+it('escapes the display text of additional phones', function (): void {
+    config()->set('goognet-ui.company.phones', ['<b>(11) 3456-7890</b>']);
+
+    $this->blade('<x-ui.footer />')
+        ->assertSee('<b>(11) 3456-7890</b>')
+        ->assertDontSee('<b>(11) 3456-7890</b>', false)
+        ->assertSee('href="tel:1134567890"', false);
+});
+
+it('omits the contact column when all configured phones are empty', function (): void {
+    config(['goognet-ui.company' => ['phone' => '', 'phones' => [null, ' ', '( ) -']]]);
+
+    $this->blade('<x-ui.footer :callout="false" />')
+        ->assertDontSee('Contato')
+        ->assertDontSee('href="tel:', false);
 });
 
 it('links the W3C validator at the page it sits on', function (): void {

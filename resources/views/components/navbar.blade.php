@@ -59,7 +59,7 @@
         @endphp
 
         <div {{ $info->attributes->class([$ui->classes('info', 'hidden text-sm md:block ' . $infoRule)]) }}>
-            <x-goognet-ui::container class="flex h-12 items-center justify-between gap-4">{{ $info }}</x-goognet-ui::container>
+            <x-goognet-ui::container class="flex min-h-12 items-center justify-between gap-4 py-2">{{ $info }}</x-goognet-ui::container>
         </div>
     @endisset
 

@@ -682,6 +682,7 @@ return [
         'notes' => [
             'A faixa de chamada vem antes dos links: quem chegou ao fim está perguntando o que fazer agora. Os textos são props (<code>callout-title</code>, <code>callout-text</code>, <code>callout-action</code>) e <code>:callout="false"</code> tira a faixa — numa política de privacidade, por exemplo. <code>:validator="false"</code> tira o selo do W3C.',
             'Nada é escrito à mão: navegação de <code>goognet-ui.menu</code>, redes de <code>goognet-ui.social</code>, contatos e nome de <code>goognet-ui.company</code>, assinatura de <code>goognet-ui.agency</code>. Coluna sem dado não é renderizada, em vez de sair vazia.',
+            'Telefones adicionais entram na lista <code>goognet-ui.company.phones</code>: por exemplo, <code>\'phones\' =&gt; [env(\'PHONE_2\'), env(\'PHONE_3\')]</code> no arquivo de configuração. A lista aceita quantos números forem necessários. O <code>company.phone</code> existente continua aparecendo primeiro. <code>Goognet\\Ui\\Support\\Phone::companyNumbers()</code> reúne ambos, ignora valores vazios ou sem dígitos e remove números repetidos pela sequência de dígitos, preservando a primeira apresentação. Use o mesmo método nos contatos do site; cada telefone recebe seu próprio link <code>tel:</code> na coluna de contato.',
             'O e-mail público usa <code>CONTACT_EMAIL</code> no <code>.env</code>, via <code>goognet-ui.company.mail</code>. Evite <code>MAIL</code>: no Linux, essa variável pode conter o caminho da caixa postal do usuário. Em configurações já publicadas, ajuste <code>company.mail</code> para <code>env(\'CONTACT_EMAIL\')</code>, renomeie a chave no <code>.env</code> e recrie o cache de produção com <code>php artisan config:cache</code>.',
             'O menu é <strong>achatado</strong>: a barra esconde uma página dentro de um dropdown, o rodapé não tem onde esconder. Todos os níveis são percorridos — <code>children</code> e <code>groups</code> — e os links sobem para uma lista só. O pai de um dropdown não entra, porque é rótulo e não destino, e um endereço alcançado duas vezes aparece uma. Item com <code>route</code> vazio não tem URL e fica fora: a barra o mostraria, o rodapé não.',
             'A assinatura sai de <code>goognet-ui.agency</code>, e o slot <code>credit</code> a substitui quando o crédito é um logo, outra frase ou nada disso. Sem nome na config e sem slot, a linha inteira não é renderizada.',
@@ -1291,7 +1292,7 @@ return [
         ],
         'notes' => [
             'A cor vem por classe Tailwind no ponto de uso (<code>class="bg-neutral-900"</code>), nunca por token. O <code>bg-white</code> padrão sai quando você passa a sua.',
-            'A faixa <code>info</code> é <code>hidden md:block</code> — não existe no mobile, igual à referência que o componente copia.',
+            'A faixa <code>info</code> é <code>hidden md:block</code> — não existe no mobile, igual à referência que o componente copia. A altura mínima é de 48px e cresce com o conteúdo; use <code>flex-wrap</code> no conteúdo do slot para acomodar vários telefones.',
             'O esconder usa <code>-top-full</code>, então funciona com ou sem faixa. O script ressincroniza quando a barra de URL do mobile redimensiona a viewport.',
         ],
     ],

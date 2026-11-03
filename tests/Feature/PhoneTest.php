@@ -4,6 +4,28 @@ declare(strict_types = 1);
 
 use Goognet\Ui\Support\Phone;
 
+it('collects distinct company numbers in display order', function (array $company, array $expected): void {
+    config(['goognet-ui.company' => $company]);
+
+    expect(Phone::companyNumbers())->toBe($expected);
+})->with([
+    'legacy configuration'      => [['phone' => '(11) 3456-7890'], ['(11) 3456-7890']],
+    'list without legacy phone' => [
+        ['phones' => ['(11) 3456-7890', '(11) 91234-5678', '(21) 3456-7890']],
+        ['(11) 3456-7890', '(11) 91234-5678', '(21) 3456-7890'],
+    ],
+    'legacy first and duplicates removed' => [
+        ['phone' => ' (11) 3456-7890 ', 'phones' => ['1134567890', ' (11) 91234-5678 ', '(11) 91234 5678']],
+        ['(11) 3456-7890', '(11) 91234-5678'],
+    ],
+    'empty and unsupported values' => [
+        ['phone' => null, 'phones' => [null, '', ' ', '( ) -', false, [], 'indisponível']],
+        [],
+    ],
+    'numeric phone'    => [['phone' => 1134567890], ['1134567890']],
+    'no configuration' => [[], []],
+]);
+
 it('reduces a written number to digits', function (?string $written, string $expected): void {
     expect(Phone::digits($written))->toBe($expected);
 })->with([

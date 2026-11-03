@@ -48,5 +48,5 @@ Cabeçalho do site: barra fixa opcional, faixa de contato acima e esconder-ao-ro
 ## Notas
 
 - A cor vem por classe Tailwind no ponto de uso (`class="bg-neutral-900"`), nunca por token. O `bg-white` padrão sai quando você passa a sua.
-- A faixa `info` é `hidden md:block` — não existe no mobile, igual à referência que o componente copia.
+- A faixa `info` é `hidden md:block` — não existe no mobile, igual à referência que o componente copia. A altura mínima é de 48px e cresce com o conteúdo; use `flex-wrap` no conteúdo do slot para acomodar vários telefones.
 - O esconder usa `-top-full`, então funciona com ou sem faixa. O script ressincroniza quando a barra de URL do mobile redimensiona a viewport.

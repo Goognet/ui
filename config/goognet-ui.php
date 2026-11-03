@@ -82,6 +82,7 @@ return [
         'description' => null,
         'logo'        => null,
         'phone'       => null,
+        'phones'      => [],
         'mail'        => env('CONTACT_EMAIL'),
     ],
 
