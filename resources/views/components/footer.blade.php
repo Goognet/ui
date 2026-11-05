@@ -9,6 +9,7 @@
 
 @php
     use Goognet\Ui\Support\ClassList;
+    use Goognet\Ui\Support\Email;
     use Goognet\Ui\Support\Navigation;
     use Goognet\Ui\Support\Phone;
     use Goognet\Ui\Support\SafeUrl;
@@ -67,7 +68,10 @@
         ->filter(fn (array $network): bool => filled(SafeUrl::href($network['url'])));
 
     $contacts = collect([
-        ['label' => $company['mail'] ?? null, 'url' => filled($company['mail'] ?? null) ? 'mailto:' . $company['mail'] : null],
+        ...array_map(
+            fn (string $email): array => ['label' => $email, 'url' => Email::url($email)],
+            Email::companyAddresses(),
+        ),
         ...array_map(
             fn (string $phone): array => ['label' => $phone, 'url' => 'tel:' . Phone::digits($phone)],
             Phone::companyNumbers(),

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 beforeEach(function (): void {
     config()->set('goognet-ui.company.name', 'Empresa Exemplo');
     config()->set('goognet-ui.company.mail', 'contato@exemplo.com.br');
+    config()->set('goognet-ui.company.mails', []);
     config()->set('goognet-ui.company.phone', '(11) 91234-5678');
     config()->set('goognet-ui.company.phones', []);
     config()->set('goognet-ui.agency.name', 'Goognet');
@@ -115,6 +116,40 @@ it('renders each company phone as a separate contact link without duplicates', f
     expect($rendered)->toContain('href="tel:11912345678"', 'href="tel:1134567890"', 'href="tel:21987654321"')
         ->toContain('(11) 91234-5678', '(11) 3456-7890', '(21) 98765-4321')
         ->and(substr_count($rendered, 'href="tel:'))->toBe(3);
+});
+
+it('renders each company email as a separate contact link without duplicates', function (): void {
+    config()->set('goognet-ui.company.mails', ['CONTATO@exemplo.com.br', ' vendas@exemplo.com.br ', 'financeiro@exemplo.com.br', '', null]);
+
+    $rendered = (string) $this->blade('<x-ui.footer />');
+
+    expect($rendered)->toContain('href="mailto:contato@exemplo.com.br"', 'href="mailto:vendas@exemplo.com.br"', 'href="mailto:financeiro@exemplo.com.br"')
+        ->and(substr_count($rendered, 'href="mailto:'))->toBe(3);
+});
+
+it('keeps the contact column when only an additional email is configured', function (): void {
+    config(['goognet-ui.company' => ['mails' => ['vendas@exemplo.com.br']]]);
+
+    $this->blade('<x-ui.footer :callout="false" />')
+        ->assertSee('Contato')
+        ->assertSee('href="mailto:vendas@exemplo.com.br"', false);
+});
+
+it('escapes email labels and encodes reserved mailbox characters', function (): void {
+    config(['goognet-ui.company' => ['mails' => ['sales&support?team@example.com']]]);
+
+    $this->blade('<x-ui.footer :callout="false" />')
+        ->assertSee('sales&amp;support?team@example.com', false)
+        ->assertSee('href="mailto:sales%26support%3Fteam@example.com"', false);
+});
+
+it('omits the contact column when all configured emails are empty or invalid', function (): void {
+    config(['goognet-ui.company' => ['mail' => '', 'mails' => [null, ' ', 'invalid', '<script>alert(1)</script>']]]);
+
+    $this->blade('<x-ui.footer :callout="false" />')
+        ->assertDontSee('Contato')
+        ->assertDontSee('href="mailto:', false)
+        ->assertDontSee('<script>alert(1)</script>', false);
 });
 
 it('keeps the contact column when only an additional phone is configured', function (): void {

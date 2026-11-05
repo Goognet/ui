@@ -84,6 +84,7 @@ return [
         'phone'       => null,
         'phones'      => [],
         'mail'        => env('CONTACT_EMAIL'),
+        'mails'       => [],
     ],
 
     'whatsapp' => [
