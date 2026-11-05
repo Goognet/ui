@@ -1,4 +1,5 @@
 @props([
+    'logo'          => null,
     'callout'       => true,
     'calloutTitle'  => 'Precisa de um orçamento?',
     'calloutText'   => 'Resposta no mesmo dia útil.',
@@ -21,6 +22,8 @@
     $ui = Ui::component('footer');
 
     $company = (array) config('goognet-ui.company', []);
+
+    $logo ??= $ui->default('logo', $company['footer_logo'] ?? null);
 
     $agency = (array) config('goognet-ui.agency', []);
 
@@ -123,7 +126,7 @@
     <x-goognet-ui::container class="py-12">
         <div class="flex flex-col justify-between gap-6 border-b border-neutral-100 pb-8 sm:flex-row sm:items-center">
             <div>
-                <x-goognet-ui::brand :class="$ui->classes('brand', 'h-7 w-auto')" />
+                <x-goognet-ui::brand :logo="$logo ?: null" :class="$ui->classes('brand', 'h-7 w-auto')" />
 
                 @if (filled($description ?? $company['description'] ?? null))
                     <p class="{{ $ui->classes('description', 'mt-3 max-w-md text-sm leading-relaxed text-pretty text-neutral-500') }}">

@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+use Goognet\Ui\Ui;
+
 beforeEach(function (): void {
     config()->set('goognet-ui.company.name', 'Empresa Exemplo');
     config()->set('goognet-ui.company.mail', 'contato@exemplo.com.br');
@@ -17,6 +19,38 @@ beforeEach(function (): void {
 it('shows the conversion band and hides it on request', function (): void {
     expect((string) $this->blade('<x-ui.footer />'))->toContain('Precisa de um orçamento?')
         ->and((string) $this->blade('<x-ui.footer :callout="false" />'))->not->toContain('Precisa de um orçamento?');
+});
+
+it('uses the footer logo without changing the shared company logo', function (?string $configured, ?string $default, ?string $explicit, string $expected): void {
+    config([
+        'goognet-ui.company.logo'        => 'https://example.com/logo.svg',
+        'goognet-ui.company.footer_logo' => $configured,
+    ]);
+
+    if ($default !== null) {
+        Ui::footer()->defaults(['logo' => $default]);
+    }
+
+    $this->blade('<x-ui.footer :logo="$logo" :callout="false" />', ['logo' => $explicit])
+        ->assertSee('src="' . $expected . '"', false)
+        ->assertDontSee(' logo=', false);
+
+    $this->blade('<x-ui.brand />')
+        ->assertSee('src="https://example.com/logo.svg"', false);
+})->with([
+    'shared logo fallback'             => [null, null, null, 'https://example.com/logo.svg'],
+    'empty footer setting'             => ['', null, null, 'https://example.com/logo.svg'],
+    'configured footer logo'           => ['https://example.com/logo-rodape.svg', null, null, 'https://example.com/logo-rodape.svg'],
+    'customized footer default'        => ['https://example.com/config.svg', 'https://example.com/default.svg', null, 'https://example.com/default.svg'],
+    'explicit logo overrides defaults' => ['https://example.com/config.svg', 'https://example.com/default.svg', 'https://example.com/explicit.svg', 'https://example.com/explicit.svg'],
+]);
+
+it('keeps unsafe footer logos out of image sources', function (): void {
+    config()->set('goognet-ui.company.footer_logo', 'javascript:alert(1)');
+
+    $this->blade('<x-ui.footer :callout="false" />')
+        ->assertSee('Empresa Exemplo')
+        ->assertDontSee('javascript:', false);
 });
 
 it('renders the band action as one anchor, styled by the button component', function (): void {

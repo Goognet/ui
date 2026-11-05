@@ -678,10 +678,17 @@ return [
                     <x-ui.footer description="Corte a laser e dobra de chapas sob medida." :callout="false" />
                     BLADE,
             ],
+            [
+                'title' => 'Logo próprio no rodapé',
+                'code'  => <<<'BLADE'
+                    <x-ui.footer logo="https://cdn.simpleicons.org/laravel/FF2D20" :callout="false" />
+                    BLADE,
+            ],
         ],
         'notes' => [
             'A faixa de chamada vem antes dos links: quem chegou ao fim está perguntando o que fazer agora. Os textos são props (<code>callout-title</code>, <code>callout-text</code>, <code>callout-action</code>) e <code>:callout="false"</code> tira a faixa — numa política de privacidade, por exemplo. <code>:validator="false"</code> tira o selo do W3C.',
             'Nada é escrito à mão: navegação de <code>goognet-ui.menu</code>, redes de <code>goognet-ui.social</code>, contatos e nome de <code>goognet-ui.company</code>, assinatura de <code>goognet-ui.agency</code>. Coluna sem dado não é renderizada, em vez de sair vazia.',
+            'O logo do rodapé pode ser definido em <code>goognet-ui.company.footer_logo</code>, em <code>Ui::footer()-&gt;defaults([\'logo\' =&gt; \'logo-rodape.svg\'])</code>, ou pela prop <code>logo</code>, nessa ordem de prioridade crescente. Sem uma versão própria, usa <code>company.logo</code>. O cabeçalho mantém o logo principal. O nome do arquivo é explícito: o sufixo <code>-rodape</code> não é procurado automaticamente.',
             'Telefones adicionais entram na lista <code>goognet-ui.company.phones</code>: por exemplo, <code>\'phones\' =&gt; [env(\'PHONE_2\'), env(\'PHONE_3\')]</code> no arquivo de configuração. A lista aceita quantos números forem necessários. O <code>company.phone</code> existente continua aparecendo primeiro. <code>Goognet\\Ui\\Support\\Phone::companyNumbers()</code> reúne ambos, ignora valores vazios ou sem dígitos e remove números repetidos pela sequência de dígitos, preservando a primeira apresentação. Use o mesmo método nos contatos do site; cada telefone recebe seu próprio link <code>tel:</code> na coluna de contato.',
             'E-mails adicionais entram em <code>goognet-ui.company.mails</code>: por exemplo, <code>\'mails\' =&gt; [env(\'CONTACT_EMAIL_2\'), env(\'CONTACT_EMAIL_3\')]</code>. O <code>company.mail</code> continua primeiro. <code>Goognet\\Ui\\Support\\Email::companyAddresses()</code> reúne os endereços, remove espaços nas pontas, ignora vazios e inválidos e elimina duplicatas sem diferenciar maiúsculas de minúsculas. Cada endereço recebe seu próprio link no rodapé. Use <code>Email::url($email)</code> para gerar o <code>mailto:</code> com caracteres reservados codificados.',
             'O e-mail público usa <code>CONTACT_EMAIL</code> no <code>.env</code>, via <code>goognet-ui.company.mail</code>. Evite <code>MAIL</code>: no Linux, essa variável pode conter o caminho da caixa postal do usuário. Em configurações já publicadas, ajuste <code>company.mail</code> para <code>env(\'CONTACT_EMAIL\')</code>, renomeie a chave no <code>.env</code> e recrie o cache de produção com <code>php artisan config:cache</code>.',

@@ -81,6 +81,7 @@ return [
         'name'        => env('APP_NAME'),
         'description' => null,
         'logo'        => null,
+        'footer_logo' => null,
         'phone'       => null,
         'phones'      => [],
         'mail'        => env('CONTACT_EMAIL'),
